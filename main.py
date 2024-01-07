@@ -46,12 +46,11 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.line_image_list.lineImages.append(
                             Image
                         )
+                        item = QtWidgets.QTableWidgetItem(1)
+                        self.linesTable.setItem(1, 1, item)
 
 
-                        print(self.line_image_list.lineImages[cnt].name)
 
-
-    #def populate_lines_table(self):
 
 
 app = QtWidgets.QApplication(sys.argv)

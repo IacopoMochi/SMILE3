@@ -400,7 +400,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="tableWidget">
+           <widget class="QTableWidget" name="linesTable">
             <property name="columnCount">
              <number>18</number>
             </property>
