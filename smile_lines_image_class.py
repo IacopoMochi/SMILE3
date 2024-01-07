@@ -2,6 +2,8 @@ import numpy as np
 import os
 from skimage.transform import radon, rotate
 from PIL import Image
+
+
 class SmileLinesImage:
   def __init__(self, id, file_name, path, feature):
     self.parameters = None
@@ -15,18 +17,6 @@ class SmileLinesImage:
     self.image.show()
     self.feature = feature
     self.id = id
-
-
-  def gather_parameters(window):
-      window.parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
-                    'MinPeakDistance': np.double(window.minPeakDistance_line_edit.text()),
-                    'MinPeakProminence': np.double(window.minPeakProminence_line_edit.text()),
-                    'PixelSize': np.double(window.pixelSize_line_edit.text()),
-                    'X1': np.double(window.X1.text()),
-                    'X2': np.double(window.X2.text()),
-                    'Y1': np.double(window.Y1.text()),
-                    'Y2': np.double(window.Y2.text())
-                    }
 
   def pre_processing(self):
       def _poly11(M, *args):
