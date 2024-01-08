@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1802</width>
+    <width>1728</width>
     <height>859</height>
    </rect>
   </property>
@@ -19,7 +19,6 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
-        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -401,6 +400,12 @@
           </item>
           <item>
            <widget class="QTableWidget" name="linesTable">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="rowCount">
+             <number>0</number>
+            </property>
             <property name="columnCount">
              <number>18</number>
             </property>

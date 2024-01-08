@@ -40,14 +40,20 @@ class MainWindow(QtWidgets.QMainWindow):
                             | name.endswith(".png")
                     ):
                         cnt += 1
+                        self.linesTable.rowCount = cnt+1
                         #SmileLinesImage.gather_parameters(self)
                         Image = SmileLinesImage(cnt, name, root, "lines")
                         self.gather_parameters(Image)
                         self.line_image_list.lineImages.append(
                             Image
                         )
-                        item = QtWidgets.QTableWidgetItem(1)
-                        self.linesTable.setItem(1, 1, item)
+                        item_id = QtWidgets.QTableWidgetItem(Image.id)
+                        item_selected = QtWidgets.QTableWidgetItem(Image.selected)
+                        item_processed = QtWidgets.QTableWidgetItem(Image.processed)
+                        self.linesTable.setItem(cnt, 0, item_id)
+                        self.linesTable.setItem(cnt, 1, item_selected)
+                        self.linesTable.setItem(cnt, 2, item_processed)
+                        self.show()
 
 
 

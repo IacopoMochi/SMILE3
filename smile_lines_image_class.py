@@ -14,9 +14,10 @@ class SmileLinesImage:
     self.folder = path
     s = os.path.join(path ,file_name)
     self.image = Image.open(s)
-    self.image.show()
     self.feature = feature
     self.id = id
+    self.selected = True
+    self.processed = False
 
   def pre_processing(self):
       def _poly11(M, *args):
