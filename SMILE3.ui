@@ -19,7 +19,6 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
-        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -34,7 +33,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="ImageView" name="line_image_view">
+           <widget class="PlotWidget" name="line_image_view">
             <property name="minimumSize">
              <size>
               <width>760</width>
@@ -46,7 +45,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QGraphicsView" name="graphicsView_2"/>
+             <widget class="QGraphicsView" name="metric_plot"/>
             </item>
             <item>
              <spacer name="verticalSpacer">
@@ -79,7 +78,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QGroupBox" name="groupBox">
+               <widget class="QGroupBox" name="metric_selection">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -183,7 +182,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox_8">
+               <widget class="QCheckBox" name="metric_original_data">
                 <property name="text">
                  <string>Original data</string>
                 </property>
@@ -193,14 +192,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox">
+               <widget class="QCheckBox" name="metric_data_unbiased">
                 <property name="text">
                  <string>Original data unbiased</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox_2">
+               <widget class="QCheckBox" name="metric_model_fit">
                 <property name="text">
                  <string>Model fit</string>
                 </property>
@@ -210,7 +209,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="checkBox_3">
+               <widget class="QCheckBox" name="metric_model_fit_unbiased">
                 <property name="text">
                  <string>Model fit unbiased</string>
                 </property>
@@ -245,7 +244,7 @@
              <number>10</number>
             </property>
             <item row="2" column="0">
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="process_lines_button">
               <property name="text">
                <string>Start processing</string>
               </property>
@@ -310,6 +309,9 @@
                  <widget class="QCheckBox" name="checkBox_5">
                   <property name="text">
                    <string>Export average PSD</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1231,9 +1233,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ImageView</class>
+   <class>PlotWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraph</header>
+   <header location="global">pyqtgraph</header>
   </customwidget>
  </customwidgets>
  <resources/>

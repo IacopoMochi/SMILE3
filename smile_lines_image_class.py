@@ -1,6 +1,8 @@
 import numpy as np
 import os
 from skimage.transform import radon, rotate
+from scipy.optimize import curve_fit
+from scipy.ndimage import histogram
 from PIL import Image
 import pyqtgraph as pg
 
@@ -8,14 +10,15 @@ class SmileLinesImage:
   def __init__(self, id, file_name, path, feature):
     self.parameters = None
     self.edges = None
+    self.pixel_size = None
     self.metrics = None
     self.processed_image = None
     self.file_name = file_name
     self.folder = path
     s = os.path.join(path ,file_name)
     img = Image.open(s)
-    img = np.transpose(np.array(img))
-    #img = np.rot90(img,)
+    #img = np.transpose(np.array(img))
+    img = np.rot90(img, 3)
     self.image = img
     self.feature = feature
     self.id = id
@@ -83,14 +86,19 @@ class SmileLinesImage:
                   + args[7] * y ** 3
           )
 
+      def binary_image_histogram_model(x, *beta):
+          return (
+                  beta[0] * np.exp(-(((x - beta[1]) / beta[2]) ** 2))
+                  + beta[3] * np.exp(-(((x - beta[4]) / beta[5]) ** 2))
+                  + beta[6] * np.exp(-(((x - beta[7]) / beta[8]) ** 2))
+          )
       # Crop images to the specified ROI
       x1 = int(self.parameters.roi_x1)
       x2 = int(self.parameters.roi_x2)
       y1 = int(self.parameters.roi_y1)
       y2 = int(self.parameters.roi_y2)
 
-      image = self.data.raw_images[self.current_image]
-      image_cropped = image[x1:x2, y1:y2]
+      image_cropped = self.image[x1:x2, y1:y2]
       theta = np.linspace(85.0, 95.0, 50, endpoint=False)
       radius = np.min(np.array(image_cropped.shape)) / 2 - 2
       dim1 = image_cropped.shape[0]
@@ -104,7 +112,7 @@ class SmileLinesImage:
       R = np.sum(np.power(sinogram, 2), 0)
       max_id = np.argmax(R)
 
-      rotated_image = rotate(image, -float(theta[max_id]) + 90, order=0)
+      rotated_image = rotate(self.image, -float(theta[max_id]) + 90, order=0)
       image_rotated_cropped = rotated_image[x1:x2, y1:y2]
 
       # Remove brightness gradient
@@ -128,20 +136,24 @@ class SmileLinesImage:
       # self.data.processed_images[n] = normal(
       #    filters.median(image - brightness, np.ones((3, 3)))
       # )
-      self.data.processed_images[self.current_image] = normal(image - brightness)
+      image_flattened = image - brightness
+      image_flattened_max = np.max(image_flattened)
+      image_flattened_min = np.max(image_flattened)
+      image_normalized = (image_flattened - image_flattened_min)/(image_flattened_max + image_flattened_min)
+      self.processed_image = image_normalized
       # print(optimized_parameters)
       # self.data_table.setCurrentIndex(self.current_image)
       # display_data(self)
 
       # Store the pixel size for the image
-      self.data.pixel_size[self.current_image] = np.float64(self.pixel_size.text())
+      #self.pixel_size = np.float64(self.pixel_size.text())
 
       # Store the processed image histogram and estimate the image line scan error
-      self.data.intensity_histogram[self.current_image] = scipy.ndimage.histogram(
-          self.data.processed_images[self.current_image], 0, 1, 256
+      self.intensity_histogram = histogram(
+          self.processed_image, 0, 1, 256
       )
       intensity = np.linspace(0, 1, 256)
-      image_histogram = self.data.intensity_histogram[self.current_image]
+      image_histogram = self.intensity_histogram
       max_index = np.argmax(image_histogram)
       max_value = image_histogram[max_index]
       low_bounds = [max_value / 4, 0, 0.01, max_value / 4, 0.1, 0.01, 0, 0, 0.01]
@@ -150,15 +162,15 @@ class SmileLinesImage:
       beta, covariance = curve_fit(
           binary_image_histogram_model,
           intensity,
-          self.data.intensity_histogram[self.current_image],
+          self.intensity_histogram,
           p0=beta0,
           bounds=(low_bounds, high_bounds),
           maxfev=100000,
       )
 
-      self.data.intensity_histogram_gaussian_fit_parameters[self.current_image] = beta
+      self.intensity_histogram_gaussian_fit_parameters = beta
 
-      self.data.lines_snr[self.current_image] = np.abs(beta[1] - beta[4]) / (
+      self.lines_snr = np.abs(beta[1] - beta[4]) / (
               0.5 * (beta[2] + beta[5]) * 2 * np.sqrt(-2 * np.log(0.5))
       )
 

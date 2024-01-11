@@ -15,9 +15,35 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi("SMILE3.ui", self)
         self.line_image_list = LineImageList()
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
+        self.process_lines_button.pressed.connect(self.load_lines_image)
 
+    def process_line_images(self, Image):
+        Image.pre_processing()
     def display_lines_data(self, Image):
-        self.line_image_view.setImage(np.array(Image.image))
+
+        # Display lines image on the top axis of the lines tab
+        # Check if a processed image exists
+        if (Image.processed == True) and not(Image.processed_image is None):
+            # Display image
+            image_item = pg.ImageItem(np.array(Image.processed_image))
+            self.line_image_view.addItem(image_item)
+            # Display profiles
+            # Display additional stuff (errors, defects, etc)
+
+        else:
+            image_item = pg.ImageItem(np.array(Image.image))
+            self.line_image_view.addItem(image_item)
+
+        # Display selected metric on the bottom axis of the lines tab
+        # Check if the image has been processed
+        if (Image.processed == True) and not (Image.processed_image is None):
+            print("Work to do")
+
+
+
+        #image_view = self.line_image_view.getView()
+        #pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
+        #image_view.addItem(pci)
 
     def gather_parameters(self, Image):
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
@@ -47,12 +73,12 @@ class MainWindow(QtWidgets.QMainWindow):
                     ):
                         cnt += 1
                         #self.linesTable.setRowCount (cnt+2)
-                        Image = SmileLinesImage(cnt, name, root, "lines")
-                        self.gather_parameters(Image)
+                        image_object = SmileLinesImage(cnt, name, root, "lines")
+                        self.gather_parameters(image_object)
                         self.line_image_list.lineImages.append(
-                            Image
+                            image_object
                         )
-                        item_name = QtWidgets.QTableWidgetItem(Image.file_name)
+                        item_name = QtWidgets.QTableWidgetItem(image_object.file_name)
 
                         item_selected = QtWidgets.QTableWidgetItem()
                         item_selected.setFlags(
@@ -69,7 +95,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.linesTable.setItem(cnt, 0, item_selected)
                         self.linesTable.setItem(cnt, 1, item_processed)
                         self.linesTable.setItem(cnt, 2, item_name)
-                        self.display_lines_data(Image)
+                        self.display_lines_data(image_object)
 
 
 
