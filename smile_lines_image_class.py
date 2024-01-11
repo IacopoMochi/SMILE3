@@ -2,7 +2,7 @@ import numpy as np
 import os
 from skimage.transform import radon, rotate
 from PIL import Image
-
+import pyqtgraph as pg
 
 class SmileLinesImage:
   def __init__(self, id, file_name, path, feature):
@@ -13,7 +13,10 @@ class SmileLinesImage:
     self.file_name = file_name
     self.folder = path
     s = os.path.join(path ,file_name)
-    self.image = Image.open(s)
+    img = Image.open(s)
+    img = np.transpose(np.array(img))
+    #img = np.rot90(img,)
+    self.image = img
     self.feature = feature
     self.id = id
     self.selected = True

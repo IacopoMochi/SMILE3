@@ -19,6 +19,7 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
+        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -33,7 +34,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QGraphicsView" name="graphicsView">
+           <widget class="ImageView" name="line_image_view">
             <property name="minimumSize">
              <size>
               <width>760</width>
@@ -411,17 +412,17 @@
             </property>
             <column>
              <property name="text">
-              <string>ID</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Selected</string>
              </property>
             </column>
             <column>
              <property name="text">
               <string>Processed</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Name</string>
              </property>
             </column>
             <column>
@@ -1228,6 +1229,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageView</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

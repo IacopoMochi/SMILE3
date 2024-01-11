@@ -2,6 +2,8 @@ import sys
 import os
 import numpy as np
 from PyQt6 import QtWidgets, uic
+from PyQt6.QtCore import Qt
+import pyqtgraph as pg
 
 from smile_lines_image_class import SmileLinesImage
 from smile_image_list_class import LineImageList
@@ -13,6 +15,9 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi("SMILE3.ui", self)
         self.line_image_list = LineImageList()
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
+
+    def display_lines_data(self, Image):
+        self.line_image_view.setImage(np.array(Image.image))
 
     def gather_parameters(self, Image):
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
@@ -27,6 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Image.parameters = parameters
 
     def load_lines_image(self):
+        self.linesTable.setRowCount(4)
         select_folder_dialog = QtWidgets.QFileDialog()
         select_folder_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
         if select_folder_dialog.exec():
@@ -40,21 +46,30 @@ class MainWindow(QtWidgets.QMainWindow):
                             | name.endswith(".png")
                     ):
                         cnt += 1
-                        self.linesTable.rowCount = cnt+1
-                        #SmileLinesImage.gather_parameters(self)
+                        #self.linesTable.setRowCount (cnt+2)
                         Image = SmileLinesImage(cnt, name, root, "lines")
                         self.gather_parameters(Image)
                         self.line_image_list.lineImages.append(
                             Image
                         )
-                        item_id = QtWidgets.QTableWidgetItem(Image.id)
-                        item_selected = QtWidgets.QTableWidgetItem(Image.selected)
-                        item_processed = QtWidgets.QTableWidgetItem(Image.processed)
-                        self.linesTable.setItem(cnt, 0, item_id)
-                        self.linesTable.setItem(cnt, 1, item_selected)
-                        self.linesTable.setItem(cnt, 2, item_processed)
-                        self.show()
+                        item_name = QtWidgets.QTableWidgetItem(Image.file_name)
 
+                        item_selected = QtWidgets.QTableWidgetItem()
+                        item_selected.setFlags(
+                            Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled
+                        )
+                        item_selected.setCheckState(Qt.CheckState.Checked)
+
+                        item_processed = QtWidgets.QTableWidgetItem()
+                        item_processed.setFlags(
+                           Qt.ItemFlag.ItemIsEnabled
+                        )
+                        item_processed.setCheckState(Qt.CheckState.Unchecked)
+
+                        self.linesTable.setItem(cnt, 0, item_selected)
+                        self.linesTable.setItem(cnt, 1, item_processed)
+                        self.linesTable.setItem(cnt, 2, item_name)
+                        self.display_lines_data(Image)
 
 
 
