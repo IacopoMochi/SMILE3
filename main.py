@@ -15,13 +15,14 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi("SMILE3.ui", self)
         self.line_image_list = LineImageList()
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
-        self.process_lines_button.pressed.connect(self.load_lines_image)
+        self.process_lines_button.pressed.connect(self.process_line_images)
 
-    def process_line_images(self, Image):
-        Image.pre_processing()
     def display_lines_data(self, Image):
 
         # Display lines image on the top axis of the lines tab
+
+        # Clean display
+        self.line_image_view.
         # Check if a processed image exists
         if (Image.processed == True) and not(Image.processed_image is None):
             # Display image
@@ -44,6 +45,12 @@ class MainWindow(QtWidgets.QMainWindow):
         #image_view = self.line_image_view.getView()
         #pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
         #image_view.addItem(pci)
+    def process_line_images(self):
+        for lines_image in self.line_image_list.lineImages:
+            lines_image.pre_processing
+            lines_image.processed = True
+            self.display_lines_data(lines_image)
+
 
     def gather_parameters(self, Image):
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),

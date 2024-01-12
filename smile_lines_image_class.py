@@ -25,6 +25,7 @@ class SmileLinesImage:
     self.selected = True
     self.processed = False
 
+  @property
   def pre_processing(self):
       def _poly11(M, *args):
           x, y = M
@@ -93,10 +94,10 @@ class SmileLinesImage:
                   + beta[6] * np.exp(-(((x - beta[7]) / beta[8]) ** 2))
           )
       # Crop images to the specified ROI
-      x1 = int(self.parameters.roi_x1)
-      x2 = int(self.parameters.roi_x2)
-      y1 = int(self.parameters.roi_y1)
-      y2 = int(self.parameters.roi_y2)
+      x1 = int(self.parameters["X1"])
+      x2 = int(self.parameters["X2"])
+      y1 = int(self.parameters["Y1"])
+      y2 = int(self.parameters["Y2"])
 
       image_cropped = self.image[x1:x2, y1:y2]
       theta = np.linspace(85.0, 95.0, 50, endpoint=False)
@@ -138,8 +139,8 @@ class SmileLinesImage:
       # )
       image_flattened = image - brightness
       image_flattened_max = np.max(image_flattened)
-      image_flattened_min = np.max(image_flattened)
-      image_normalized = (image_flattened - image_flattened_min)/(image_flattened_max + image_flattened_min)
+      image_flattened_min = np.min(image_flattened)
+      image_normalized = (image_flattened - image_flattened_min)/(image_flattened_max - image_flattened_min)
       self.processed_image = image_normalized
       # print(optimized_parameters)
       # self.data_table.setCurrentIndex(self.current_image)
