@@ -3,6 +3,7 @@ import os
 from skimage.transform import radon, rotate
 from scipy.optimize import curve_fit
 from scipy.ndimage import histogram
+from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 from PIL import Image
 import pyqtgraph as pg
 
@@ -176,7 +177,142 @@ class SmileLinesImage:
       )
 
   def find_edges(self):
-      print('Find edges')
+      processed_image = self.processed_image
+      # Filter image with a 2d median filter to remove eventual outliers (bright pixels for instance)
+      median_filter_kernel = 5
+      imageF = medfilt2d(processed_image, median_filter_kernel)
+
+      # Sum all the columns of the image to calculate the average lines profile
+      S = np.sum(imageF, 1)
+      # Filter the lines profile to reduce the noise
+      b, a = butter(8, 0.125)
+      Sf = filtfilt(b, a, S, method="gust")
+
+      dS = np.diff(S)
+      dSf = np.abs(np.diff(Sf))
+      peaks = find_peaks(dSf)
+      edge_locations = peaks[0]
+      leading_edges = np.array([])
+      trailing_edges = np.array([])
+      if self.parameters["brightEdge"]:
+        print("Bright edge peak detection to be added here")
+      else:
+        for n in edge_locations:
+            if self.parameters["tone_positive_radiobutton"]:
+                if dS[n] > 0:
+                    leading_edges = np.append(leading_edges, n)
+                else:
+                    trailing_edges = np.append(trailing_edges, n)
+            else:
+                if dS[n] < 0:
+                    leading_edges = np.append(leading_edges, n)
+                else:
+                    trailing_edges = np.append(trailing_edges, n)
+
+      # Consider only complete lines: for each trailing edge there must be 1 leading edge
+      new_leading_edges = np.array([])
+      new_trailing_edges = np.array([])
+      for n in leading_edges:
+        ve = trailing_edges > n
+        if len(trailing_edges[ve]) > 0:
+                  new_leading_edges = np.append(new_leading_edges, n)
+                  new_trailing_edges = np.append(new_trailing_edges, trailing_edges[ve][0])
+        # Rough Estimate of pitch and Critical Dimension (CD)
+        critical_dimension = np.mean(new_trailing_edges - new_leading_edges)
+        pitch = 0.5 * (
+                  np.mean(np.diff(new_trailing_edges)) + np.mean(np.diff(new_leading_edges))
+        )
+
+        image_size = processed_image.shape
+        cd_fraction = np.double(self.cd_fraction.text())
+        edge_range = np.int16(self.edge_range.text())
+
+        # Determine leading edge profiles
+        leading_edges_profiles = np.nan * np.zeros([len(new_leading_edges), image_size[1]])
+        cnt = -1
+        for edge in new_leading_edges:
+            cnt = cnt + 1
+            for row in range(0, image_size[1]):
+                segment_start = int(np.max([0, edge - edge_range]))
+                segment_end = int(np.min([edge + edge_range, image_size[0]]))
+                x = np.arange(segment_start, segment_end)
+                segment = processed_image[segment_start:segment_end, row]
+                if (self.edge_fit_function.itemText(self.edge_fit_function.currentIndex())== "Polynomial"):
+                    p = np.polyfit(x, segment, 4)
+                    p[-1] = p[-1] - np.double(self.threshold.text())
+                    r = np.roots(p)
+                    r = r[np.imag(r) == 0]
+                    if len(r) > 0:
+                        edge_position = r[np.argmin(np.abs(r - (segment_start + segment_end) / 2))]
+                        leading_edges_profiles[cnt, row] = np.real(edge_position)
+        self.data.leading_edges[self.current_image] = leading_edges_profiles
+        # Determine trailing edge profiles
+        trailing_edges_profiles = np.nan * np.zeros(
+            [len(new_trailing_edges), image_size[1]]
+        )
+        cnt = -1
+        for edge in new_trailing_edges:
+            cnt = cnt + 1
+            for row in range(0, image_size[1]):
+                segment_start = int(np.max([0, edge - edge_range]))
+                segment_end = int(np.min([edge + edge_range, image_size[0]]))
+                x = np.arange(segment_start, segment_end)
+                segment = processed_image[segment_start:segment_end, row]
+                if (self.edge_fit_function.itemText(self.edge_fit_function.currentIndex())
+                    == "Polynomial"
+                  ):
+                    p = np.polyfit(x, segment, 4)
+                    # if row == 100:
+                    #     if cnt == 2:
+                    #         plt.plot(x,segment,x,np.polyval(p,x))
+
+                    p[-1] = p[-1] - np.double(self.threshold.text())
+                    r = np.roots(p)
+                    r = r[np.imag(r) == 0]
+
+                    if len(r) > 0:
+                          edge_position = r[
+                              np.argmin(np.abs(r - (segment_start + segment_end) / 2))
+                          ]
+                          # if row == 100:
+                          #     if cnt == 2:
+                          #         plt.plot(edge_position,0.5,'o')
+                          #         plt.show()
+                          trailing_edges_profiles[cnt, row] = np.real(edge_position)
+          # self.data.trailing_edges.append(trailing_edges_profiles)
+        self.data.trailing_edges[self.current_image] = trailing_edges_profiles
+
+      critical_dimension = trailing_edges_profiles - leading_edges_profiles
+      self.data.critical_dimension_std_estimate[self.current_image] = np.std(
+          np.nanmedian(critical_dimension, 1)
+      )
+      self.data.critical_dimension_estimate[self.current_image] = np.mean(
+          np.nanmedian(critical_dimension, 1)
+      )
+      if len(self.data.leading_edges[self.current_image]) > 1:
+          self.data.pitch_estimate[self.current_image] = (
+                                                                 np.mean(
+                                                                     np.nanmedian(
+                                                                         leading_edges_profiles[
+                                                                         1:] - leading_edges_profiles[0:-1], 1
+                                                                     )
+                                                                 )
+                                                                 + np.mean(
+                                                             np.nanmedian(
+                                                                 trailing_edges_profiles[
+                                                                 1:] - trailing_edges_profiles[0:-1], 1
+                                                             )
+                                                         )
+                                                         ) / 2
+      else:
+          self.data.pitch_estimate[self.current_image] = np.nan
+
+      # leading_edges_profiles = self.data.leading_edges[0]
+      # trailing_edges_profiles = self.data.trailing_edges[0]
+      # for n in np.arange(0, np.size(xlines, 0)):
+      #     plt.plot(leading_edges_profiles[n, :], xlines[n, :], "r")
+      #     plt.plot(trailing_edges_profiles[n, :], xlines[n, :], "b")
+      # plt.show()
 
   def post_processing(self):
       print('Postprocessing')

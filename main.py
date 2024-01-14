@@ -8,6 +8,7 @@ import pyqtgraph as pg
 from smile_lines_image_class import SmileLinesImage
 from smile_image_list_class import LineImageList
 
+
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -16,15 +17,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.line_image_list = LineImageList()
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
         self.process_lines_button.pressed.connect(self.process_line_images)
+        self.linesTable.cellClicked.connect(self.navigateLinesTable)
 
     def display_lines_data(self, Image):
 
         # Display lines image on the top axis of the lines tab
-
         # Clean display
-        self.line_image_view.
+        plot_item = self.line_image_view.getPlotItem()
+        plot_item.clear()
         # Check if a processed image exists
-        if (Image.processed == True) and not(Image.processed_image is None):
+        if (Image.processed == True) and not (Image.processed_image is None):
             # Display image
             image_item = pg.ImageItem(np.array(Image.processed_image))
             self.line_image_view.addItem(image_item)
@@ -40,17 +42,22 @@ class MainWindow(QtWidgets.QMainWindow):
         if (Image.processed == True) and not (Image.processed_image is None):
             print("Work to do")
 
+        # image_view = self.line_image_view.getView()
+        # pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
+        # image_view.addItem(pci)
 
-
-        #image_view = self.line_image_view.getView()
-        #pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
-        #image_view.addItem(pci)
     def process_line_images(self):
         for lines_image in self.line_image_list.lineImages:
+            self.line_image_list.current_image = lines_image.id
             lines_image.pre_processing
-            lines_image.processed = True
-            self.display_lines_data(lines_image)
+            lines_image.processing
 
+            lines_image.processed = True
+
+            item_processed = QtWidgets.QTableWidgetItem()
+            item_processed.setCheckState(Qt.CheckState.Checked)
+            self.linesTable.setItem(lines_image.id, 1, item_processed)
+            self.display_lines_data(lines_image)
 
     def gather_parameters(self, Image):
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
@@ -60,9 +67,15 @@ class MainWindow(QtWidgets.QMainWindow):
                       'X1': np.double(window.X1.text()),
                       'X2': np.double(window.X2.text()),
                       'Y1': np.double(window.Y1.text()),
-                      'Y2': np.double(window.Y2.text())
+                      'Y2': np.double(window.Y2.text()),
+                      'tone_positive_radiobutton': window.tone_positive_radiobutton.isChecked(),
+                      'brightEdge': window.brightEdge.isChecked()
                       }
         Image.parameters = parameters
+
+    def navigateLinesTable(self, nrow, ncol):
+        self.line_image_list.current_image = nrow
+        self.display_lines_data(self.line_image_list.lineImages[nrow])
 
     def load_lines_image(self):
         self.linesTable.setRowCount(4)
@@ -79,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
                             | name.endswith(".png")
                     ):
                         cnt += 1
-                        #self.linesTable.setRowCount (cnt+2)
+                        # self.linesTable.setRowCount (cnt+2)
                         image_object = SmileLinesImage(cnt, name, root, "lines")
                         self.gather_parameters(image_object)
                         self.line_image_list.lineImages.append(
@@ -95,7 +108,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
                         item_processed = QtWidgets.QTableWidgetItem()
                         item_processed.setFlags(
-                           Qt.ItemFlag.ItemIsEnabled
+                            Qt.ItemFlag.ItemIsEnabled
                         )
                         item_processed.setCheckState(Qt.CheckState.Unchecked)
 
@@ -103,8 +116,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.linesTable.setItem(cnt, 1, item_processed)
                         self.linesTable.setItem(cnt, 2, item_name)
                         self.display_lines_data(image_object)
-
-
 
 
 app = QtWidgets.QApplication(sys.argv)
