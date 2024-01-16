@@ -39,8 +39,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Display selected metric on the bottom axis of the lines tab
         # Check if the image has been processed
-        if (Image.processed == True) and not (Image.processed_image is None):
-            print("Work to do")
+        if Image.processed and not (Image.processed_image is None):
+            if Image.parameters["Histogram"]:
+                histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram)
+                histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_low)
+                histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_medium)
+                histogram_plot_high = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_high)
+                self.metric_plot.clear()
+                self.metric_plot.addItem(histogram_plot)
+                self.metric_plot.addItem(histogram_plot_low)
+                self.metric_plot.addItem(histogram_plot_medium)
+                self.metric_plot.addItem(histogram_plot_high)
 
         # image_view = self.line_image_view.getView()
         # pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
@@ -48,9 +57,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def process_line_images(self):
         for lines_image in self.line_image_list.lineImages:
-            self.line_image_list.current_image = lines_image.id
-            lines_image.pre_processing
-            lines_image.processing
+            if self.linesTable.item(lines_image.id,0).checkState() == Qt.CheckState.Checked:
+                self.gather_parameters(lines_image)
+                self.line_image_list.current_image = lines_image.id
+                lines_image.pre_processing
+                lines_image.find_edges
 
             lines_image.processed = True
 
@@ -69,7 +80,8 @@ class MainWindow(QtWidgets.QMainWindow):
                       'Y1': np.double(window.Y1.text()),
                       'Y2': np.double(window.Y2.text()),
                       'tone_positive_radiobutton': window.tone_positive_radiobutton.isChecked(),
-                      'brightEdge': window.brightEdge.isChecked()
+                      'brightEdge': window.brightEdge.isChecked(),
+                      'Histogram': window.histogram.isChecked()
                       }
         Image.parameters = parameters
 
@@ -78,7 +90,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.display_lines_data(self.line_image_list.lineImages[nrow])
 
     def load_lines_image(self):
-        self.linesTable.setRowCount(4)
+        self.line_image_list = LineImageList()
         select_folder_dialog = QtWidgets.QFileDialog()
         select_folder_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
         if select_folder_dialog.exec():
@@ -111,7 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
                             Qt.ItemFlag.ItemIsEnabled
                         )
                         item_processed.setCheckState(Qt.CheckState.Unchecked)
-
+                        self.linesTable.setRowCount(cnt + 2)
                         self.linesTable.setItem(cnt, 0, item_selected)
                         self.linesTable.setItem(cnt, 1, item_processed)
                         self.linesTable.setItem(cnt, 2, item_name)

@@ -14,6 +14,11 @@ class SmileLinesImage:
     self.pixel_size = None
     self.metrics = None
     self.processed_image = None
+    self.selected_image = True
+    self.intensity_histogram = None
+    self.intensity_histogram_low = None
+    self.intensity_histogram_high = None
+    self.intensity_histogram_medium = None
     self.file_name = file_name
     self.folder = path
     s = os.path.join(path ,file_name)
@@ -94,6 +99,10 @@ class SmileLinesImage:
                   + beta[3] * np.exp(-(((x - beta[4]) / beta[5]) ** 2))
                   + beta[6] * np.exp(-(((x - beta[7]) / beta[8]) ** 2))
           )
+      def gaussian_profile(x, *beta):
+          return (
+                  beta[0] * np.exp(-(((x - beta[1]) / beta[2]) ** 2))
+          )
       # Crop images to the specified ROI
       x1 = int(self.parameters["X1"])
       x2 = int(self.parameters["X2"])
@@ -171,6 +180,9 @@ class SmileLinesImage:
       )
 
       self.intensity_histogram_gaussian_fit_parameters = beta
+      self.intensity_histogram_low = gaussian_profile(intensity,*beta[0:3])
+      self.intensity_histogram_high = gaussian_profile(intensity, *beta[6:9])
+      self.intensity_histogram_medium = gaussian_profile(intensity, *beta[3:6])
 
       self.lines_snr = np.abs(beta[1] - beta[4]) / (
               0.5 * (beta[2] + beta[5]) * 2 * np.sqrt(-2 * np.log(0.5))

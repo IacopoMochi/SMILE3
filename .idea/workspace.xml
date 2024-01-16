@@ -97,14 +97,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>76</line>
-          <option name="timeStamp" value="8" />
+          <url>file://$PROJECT_DIR$/smile_lines_image_class.py</url>
+          <line>181</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/smile_lines_image_class.py</url>
-          <line>200</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>59</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

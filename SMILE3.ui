@@ -19,7 +19,6 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
-        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -46,7 +45,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QGraphicsView" name="metric_plot"/>
+             <widget class="PlotWidget" name="metric_plot"/>
             </item>
             <item>
              <spacer name="verticalSpacer">
@@ -165,7 +164,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_9">
+                   <widget class="QRadioButton" name="histogram">
                     <property name="text">
                      <string>Image histogram</string>
                     </property>
