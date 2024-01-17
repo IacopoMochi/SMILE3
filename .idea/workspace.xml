@@ -34,7 +34,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Python.main.executor": "Run",
+    "Python.main.executor": "Debug",
     "Python.smile_image_list_class.executor": "Run",
     "Python.smile_lines_image_class.executor": "Debug",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -97,14 +97,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/smile_lines_image_class.py</url>
-          <line>181</line>
-          <option name="timeStamp" value="14" />
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>34</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>59</line>
-          <option name="timeStamp" value="16" />
+          <url>file://$PROJECT_DIR$/smile_lines_image_class.py</url>
+          <line>268</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

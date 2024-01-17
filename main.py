@@ -26,11 +26,14 @@ class MainWindow(QtWidgets.QMainWindow):
         plot_item = self.line_image_view.getPlotItem()
         plot_item.clear()
         # Check if a processed image exists
-        if (Image.processed == True) and not (Image.processed_image is None):
+        if Image.processed and not (Image.processed_image is None):
             # Display image
             image_item = pg.ImageItem(np.array(Image.processed_image))
             self.line_image_view.addItem(image_item)
             # Display profiles
+            if not (Image.leading_edges is None):
+                profile_lines = pg.PlotItem(np.array(Image.leading_edges))
+                self.line_image_view.addItem(profile_lines)
             # Display additional stuff (errors, defects, etc)
 
         else:
@@ -60,8 +63,8 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.linesTable.item(lines_image.id,0).checkState() == Qt.CheckState.Checked:
                 self.gather_parameters(lines_image)
                 self.line_image_list.current_image = lines_image.id
-                lines_image.pre_processing
-                lines_image.find_edges
+                lines_image.pre_processing()
+                lines_image.find_edges()
 
             lines_image.processed = True
 
@@ -71,6 +74,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.display_lines_data(lines_image)
 
     def gather_parameters(self, Image):
+
+        if self.Polynomial.isChecked():
+            edge_fit_function = 'polynomial'
+        elif self.Linear.isChecked():
+            edge_fit_function = 'linear'
+        elif self.ThresholdEdge.isChecked():
+            edge_fit_function = 'threshold'
+        else:
+            edge_fit_function = 'bright_edge'
+
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
                       'MinPeakDistance': np.double(window.minPeakDistance_line_edit.text()),
                       'MinPeakProminence': np.double(window.minPeakProminence_line_edit.text()),
@@ -81,7 +94,10 @@ class MainWindow(QtWidgets.QMainWindow):
                       'Y2': np.double(window.Y2.text()),
                       'tone_positive_radiobutton': window.tone_positive_radiobutton.isChecked(),
                       'brightEdge': window.brightEdge.isChecked(),
-                      'Histogram': window.histogram.isChecked()
+                      'Histogram': window.histogram.isChecked(),
+                      'Edge_fit_function': edge_fit_function,
+                      'CDFraction': window.CDFraction.text(),
+                      'EdgeRange': window.EdgeRange.text()
                       }
         Image.parameters = parameters
 
