@@ -10,9 +10,13 @@ import pyqtgraph as pg
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
+        self.pitch_estimate = None
         self.parameters = None
         self.leading_edges = None
         self.trailing_edges = None
+        self.critical_dimension = None
+        self.critical_dimension_std_estimate = None
+        self.critical_dimension_estimate = None
         self.pixel_size = None
         self.metrics = None
         self.processed_image = None
@@ -192,6 +196,30 @@ class SmileLinesImage:
         )
 
     def find_edges(self):
+        def edge_detection(new_edges, edges_profiles):
+            cnt = -1
+            for edge in new_edges:
+                cnt = cnt + 1
+                for row in range(0, image_size[1]):
+                    segment_start = int(np.max([0, edge - edge_range]))
+                    segment_end = int(np.min([edge + edge_range, image_size[0]]))
+                    x = np.arange(segment_start, segment_end)
+                    segment = processed_image[segment_start:segment_end, row]
+                    if (self.parameters["Edge_fit_function"] == "polynomial"):
+                        p = np.polyfit(x, segment, 4)
+                        p[-1] = p[-1] - np.double(self.parameters["Threshold"])
+                        r = np.roots(p)
+                        r = r[np.imag(r) == 0]
+                        if len(r) > 0:
+                            edge_position = r[np.argmin(np.abs(r - (segment_start + segment_end) / 2))]
+                            edges_profiles[cnt, row] = np.real(edge_position)
+                    elif (self.parameters["Edge_fit_function"] == "linear"):
+                        print("Add code for linear edge finding")
+                    elif (self.parameters["Edge_fit_function"] == "threshold"):
+                        print("Add code for threshold edge finding")
+                    elif (self.parameters["Edge_fit_function"] == "bright_edge"):
+                        print("Add code for bright edge finding")
+            return edges_profiles
         processed_image = self.processed_image
         # Filter image with a 2d median filter to remove eventual outliers (bright pixels for instance)
         median_filter_kernel = 5
@@ -238,78 +266,32 @@ class SmileLinesImage:
                     np.mean(np.diff(new_trailing_edges)) + np.mean(np.diff(new_leading_edges))
             )
 
-            image_size = processed_image.shape
             cd_fraction = np.double(self.parameters["CDFraction"])
             edge_range = np.int16(self.parameters["EdgeRange"])
 
-            # Determine leading edge profiles
-            leading_edges_profiles = np.nan * np.zeros([len(new_leading_edges), image_size[1]])
-        cnt = -1
-        for edge in new_leading_edges:
-            cnt = cnt + 1
-            for row in range(0, image_size[1]):
-                segment_start = int(np.max([0, edge - edge_range]))
-                segment_end = int(np.min([edge + edge_range, image_size[0]]))
-                x = np.arange(segment_start, segment_end)
-                segment = processed_image[segment_start:segment_end, row]
-                if (self.parameters["Edge_fit_function"] == "polynomial"):
-                    p = np.polyfit(x, segment, 4)
-                    p[-1] = p[-1] - np.double(self.parameters["Threshold"])
-                    r = np.roots(p)
-                    r = r[np.imag(r) == 0]
-                    if len(r) > 0:
-                        edge_position = r[np.argmin(np.abs(r - (segment_start + segment_end) / 2))]
-                        leading_edges_profiles[cnt, row] = np.real(edge_position)
-        self.leading_edges = leading_edges_profiles
-        # Determine trailing edge profiles
-        trailing_edges_profiles = np.nan * np.zeros(
-            [len(new_trailing_edges), image_size[1]]
-        )
-        cnt = -1
-        for edge in new_trailing_edges:
-            cnt = cnt + 1
-            for row in range(0, image_size[1]):
-                segment_start = int(np.max([0, edge - edge_range]))
-                segment_end = int(np.min([edge + edge_range, image_size[0]]))
-                x = np.arange(segment_start, segment_end)
-                segment = processed_image[segment_start:segment_end, row]
-                if (self.parameters["Edge_fit_function"] == "polynomial"):
-                    p = np.polyfit(x, segment, 4)
-                    p[-1] = p[-1] - np.double(self.threshold.text())
-                    r = np.roots(p)
-                    r = r[np.imag(r) == 0]
-                    if len(r) > 0:
-                        edge_position = r[
-                            np.argmin(np.abs(r - (segment_start + segment_end) / 2))
-                        ]
-                        trailing_edges_profiles[cnt, row] = np.real(edge_position)
-        # self.data.trailing_edges.append(trailing_edges_profiles)
-        self.data.trailing_edges[self.current_image] = trailing_edges_profiles
+        # Determine leading edge profiles
+        image_size = processed_image.shape
+        leading_edges_profiles = np.nan * np.zeros([len(new_leading_edges), image_size[1]])
+        trailing_edges_profiles = np.nan * np.zeros([len(new_trailing_edges), image_size[1]])
 
-        critical_dimension = trailing_edges_profiles - leading_edges_profiles
-        self.data.critical_dimension_std_estimate[self.current_image] = np.std(
-            np.nanmedian(critical_dimension, 1)
+        leading_edges_profiles = edge_detection(new_leading_edges, leading_edges_profiles)
+        trailing_edges_profiles = edge_detection(new_trailing_edges, trailing_edges_profiles)
+
+        self.leading_edges = leading_edges_profiles
+        self.trailing_edges = trailing_edges_profiles
+
+        self.critical_dimension = trailing_edges_profiles - leading_edges_profiles
+        self.critical_dimension_std_estimate = np.std(
+            np.nanmedian(self.critical_dimension, 1)
         )
-        self.data.critical_dimension_estimate[self.current_image] = np.mean(
-            np.nanmedian(critical_dimension, 1)
+        self.critical_dimension_estimate = np.mean(
+            np.nanmedian(self.critical_dimension, 1)
         )
-        if len(self.data.leading_edges[self.current_image]) > 1:
-            self.data.pitch_estimate[self.current_image] = (
-                                                                   np.mean(
-                                                                       np.nanmedian(
-                                                                           leading_edges_profiles[
-                                                                           1:] - leading_edges_profiles[0:-1], 1
-                                                                       )
-                                                                   )
-                                                                   + np.mean(
-                                                               np.nanmedian(
-                                                                   trailing_edges_profiles[
-                                                                   1:] - trailing_edges_profiles[0:-1], 1
-                                                               )
-                                                           )
-                                                           ) / 2
+        self.pitch_estimate = (np.mean(np.nanmedian(leading_edges_profiles[1:] - leading_edges_profiles[0:-1], 1))+ np.mean(np.nanmedian(trailing_edges_profiles[1:] - trailing_edges_profiles[0:-1], 1))) / 2
+        if len(self.leading_edges) > 1:
+            pass
         else:
-            self.data.pitch_estimate[self.current_image] = np.nan
+            self.pitch_estimate = np.nan
 
         # leading_edges_profiles = self.data.leading_edges[0]
         # trailing_edges_profiles = self.data.trailing_edges[0]

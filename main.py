@@ -31,9 +31,19 @@ class MainWindow(QtWidgets.QMainWindow):
             image_item = pg.ImageItem(np.array(Image.processed_image))
             self.line_image_view.addItem(image_item)
             # Display profiles
+            edge_color = pg.mkColor(0, 200, 0)
+            edge_pen = pg.mkPen(edge_color, width=3)
+            profiles_shape = Image.leading_edges.shape
+            lines_length = profiles_shape[1]
+            lines_number = profiles_shape[0]
             if not (Image.leading_edges is None):
-                profile_lines = pg.PlotItem(np.array(Image.leading_edges))
-                self.line_image_view.addItem(profile_lines)
+                for edge in Image.leading_edges:
+                    leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, lines_length), pen=edge_pen)
+                    self.line_image_view.addItem(leading_edge_plot)
+            if not (Image.trailing_edges is None):
+                for edge in Image.trailing_edges:
+                    trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0,lines_length), pen=edge_pen)
+                    self.line_image_view.addItem(trailing_edge_plot)
             # Display additional stuff (errors, defects, etc)
 
         else:
@@ -43,16 +53,26 @@ class MainWindow(QtWidgets.QMainWindow):
         # Display selected metric on the bottom axis of the lines tab
         # Check if the image has been processed
         if Image.processed and not (Image.processed_image is None):
-            if Image.parameters["Histogram"]:
-                histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram)
-                histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_low)
-                histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_medium)
-                histogram_plot_high = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_high)
+            histogram_color = pg.mkColor(200, 200, 200)
+            histogram_pen = pg.mkPen(histogram_color, width=3)
+            histogram_fit_color = pg.mkColor(0, 20, 200)
+            histogram_fit_pen = pg.mkPen(histogram_fit_color, width=3)
+            histogram_curves_color = pg.mkColor(200, 0, 0)
+            histogram_curves_pen = pg.mkPen(histogram_curves_color, width=3)
+
+            if self.histogram.isChecked():
+                histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram, pen=histogram_pen)
+                histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_low, pen=histogram_curves_pen)
+                histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_medium, pen=histogram_curves_pen)
+                histogram_plot_high = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_high, pen=histogram_curves_pen)
+                histogram_plot_fit = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_high+Image.intensity_histogram_low+Image.intensity_histogram_medium,
+                                                      pen=histogram_fit_pen)
                 self.metric_plot.clear()
                 self.metric_plot.addItem(histogram_plot)
                 self.metric_plot.addItem(histogram_plot_low)
                 self.metric_plot.addItem(histogram_plot_medium)
                 self.metric_plot.addItem(histogram_plot_high)
+                self.metric_plot.addItem(histogram_plot_fit)
 
         # image_view = self.line_image_view.getView()
         # pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
@@ -94,7 +114,6 @@ class MainWindow(QtWidgets.QMainWindow):
                       'Y2': np.double(window.Y2.text()),
                       'tone_positive_radiobutton': window.tone_positive_radiobutton.isChecked(),
                       'brightEdge': window.brightEdge.isChecked(),
-                      'Histogram': window.histogram.isChecked(),
                       'Edge_fit_function': edge_fit_function,
                       'CDFraction': window.CDFraction.text(),
                       'EdgeRange': window.EdgeRange.text()
