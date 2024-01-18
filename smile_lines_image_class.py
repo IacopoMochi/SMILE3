@@ -134,7 +134,6 @@ class SmileLinesImage:
         image_rotated_cropped = rotated_image[x1:x2, y1:y2]
 
         # Remove brightness gradient
-
         image = image_rotated_cropped
         brightness_map = image > np.mean(image)
         x, y = np.meshgrid(

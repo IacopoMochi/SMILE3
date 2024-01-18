@@ -93,6 +93,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.linesTable.setItem(lines_image.id, 1, item_processed)
             self.display_lines_data(lines_image)
 
+            # Update the GUI for each processed image
+            QtWidgets.QApplication.processEvents()
+
     def gather_parameters(self, Image):
 
         if self.Polynomial.isChecked():
@@ -158,10 +161,19 @@ class MainWindow(QtWidgets.QMainWindow):
                             Qt.ItemFlag.ItemIsEnabled
                         )
                         item_processed.setCheckState(Qt.CheckState.Unchecked)
+
+                        item_averageCD = QtWidgets.QTableWidgetItem(str(image_object.critical_dimension_estimate))
+                        item_averageCDstd = QtWidgets.QTableWidgetItem(str(image_object.critical_dimension_std_estimate))
+                        item_pitchEstimate = QtWidgets.QTableWidgetItem(str(image_object.pitch_estimate))
+
+
                         self.linesTable.setRowCount(cnt + 2)
                         self.linesTable.setItem(cnt, 0, item_selected)
                         self.linesTable.setItem(cnt, 1, item_processed)
                         self.linesTable.setItem(cnt, 2, item_name)
+                        self.linesTable.setItem(cnt, 3, item_pitchEstimate)
+                        self.linesTable.setItem(cnt, 4, item_averageCD)
+                        self.linesTable.setItem(cnt, 5, item_averageCDstd)
                         self.display_lines_data(image_object)
 
 

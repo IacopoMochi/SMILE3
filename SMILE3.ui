@@ -410,7 +410,7 @@
              <number>0</number>
             </property>
             <property name="columnCount">
-             <number>18</number>
+             <number>19</number>
             </property>
             <column>
              <property name="text">
@@ -430,6 +430,11 @@
             <column>
              <property name="text">
               <string>N of lines</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Average pitch</string>
              </property>
             </column>
             <column>
