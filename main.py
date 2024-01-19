@@ -33,16 +33,14 @@ class MainWindow(QtWidgets.QMainWindow):
             # Display profiles
             edge_color = pg.mkColor(0, 200, 0)
             edge_pen = pg.mkPen(edge_color, width=3)
-            profiles_shape = Image.leading_edges.shape
-            lines_length = profiles_shape[1]
-            lines_number = profiles_shape[0]
+
             if not (Image.leading_edges is None):
                 for edge in Image.leading_edges:
-                    leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, lines_length), pen=edge_pen)
+                    leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, Image.profiles_length), pen=edge_pen)
                     self.line_image_view.addItem(leading_edge_plot)
             if not (Image.trailing_edges is None):
                 for edge in Image.trailing_edges:
-                    trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0,lines_length), pen=edge_pen)
+                    trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0,Image.profiles_length), pen=edge_pen)
                     self.line_image_view.addItem(trailing_edge_plot)
             # Display additional stuff (errors, defects, etc)
 
@@ -85,6 +83,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.line_image_list.current_image = lines_image.id
                 lines_image.pre_processing()
                 lines_image.find_edges()
+                lines_image.calculate_metrics()
+
+                item_averageCD = QtWidgets.QTableWidgetItem(f"{lines_image.critical_dimension_estimate:{0}.{5}}")
+                item_number_of_lines = QtWidgets.QTableWidgetItem(str(lines_image.number_of_lines))
+                item_averageCDstd = QtWidgets.QTableWidgetItem(f"{lines_image.critical_dimension_std_estimate:{0}.{5}}")
+                item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{lines_image.pitch_estimate:{0}.{5}}")
+                self.linesTable.setItem(lines_image.id, 3, item_number_of_lines)
+                self.linesTable.setItem(lines_image.id, 4, item_pitchEstimate)
+                self.linesTable.setItem(lines_image.id, 5, item_averageCD)
+                self.linesTable.setItem(lines_image.id, 6, item_averageCDstd)
 
             lines_image.processed = True
 
@@ -162,20 +170,11 @@ class MainWindow(QtWidgets.QMainWindow):
                         )
                         item_processed.setCheckState(Qt.CheckState.Unchecked)
 
-                        item_averageCD = QtWidgets.QTableWidgetItem(str(image_object.critical_dimension_estimate))
-                        item_averageCDstd = QtWidgets.QTableWidgetItem(str(image_object.critical_dimension_std_estimate))
-                        item_pitchEstimate = QtWidgets.QTableWidgetItem(str(image_object.pitch_estimate))
-
-
                         self.linesTable.setRowCount(cnt + 2)
                         self.linesTable.setItem(cnt, 0, item_selected)
                         self.linesTable.setItem(cnt, 1, item_processed)
                         self.linesTable.setItem(cnt, 2, item_name)
-                        self.linesTable.setItem(cnt, 3, item_pitchEstimate)
-                        self.linesTable.setItem(cnt, 4, item_averageCD)
-                        self.linesTable.setItem(cnt, 5, item_averageCDstd)
                         self.display_lines_data(image_object)
-
 
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()

@@ -10,10 +10,12 @@ import pyqtgraph as pg
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
+        self.profiles_length = None
         self.pitch_estimate = None
         self.parameters = None
         self.leading_edges = None
         self.trailing_edges = None
+        self.number_of_lines = None
         self.critical_dimension = None
         self.critical_dimension_std_estimate = None
         self.critical_dimension_estimate = None
@@ -219,6 +221,11 @@ class SmileLinesImage:
                     elif (self.parameters["Edge_fit_function"] == "bright_edge"):
                         print("Add code for bright edge finding")
             return edges_profiles
+
+        def edge_consolidation(raw_edge_profiles):
+            consolidated_edge_profiles = raw_edge_profiles
+            return consolidated_edge_profiles
+
         processed_image = self.processed_image
         # Filter image with a 2d median filter to remove eventual outliers (bright pixels for instance)
         median_filter_kernel = 5
@@ -274,10 +281,18 @@ class SmileLinesImage:
         trailing_edges_profiles = np.nan * np.zeros([len(new_trailing_edges), image_size[1]])
 
         leading_edges_profiles = edge_detection(new_leading_edges, leading_edges_profiles)
-        trailing_edges_profiles = edge_detection(new_trailing_edges, trailing_edges_profiles)
+        leading_edges_profiles_consolidated = edge_consolidation(leading_edges_profiles)
+        trailing_edges_profiles_consolidated = edge_consolidation(trailing_edges_profiles)
 
         self.leading_edges = leading_edges_profiles
         self.trailing_edges = trailing_edges_profiles
+
+        profiles_shape = self.leading_edges.shape
+        lines_length = profiles_shape[1]
+        lines_number = profiles_shape[0]
+        self.number_of_lines = lines_number
+        self.profiles_length = lines_length
+        
 
         self.critical_dimension = trailing_edges_profiles - leading_edges_profiles
         self.critical_dimension_std_estimate = np.std(
@@ -303,4 +318,12 @@ class SmileLinesImage:
         print('Postprocessing')
 
     def calculate_metrics(self):
-        print('calculate_metrics')
+        # Frequency
+        pixel_size = self.parameters["PixelSize"]
+        Fs = 1 / pixel_size
+        self.frequency = 1000 * np.arange(0, Fs / 2, Fs / self.profiles_length)
+        # LWR
+        line_width = np.abs(self.leading_edges - self.trailing_edges) * pixel_size
+        LWR_PSD = np.abs(np.fft.fft(line_width))**2
+        print('Checkpoint')
+
