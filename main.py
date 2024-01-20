@@ -71,6 +71,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.addItem(histogram_plot_medium)
                 self.metric_plot.addItem(histogram_plot_high)
                 self.metric_plot.addItem(histogram_plot_fit)
+                self.metric_plot.setLogMode(False, False)
+
+            elif self.LineWidth_PSD.isChecked():
+                LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)])
+                self.metric_plot.clear()
+                self.metric_plot.addItem(LW_PSD_plot)
+                self.metric_plot.setLogMode(True, True)
+
+            elif self.LineEdge_PSD.isChecked():
+                LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD[0:len(Image.frequency)])
+                self.metric_plot.clear()
+                self.metric_plot.addItem(LER_PSD_plot)
+                self.metric_plot.setLogMode(True, True)
+
 
         # image_view = self.line_image_view.getView()
         # pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])

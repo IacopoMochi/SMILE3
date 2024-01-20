@@ -10,6 +10,12 @@ import pyqtgraph as pg
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
+        self.LER_Leading_PSD = None
+        self.LER_Trailing_PSD = None
+        self.LER_PSD = None
+        self.LWR_PSD = None
+        self.consolidated_leading_edges = None
+        self.consolidated_trailing_edges = None
         self.profiles_length = None
         self.pitch_estimate = None
         self.parameters = None
@@ -224,6 +230,9 @@ class SmileLinesImage:
 
         def edge_consolidation(raw_edge_profiles):
             consolidated_edge_profiles = raw_edge_profiles
+            for edge in consolidated_edge_profiles:
+                mean_value = np.nanmean(edge)
+                edge[edge is np.nan] = mean_value
             return consolidated_edge_profiles
 
         processed_image = self.processed_image
@@ -281,11 +290,12 @@ class SmileLinesImage:
         trailing_edges_profiles = np.nan * np.zeros([len(new_trailing_edges), image_size[1]])
 
         leading_edges_profiles = edge_detection(new_leading_edges, leading_edges_profiles)
-        leading_edges_profiles_consolidated = edge_consolidation(leading_edges_profiles)
-        trailing_edges_profiles_consolidated = edge_consolidation(trailing_edges_profiles)
+        trailing_edges_profiles = edge_detection(new_trailing_edges, trailing_edges_profiles)
 
         self.leading_edges = leading_edges_profiles
         self.trailing_edges = trailing_edges_profiles
+        self.consolidated_leading_edges = edge_consolidation(leading_edges_profiles)
+        self.consolidated_trailing_edges = edge_consolidation(trailing_edges_profiles)
 
         profiles_shape = self.leading_edges.shape
         lines_length = profiles_shape[1]
@@ -323,7 +333,15 @@ class SmileLinesImage:
         Fs = 1 / pixel_size
         self.frequency = 1000 * np.arange(0, Fs / 2, Fs / self.profiles_length)
         # LWR
-        line_width = np.abs(self.leading_edges - self.trailing_edges) * pixel_size
-        LWR_PSD = np.abs(np.fft.fft(line_width))**2
-        print('Checkpoint')
+        line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges) * pixel_size
+        self.LWR_PSD = np.nanmean(np.abs(np.fft.rfft(line_width)) ** 2, 0)
+        self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
+        # LER
+        all_edges = np.vstack(
+            (self.consolidated_leading_edges * pixel_size, self.consolidated_trailing_edges * pixel_size))
+        self.LER_PSD = np.nanmean(np.abs(np.fft.rfft(all_edges)) ** 2, 0)
+        # Leading edges LER
+        self.LER_Leading_PSD = np.nanmean(np.abs(np.fft.rfft(self.consolidated_leading_edges * pixel_size)) ** 2, 0)
+        # Trailing edges LER
+        self.LER_Trailing_PSD = np.nanmean(np.abs(np.fft.rfft(self.consolidated_trailing_edges * pixel_size)) ** 2, 0)
 

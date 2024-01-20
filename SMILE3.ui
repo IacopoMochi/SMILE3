@@ -19,6 +19,7 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
+        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -105,7 +106,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
-                   <widget class="QRadioButton" name="radioButton">
+                   <widget class="QRadioButton" name="LineWidth_PSD">
                     <property name="text">
                      <string>Line width PSD</string>
                     </property>
@@ -115,7 +116,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_8">
+                   <widget class="QRadioButton" name="LineEdge_PSD">
                     <property name="text">
                      <string>Line edge PSD</string>
                     </property>
