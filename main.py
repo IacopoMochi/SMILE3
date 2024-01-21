@@ -78,6 +78,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.clear()
                 self.metric_plot.addItem(LW_PSD_plot)
                 self.metric_plot.setLogMode(True, True)
+                self.metric_plot.setAutoVisible(y=True)
+
 
             elif self.LineEdge_PSD.isChecked():
                 LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD[0:len(Image.frequency)])

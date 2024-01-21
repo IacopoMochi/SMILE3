@@ -149,7 +149,6 @@ class SmileLinesImage:
         )
         image_array = image[brightness_map]
         xdata = (x[brightness_map], y[brightness_map])
-
         parameters_initial_guess = [0, 0, np.mean(image_array)]
 
         optimized_parameters, covariance = curve_fit(
@@ -276,10 +275,10 @@ class SmileLinesImage:
                 new_leading_edges = np.append(new_leading_edges, n)
                 new_trailing_edges = np.append(new_trailing_edges, trailing_edges[ve][0])
             # Rough Estimate of pitch and Critical Dimension (CD)
-            critical_dimension = np.mean(new_trailing_edges - new_leading_edges)
-            pitch = 0.5 * (
-                    np.mean(np.diff(new_trailing_edges)) + np.mean(np.diff(new_leading_edges))
-            )
+            # critical_dimension = np.mean(new_trailing_edges - new_leading_edges)
+            # pitch = 0.5 * (
+            #         np.mean(np.diff(new_trailing_edges)) + np.mean(np.diff(new_leading_edges))
+            # )
 
             cd_fraction = np.double(self.parameters["CDFraction"])
             edge_range = np.int16(self.parameters["EdgeRange"])
@@ -328,6 +327,13 @@ class SmileLinesImage:
         print('Postprocessing')
 
     def calculate_metrics(self):
+
+        def power_spectral_density_fit(psd_model, fit_parameters):
+
+            beta = 0
+            fitted_model = 0
+
+            return beta, fitted_model
         # Frequency
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
@@ -336,6 +342,9 @@ class SmileLinesImage:
         line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges) * pixel_size
         self.LWR_PSD = np.nanmean(np.abs(np.fft.rfft(line_width)) ** 2, 0)
         self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
+        self.LWR_PSD[0] = self.LWR_PSD[1]
+        # Calculate Unbiased LWR
+
         # LER
         all_edges = np.vstack(
             (self.consolidated_leading_edges * pixel_size, self.consolidated_trailing_edges * pixel_size))
