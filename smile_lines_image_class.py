@@ -5,6 +5,7 @@ from scipy.optimize import curve_fit
 from scipy.ndimage import histogram
 from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 from PIL import Image
+from PSD_models import *
 import pyqtgraph as pg
 
 
@@ -330,8 +331,15 @@ class SmileLinesImage:
 
         def power_spectral_density_fit(psd_model, fit_parameters):
 
-            beta = 0
-            fitted_model = 0
+            beta = [np.nanmean(self.LWR_PSD[0:5]), ]
+            model = Palasantzas_2
+            optimized_parameters, covariance = curve_fit(
+                model,
+                self.frequency,
+                self.LWR_PSD,
+                p0=beta0,
+                bounds=(minimum_values, maximum_values),
+            )
 
             return beta, fitted_model
         # Frequency

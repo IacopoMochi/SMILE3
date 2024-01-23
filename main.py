@@ -73,7 +73,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.addItem(histogram_plot_fit)
                 self.metric_plot.setLogMode(False, False)
 
-            elif self.LineWidth_PSD.isChecked():
+            elif self.lineWidthPSD.isChecked():
                 LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)])
                 self.metric_plot.clear()
                 self.metric_plot.addItem(LW_PSD_plot)
@@ -93,7 +93,18 @@ class MainWindow(QtWidgets.QMainWindow):
         # image_view.addItem(pci)
 
     def process_line_images(self):
+        # Count how many images have been selected for processing
+        number_of_selected_images = 0
         for lines_image in self.line_image_list.lineImages:
+            if self.linesTable.item(lines_image.id,0).checkState() == Qt.CheckState.Checked:
+                number_of_selected_images += 1
+        number_of_processed_images = 0
+        self.image_progressBar.setMinimum(0)
+        self.image_progressBar.setMaximum(number_of_selected_images)
+        self.image_progressBar.setValue(0)
+
+        for lines_image in self.line_image_list.lineImages:
+            self.status_label.setText("Processing " + str(number_of_processed_images+1) + " of " + str(number_of_selected_images))
             if self.linesTable.item(lines_image.id,0).checkState() == Qt.CheckState.Checked:
                 self.gather_parameters(lines_image)
                 self.line_image_list.current_image = lines_image.id
@@ -109,8 +120,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.linesTable.setItem(lines_image.id, 4, item_pitchEstimate)
                 self.linesTable.setItem(lines_image.id, 5, item_averageCD)
                 self.linesTable.setItem(lines_image.id, 6, item_averageCDstd)
-
-            lines_image.processed = True
+                lines_image.processed = True
+                number_of_processed_images += 1
+                self.image_progressBar.setValue(number_of_processed_images)
+                QtWidgets.QApplication.processEvents()
 
             item_processed = QtWidgets.QTableWidgetItem()
             item_processed.setCheckState(Qt.CheckState.Checked)
@@ -119,7 +132,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # Update the GUI for each processed image
             QtWidgets.QApplication.processEvents()
-
+        self.status_label.setText("Ready")
     def gather_parameters(self, Image):
 
         if self.Polynomial.isChecked():
