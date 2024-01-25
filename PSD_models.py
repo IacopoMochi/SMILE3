@@ -20,7 +20,11 @@ def Palasantzas_2_beta(image):
     beta[2] = np.nanmean(LWR_PSD[High_frequency_min:-High_frequency_max])
     beta[3] = alpha
 
-    return beta
+
+    beta_min = [beta[0]*0.5, beta[1]*0.8, 0, 0]
+    beta_max = [beta[0] * 100, beta[1] * 1000, beta[2]*2, 4]
+
+    return beta, beta_min, beta_max
 
 def Palasantzas_2(freq, *beta):
     sig2 = beta[0]
