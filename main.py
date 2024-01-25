@@ -155,8 +155,14 @@ class MainWindow(QtWidgets.QMainWindow):
                       'tone_positive_radiobutton': window.tone_positive_radiobutton.isChecked(),
                       'brightEdge': window.brightEdge.isChecked(),
                       'Edge_fit_function': edge_fit_function,
-                      'CDFraction': window.CDFraction.text(),
-                      'EdgeRange': window.EdgeRange.text()
+                      'CDFraction': np.double(window.CDFraction.text()),
+                      'EdgeRange': np.double(window.EdgeRange.text()),
+                      'High_frequency_cut': int(window.high_freq_cut.text()),
+                      'Low_frequency_cut': int(window.low_freq_cut.text()),
+                      'Low_frequency_average': int(window.low_freq_average.text()),
+                      'High_frequency_average': int(window.high_freq_average.text()),
+                      'Correlation_length': np.double(window.correlation_length.text()),
+                      'Alpha': np.double(window.alpha.text()),
                       }
         Image.parameters = parameters
 

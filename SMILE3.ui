@@ -19,6 +19,7 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
+        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -1140,7 +1141,7 @@
                 <number>10</number>
                </property>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="lineEdit_20">
+                <widget class="QLineEdit" name="high_freq_cut">
                  <property name="text">
                   <string>1</string>
                  </property>
@@ -1154,21 +1155,21 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="lineEdit_17">
+                <widget class="QLineEdit" name="low_freq_average">
                  <property name="text">
                   <string>5</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="3">
-                <widget class="QLineEdit" name="lineEdit_3">
+                <widget class="QLineEdit" name="alpha">
                  <property name="text">
                   <string>2</string>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="lineEdit_18">
+                <widget class="QLineEdit" name="high_freq_average">
                  <property name="text">
                   <string>50</string>
                  </property>
@@ -1237,7 +1238,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="lineEdit_19">
+                <widget class="QLineEdit" name="low_freq_cut">
                  <property name="text">
                   <string>1</string>
                  </property>
@@ -1253,7 +1254,7 @@
                <item row="2" column="2">
                 <widget class="QLabel" name="label_25">
                  <property name="text">
-                  <string>TextLabel</string>
+                  <string>Correlation Length</string>
                  </property>
                 </widget>
                </item>
@@ -1272,7 +1273,7 @@
                 </widget>
                </item>
                <item row="2" column="3">
-                <widget class="QLineEdit" name="lineEdit_4">
+                <widget class="QLineEdit" name="correlation_length">
                  <property name="text">
                   <string>0.02</string>
                  </property>

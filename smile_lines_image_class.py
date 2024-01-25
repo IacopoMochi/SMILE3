@@ -5,7 +5,7 @@ from scipy.optimize import curve_fit
 from scipy.ndimage import histogram
 from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 from PIL import Image
-from PSD_models import *
+import PSD_models
 import pyqtgraph as pg
 
 
@@ -166,12 +166,6 @@ class SmileLinesImage:
         image_flattened_min = np.min(image_flattened)
         image_normalized = (image_flattened - image_flattened_min) / (image_flattened_max - image_flattened_min)
         self.processed_image = image_normalized
-        # print(optimized_parameters)
-        # self.data_table.setCurrentIndex(self.current_image)
-        # display_data(self)
-
-        # Store the pixel size for the image
-        # self.pixel_size = np.float64(self.pixel_size.text())
 
         # Store the processed image histogram and estimate the image line scan error
         self.intensity_histogram = histogram(
@@ -329,19 +323,19 @@ class SmileLinesImage:
 
     def calculate_metrics(self):
 
-        def power_spectral_density_fit(psd_model, fit_parameters):
-
-            beta = [np.nanmean(self.LWR_PSD[0:5]), ]
-            model = Palasantzas_2
-            optimized_parameters, covariance = curve_fit(
-                model,
-                self.frequency,
-                self.LWR_PSD,
-                p0=beta0,
-                bounds=(minimum_values, maximum_values),
-            )
-
-            return beta, fitted_model
+        # def power_spectral_density_fit(psd_model, fit_parameters):
+        #
+        #     beta = [np.nanmean(self.LWR_PSD[0:5]), ]
+        #     model = PSD_models.Palasantzas_2()
+        #     optimized_parameters, covariance = curve_fit(
+        #         model,
+        #         self.frequency,
+        #         self.LWR_PSD,
+        #         p0=beta0,
+        #         bounds=(minimum_values, maximum_values),
+        #     )
+        #
+        #     return beta, fitted_model
         # Frequency
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
@@ -352,6 +346,8 @@ class SmileLinesImage:
         self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
         self.LWR_PSD[0] = self.LWR_PSD[1]
         # Calculate Unbiased LWR
+        beta0 = PSD_models.Palasantzas_2_beta(self)
+        beta, covariance = curve_fit()
 
         # LER
         all_edges = np.vstack(

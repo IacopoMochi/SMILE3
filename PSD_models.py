@@ -2,15 +2,23 @@
 import numpy as np
 
 def Palasantzas_2_beta(image):
-    beta = np.zeros((1,4))
-    parameters = image.parmeters
-    minH = parameters["minimumHigh"]
-    maxH = parameters["maximumHigh"]
+    beta = [0, 0, 0, 0]
     LWR_PSD = image.LWR_PSD
-    beta[0] = np.nanmean(LWR_PSD[minH:maxH])
-    beta[1] = np.nanmean(LWR_PSD[minH:maxH])
-    beta[2] = np.nanmean(LWR_PSD[minH:maxH])
-    beta[3] = np.nanmean(LWR_PSD[minH:maxH])
+    LWR_PSD_length = np.size(image.LWR_PSD)
+    parameters = image.parameters
+    High_frequency_max = parameters["High_frequency_cut"]
+    High_frequency_average = parameters["High_frequency_average"]
+    High_frequency_min = -High_frequency_max - High_frequency_average
+    Low_frequency_min = parameters["Low_frequency_cut"]
+    Low_frequency_average = parameters["Low_frequency_average"]
+    Low_frequency_max = Low_frequency_min + Low_frequency_average
+    correlation_length = parameters['Correlation_length']
+    alpha = parameters['Alpha']
+
+    beta[0] = np.nanmean(LWR_PSD[Low_frequency_min:Low_frequency_max])
+    beta[1] = correlation_length
+    beta[2] = np.nanmean(LWR_PSD[High_frequency_min:-High_frequency_max])
+    beta[3] = alpha
 
     return beta
 
