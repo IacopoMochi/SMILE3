@@ -75,10 +75,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
             elif self.lineWidthPSD.isChecked():
                 LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)])
-                LW_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_fit[0:len(Image.frequency)])
                 self.metric_plot.clear()
                 self.metric_plot.addItem(LW_PSD_plot)
-                self.metric_plot.addItem(LW_PSD_fit_plot)
                 self.metric_plot.setLogMode(True, True)
                 self.metric_plot.setAutoVisible(y=True)
 

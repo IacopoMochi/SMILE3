@@ -11,7 +11,6 @@ import pyqtgraph as pg
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
-        self.LWR_PSD_fit = None
         self.LER_Leading_PSD = None
         self.LER_Trailing_PSD = None
         self.LER_PSD = None
@@ -340,28 +339,15 @@ class SmileLinesImage:
         # Frequency
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
-        self.frequency = 1000 * np.arange(0, Fs / 2 + Fs / self.profiles_length, Fs / self.profiles_length)
+        self.frequency = 1000 * np.arange(0, Fs / 2, Fs / self.profiles_length)
         # LWR
         line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges) * pixel_size
         self.LWR_PSD = np.nanmean(np.abs(np.fft.rfft(line_width)) ** 2, 0)
         self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
         self.LWR_PSD[0] = self.LWR_PSD[1]
         # Calculate Unbiased LWR
-        model = PSD_models.Palasantzas_2
-        beta0, beta_min, beta_max = PSD_models.Palasantzas_2_beta(self)
-        optimized_parameters, covariance = curve_fit(
-            model,
-            self.frequency,
-            self.LWR_PSD,
-            p0=beta0,
-            bounds=(beta_min, beta_max)
-        )
-        self.LWR_PSD_fit = PSD_models.Palasantzas_2b(self.frequency, optimized_parameters)
-        #self.LWR_PSD_fit = PSD_models.Palasantzas_2b(self.frequency, beta0)
-
-        print(beta0)
-        print(optimized_parameters)
-        print(beta_max)
+        beta0 = PSD_models.Palasantzas_2_beta(self)
+        beta, covariance = curve_fit()
 
         # LER
         all_edges = np.vstack(
