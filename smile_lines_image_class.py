@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from skimage.transform import radon, rotate
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, minimize, Bounds
 from scipy.ndimage import histogram
 from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 from PIL import Image
@@ -11,6 +11,7 @@ import pyqtgraph as pg
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
+        self.LWR_PSD_model = None
         self.LWR_PSD_fit = None
         self.LER_Leading_PSD = None
         self.LER_Trailing_PSD = None
@@ -349,17 +350,19 @@ class SmileLinesImage:
         # Calculate Unbiased LWR
         model = PSD_models.Palasantzas_2
         beta0, beta_min, beta_max = PSD_models.Palasantzas_2_beta(self)
-        optimized_parameters, covariance = curve_fit(
+        bounds = Bounds(lb=beta_min, ub=beta_max)
+        optimized_parameters = minimize(
             model,
-            self.frequency,
-            self.LWR_PSD,
-            p0=beta0,
-            bounds=(beta_min, beta_max)
+            beta0,
+            method='Nelder-Mead',
+            options={'maxiter': 10000, 'xatol': 1e-8, 'fatol': 1e-8},
+            args=(self.frequency, self.LWR_PSD),
+            bounds=bounds
         )
-        self.LWR_PSD_fit = PSD_models.Palasantzas_2b(self.frequency, optimized_parameters)
-        #self.LWR_PSD_fit = PSD_models.Palasantzas_2b(self.frequency, beta0)
+        self.LWR_PSD_fit = PSD_models.Palasantzas_2b(self.frequency, optimized_parameters['x'])
+        self.LWR_PSD_model = PSD_models.Palasantzas_2b(self.frequency, beta0)
 
-        print(beta0)
+        print(beta_min)
         print(optimized_parameters)
         print(beta_max)
 

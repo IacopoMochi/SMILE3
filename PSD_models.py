@@ -15,24 +15,25 @@ def Palasantzas_2_beta(image):
     correlation_length = parameters['Correlation_length']
     alpha = parameters['Alpha']
 
-    beta[0] = np.nanmean(LWR_PSD[Low_frequency_min:Low_frequency_max])
+    beta[0] = np.nanmean(LWR_PSD[Low_frequency_min:Low_frequency_max])*correlation_length
     beta[1] = correlation_length
     beta[2] = np.nanmean(LWR_PSD[High_frequency_min:-High_frequency_max])
     beta[3] = alpha
 
 
-    beta_min = [beta[0]*0.5, beta[1]*0.8, 0, 0]
-    beta_max = [beta[0] * 100, beta[1] * 1000, beta[2]*2, 4]
+    beta_min = [beta[0]*0.5, beta[1]*0.5, 0, 0]
+    beta_max = [beta[0] * 2, beta[1] * 2, beta[2]*2, beta[3]*2]
 
     return beta, beta_min, beta_max
 
-def Palasantzas_2(freq, *beta):
+def Palasantzas_2(beta, freq, PSD):
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
     alpha = beta[3]
     y = (Lc * sig2 / (1 + (freq * Lc) ** 2) ** (0.5 + alpha)) + np.abs(Nl)
-    return y
+    S = np.nanmean((PSD - y)**2)
+    return S
 
 
 def Palasantzas_2b(freq, beta):

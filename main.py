@@ -74,11 +74,21 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.setLogMode(False, False)
 
             elif self.lineWidthPSD.isChecked():
-                LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)])
-                LW_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_fit[0:len(Image.frequency)])
+                PSD_color = pg.mkColor(200, 200, 200)
+                PSD_fit_color = pg.mkColor(0, 200, 200)
+                PSD_unbiased_color = pg.mkColor(200, 0, 0)
+                PSD_fit_unbiased_color = pg.mkColor(0, 200, 0)
+                PSD_pen = pg.mkPen(PSD_color, width=3)
+                PSD_fit_pen = pg.mkPen(PSD_fit_color, width=3)
+                PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
+                PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
+                LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)], pen=PSD_pen)
+                LW_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_fit[0:len(Image.frequency)], pen=PSD_fit_pen)
+                LW_PSD_fit_plot0 = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_model[0:len(Image.frequency)], pen=PSD_unbiased_pen)
                 self.metric_plot.clear()
                 self.metric_plot.addItem(LW_PSD_plot)
                 self.metric_plot.addItem(LW_PSD_fit_plot)
+                self.metric_plot.addItem(LW_PSD_fit_plot0)
                 self.metric_plot.setLogMode(True, True)
                 self.metric_plot.setAutoVisible(y=True)
 
