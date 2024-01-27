@@ -355,7 +355,7 @@ class SmileLinesImage:
             model,
             beta0,
             method='Nelder-Mead',
-            options={'maxiter': 10000, 'xatol': 1e-8, 'fatol': 1e-8},
+            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
             args=(self.frequency, self.LWR_PSD),
             bounds=bounds
         )

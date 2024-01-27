@@ -32,7 +32,7 @@ def Palasantzas_2(beta, freq, PSD):
     Nl = beta[2]
     alpha = beta[3]
     y = (Lc * sig2 / (1 + (freq * Lc) ** 2) ** (0.5 + alpha)) + np.abs(Nl)
-    S = np.nanmean((PSD - y)**2)
+    S = np.nanmean(np.abs(PSD - y))
     return S
 
 

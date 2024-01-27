@@ -88,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.clear()
                 self.metric_plot.addItem(LW_PSD_plot)
                 self.metric_plot.addItem(LW_PSD_fit_plot)
-                self.metric_plot.addItem(LW_PSD_fit_plot0)
+                #self.metric_plot.addItem(LW_PSD_fit_plot0)
                 self.metric_plot.setLogMode(True, True)
                 self.metric_plot.setAutoVisible(y=True)
 
