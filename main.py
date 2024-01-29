@@ -128,28 +128,67 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.setLogMode(True, True)
                 self.metric_plot.setAutoVisible(y=True)
 
-                elif self.LineEdgePSD.isChecked():
-                LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD[0:len(Image.frequency)], pen=PSD_pen)
-                LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD_fit[0:len(Image.frequency)],
+
+            elif self.LeadingEdgePSD.isChecked():
+
+                leading_LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_Leading_PSD[0:len(Image.frequency)],
+                                                       pen=PSD_pen)
+
+                leading_LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency,
+                                                           Image.LER_Leading_PSD_fit[0:len(Image.frequency)],
+
+                                                           pen=PSD_fit_pen)
+
+                leading_LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency,
+                                                                Image.LER_Leading_PSD_unbiased[0:len(Image.frequency)],
+
+                                                                pen=PSD_unbiased_pen)
+
+                leading_LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
+
+                                                                    Image.LER_Leading_PSD_fit_unbiased[
+                                                                    0:len(Image.frequency)],
+
+                                                                    pen=PSD_fit_unbiased_pen)
+
+                self.metric_plot.clear()
+
+                if self.metric_original_data.isChecked():
+                    self.metric_plot.addItem(leading_LER_PSD_plot)
+
+                if self.metric_model_fit.isChecked():
+                    self.metric_plot.addItem(leading_LER_PSD_fit_plot)
+
+                if self.metric_data_unbiased.isChecked():
+                    self.metric_plot.addItem(leading_LER_PSD_unbiased_plot)
+
+                if self.metric_model_fit_unbiased.isChecked():
+                    self.metric_plot.addItem(leading_LER_PSD_fit_unbiased_plot)
+
+                self.metric_plot.setLogMode(True, True)
+
+                self.metric_plot.setAutoVisible(y=True)
+            elif self.TrailingEdgePSD.isChecked():
+                trailing_LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_Trailing_PSD[0:len(Image.frequency)], pen=PSD_pen)
+                trailing_LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LER_Trailing_PSD_fit[0:len(Image.frequency)],
                                                   pen=PSD_fit_pen)
-                LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD_unbiased[0:len(Image.frequency)],
+                trailing_LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LER_Trailing_PSD_unbiased[0:len(Image.frequency)],
                                                        pen=PSD_unbiased_pen)
-                LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
-                                                           Image.LER_PSD_fit_unbiased[0:len(Image.frequency)],
+                trailing_LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
+                                                           Image.LER_Trailing_PSD_fit_unbiased[0:len(Image.frequency)],
                                                            pen=PSD_fit_unbiased_pen)
                 self.metric_plot.clear()
                 if self.metric_original_data.isChecked():
-                    self.metric_plot.addItem(LER_PSD_plot)
+                    self.metric_plot.addItem(trailing_LER_PSD_plot)
                 if self.metric_model_fit.isChecked():
-                    self.metric_plot.addItem(LER_PSD_fit_plot)
+                    self.metric_plot.addItem(trailing_LER_PSD_fit_plot)
                 if self.metric_data_unbiased.isChecked():
-                    self.metric_plot.addItem(LER_PSD_unbiased_plot)
+                    self.metric_plot.addItem(trailing_LER_PSD_unbiased_plot)
                 if self.metric_model_fit_unbiased.isChecked():
-                    self.metric_plot.addItem(LER_PSD_fit_unbiased_plot)
+                    self.metric_plot.addItem(trailing_LER_PSD_fit_unbiased_plot)
 
                 self.metric_plot.setLogMode(True, True)
                 self.metric_plot.setAutoVisible(y=True)
-
 
         # image_view = self.line_image_view.getView()
         # pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])

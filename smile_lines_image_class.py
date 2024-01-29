@@ -360,7 +360,6 @@ class SmileLinesImage:
 
     def calculate_metrics(self):
 
-
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
         self.frequency = 1000 * np.arange(0, Fs / 2 + Fs / self.profiles_length, Fs / self.profiles_length)
