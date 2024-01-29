@@ -400,8 +400,6 @@ class SmileLinesImage:
 
         # Calculate Unbiased LWR
         beta0, beta_min, beta_max = model_beta(self, self.LWR_PSD)
-        print("LWR")
-        print(beta0)
         bounds = Bounds(lb=beta_min, ub=beta_max)
 
         # Alternative fit using scipy.optimize.curve_fit
@@ -440,8 +438,6 @@ class SmileLinesImage:
         self.LER_PSD = self.LER_PSD / len(self.LER_PSD) ** 2
         # Calculate Unbiased LER
         beta0, beta_min, beta_max = model_beta(self, self.LER_PSD)
-        print("LER")
-        print(beta0)
         bounds = Bounds(lb=beta_min, ub=beta_max)
 
         optimized_parameters = minimize(
@@ -461,7 +457,49 @@ class SmileLinesImage:
         self.LER_PSD_fit_unbiased = model_2(self.frequency, beta)
 
         # Leading edges LER
-        self.LER_Leading_PSD = np.nanmean(np.abs(np.fft.rfft(self.consolidated_leading_edges * pixel_size)) ** 2, 0)
+        self.LER_Leading_PSD = np.nanmean(np.abs(np.fft.rfft(self.zero_mean_leading_edge_profiles * pixel_size)) ** 2, 0)
+        self.LER_Leading_PSD = self.LER_Leading_PSD / len(self.LER_Leading_PSD) ** 2
+        # Calculate Unbiased Leading edges LER
+        beta0, beta_min, beta_max = model_beta(self, self.LER_Leading_PSD)
+        bounds = Bounds(lb=beta_min, ub=beta_max)
+
+        optimized_parameters = minimize(
+            model,
+            beta0,
+            method='Nelder-Mead',
+            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
+            args=(self.frequency, self.LER_Leading_PSD),
+            bounds=bounds
+        )
+
+        self.LER_Leading_PSD_fit_parameters = optimized_parameters['x']
+        self.LER_Leading_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
+        beta = self.LER_Leading_PSD_fit_parameters
+        self.LER_Leading_PSD_unbiased = self.LER_Leading_PSD - beta[2]
+        beta[2] = 0
+        self.LER_Leading_PSD_fit_unbiased = model_2(self.frequency, beta)
+
         # Trailing edges LER
-        self.LER_Trailing_PSD = np.nanmean(np.abs(np.fft.rfft(self.consolidated_trailing_edges * pixel_size)) ** 2, 0)
+        self.LER_Trailing_PSD = np.nanmean(np.abs(np.fft.rfft(self.zero_mean_trailing_edge_profiles * pixel_size)) ** 2,
+                                          0)
+        self.LER_Trailing_PSD = self.LER_Trailing_PSD / len(self.LER_Trailing_PSD) ** 2
+        # Calculate Unbiased Leading edges LER
+        beta0, beta_min, beta_max = model_beta(self, self.LER_Trailing_PSD)
+        bounds = Bounds(lb=beta_min, ub=beta_max)
+
+        optimized_parameters = minimize(
+            model,
+            beta0,
+            method='Nelder-Mead',
+            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
+            args=(self.frequency, self.LER_Trailing_PSD),
+            bounds=bounds
+        )
+
+        self.LER_Trailing_PSD_fit_parameters = optimized_parameters['x']
+        self.LER_Trailing_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
+        beta = self.LER_Trailing_PSD_fit_parameters
+        self.LER_Trailing_PSD_unbiased = self.LER_Trailing_PSD - beta[2]
+        beta[2] = 0
+        self.LER_Trailing_PSD_fit_unbiased = model_2(self.frequency, beta)
 
