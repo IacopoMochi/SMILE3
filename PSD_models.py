@@ -1,10 +1,8 @@
 # PSD models
 import numpy as np
 
-def Palasantzas_2_beta(image):
+def Palasantzas_2_beta(image, PSD):
     beta = [0, 0, 0, 0]
-    LWR_PSD = image.LWR_PSD
-    LWR_PSD_length = np.size(image.LWR_PSD)
     parameters = image.parameters
     High_frequency_max = parameters["High_frequency_cut"]
     High_frequency_average = parameters["High_frequency_average"]
@@ -15,9 +13,9 @@ def Palasantzas_2_beta(image):
     correlation_length = parameters['Correlation_length']
     alpha = parameters['Alpha']
 
-    beta[0] = np.nanmean(LWR_PSD[Low_frequency_min:Low_frequency_max])*correlation_length
+    beta[0] = np.nanmean(PSD[Low_frequency_min:Low_frequency_max])*correlation_length
     beta[1] = correlation_length
-    beta[2] = np.nanmean(LWR_PSD[High_frequency_min:-High_frequency_max])
+    beta[2] = np.nanmean(PSD[High_frequency_min:-High_frequency_max])
     beta[3] = alpha
 
 
@@ -26,7 +24,8 @@ def Palasantzas_2_beta(image):
 
     return beta, beta_min, beta_max
 
-def Palasantzas_2(beta, freq, PSD):
+#Model for use with the scipy.optimize.minimize function
+def Palasantzas_2_minimize(beta, freq, PSD):
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -34,6 +33,15 @@ def Palasantzas_2(beta, freq, PSD):
     y = (Lc * sig2 / (1 + (freq * Lc) ** 2) ** (0.5 + alpha)) + np.abs(Nl)
     S = np.nanmean(np.abs(PSD - y))
     return S
+
+#Model for use with the scipy.optimize.curve_fit function
+def Palasantzas_2(freq, *beta):
+    sig2 = beta[0]
+    Lc = 1 / beta[1]
+    Nl = beta[2]
+    alpha = beta[3]
+    y = (Lc * sig2 / (1 + (freq * Lc) ** 2) ** (0.5 + alpha)) + np.abs(Nl)
+    return y
 
 
 def Palasantzas_2b(freq, beta):

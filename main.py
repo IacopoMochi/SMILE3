@@ -18,6 +18,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
         self.process_lines_button.pressed.connect(self.process_line_images)
         self.linesTable.cellClicked.connect(self.navigateLinesTable)
+        self.metric_selection.clicked.connect(self.display_lines_data)
 
     def display_lines_data(self, Image):
 
@@ -51,12 +52,23 @@ class MainWindow(QtWidgets.QMainWindow):
         # Display selected metric on the bottom axis of the lines tab
         # Check if the image has been processed
         if Image.processed and not (Image.processed_image is None):
+
+            # Define the color and thickness of the curves in the metric plot
             histogram_color = pg.mkColor(200, 200, 200)
             histogram_pen = pg.mkPen(histogram_color, width=3)
             histogram_fit_color = pg.mkColor(0, 20, 200)
             histogram_fit_pen = pg.mkPen(histogram_fit_color, width=3)
             histogram_curves_color = pg.mkColor(200, 0, 0)
             histogram_curves_pen = pg.mkPen(histogram_curves_color, width=3)
+
+            PSD_color = pg.mkColor(200, 200, 200)
+            PSD_fit_color = pg.mkColor(0, 200, 200)
+            PSD_unbiased_color = pg.mkColor(200, 0, 0)
+            PSD_fit_unbiased_color = pg.mkColor(0, 200, 0)
+            PSD_pen = pg.mkPen(PSD_color, width=3)
+            PSD_fit_pen = pg.mkPen(PSD_fit_color, width=3)
+            PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
+            PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
 
             if self.histogram.isChecked():
                 histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram, pen=histogram_pen)
@@ -74,30 +86,47 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.metric_plot.setLogMode(False, False)
 
             elif self.lineWidthPSD.isChecked():
-                PSD_color = pg.mkColor(200, 200, 200)
-                PSD_fit_color = pg.mkColor(0, 200, 200)
-                PSD_unbiased_color = pg.mkColor(200, 0, 0)
-                PSD_fit_unbiased_color = pg.mkColor(0, 200, 0)
-                PSD_pen = pg.mkPen(PSD_color, width=3)
-                PSD_fit_pen = pg.mkPen(PSD_fit_color, width=3)
-                PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
-                PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
+
                 LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)], pen=PSD_pen)
                 LW_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_fit[0:len(Image.frequency)], pen=PSD_fit_pen)
-                LW_PSD_fit_plot0 = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_model[0:len(Image.frequency)], pen=PSD_unbiased_pen)
+                LW_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_unbiased[0:len(Image.frequency)], pen=PSD_unbiased_pen)
+                LW_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_fit_unbiased[0:len(Image.frequency)],
+                                                  pen=PSD_fit_unbiased_pen)
                 self.metric_plot.clear()
-                self.metric_plot.addItem(LW_PSD_plot)
-                self.metric_plot.addItem(LW_PSD_fit_plot)
-                #self.metric_plot.addItem(LW_PSD_fit_plot0)
+                if self.metric_original_data.isChecked():
+                    self.metric_plot.addItem(LW_PSD_plot)
+                if self.metric_model_fit.isChecked():
+                    self.metric_plot.addItem(LW_PSD_fit_plot)
+                if self.metric_data_unbiased.isChecked():
+                    self.metric_plot.addItem(LW_PSD_unbiased_plot)
+                if self.metric_model_fit_unbiased.isChecked():
+                    self.metric_plot.addItem(LW_PSD_fit_unbiased_plot)
+
                 self.metric_plot.setLogMode(True, True)
                 self.metric_plot.setAutoVisible(y=True)
 
 
-            elif self.LineEdge_PSD.isChecked():
-                LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD[0:len(Image.frequency)])
+            elif self.LineEdgePSD.isChecked():
+                LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD[0:len(Image.frequency)], pen=PSD_pen)
+                LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD_fit[0:len(Image.frequency)],
+                                                  pen=PSD_fit_pen)
+                LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD_unbiased[0:len(Image.frequency)],
+                                                       pen=PSD_unbiased_pen)
+                LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
+                                                           Image.LER_PSD_fit_unbiased[0:len(Image.frequency)],
+                                                           pen=PSD_fit_unbiased_pen)
                 self.metric_plot.clear()
-                self.metric_plot.addItem(LER_PSD_plot)
+                if self.metric_original_data.isChecked():
+                    self.metric_plot.addItem(LER_PSD_plot)
+                if self.metric_model_fit.isChecked():
+                    self.metric_plot.addItem(LER_PSD_fit_plot)
+                if self.metric_data_unbiased.isChecked():
+                    self.metric_plot.addItem(LER_PSD_unbiased_plot)
+                if self.metric_model_fit_unbiased.isChecked():
+                    self.metric_plot.addItem(LER_PSD_fit_unbiased_plot)
+
                 self.metric_plot.setLogMode(True, True)
+                self.metric_plot.setAutoVisible(y=True)
 
 
         # image_view = self.line_image_view.getView()
@@ -175,6 +204,7 @@ class MainWindow(QtWidgets.QMainWindow):
                       'High_frequency_average': int(window.high_freq_average.text()),
                       'Correlation_length': np.double(window.correlation_length.text()),
                       'Alpha': np.double(window.alpha.text()),
+                      'PSD_model': window.PSD_model.currentText(),
                       }
         Image.parameters = parameters
 

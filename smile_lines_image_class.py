@@ -11,12 +11,38 @@ import pyqtgraph as pg
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
-        self.LWR_PSD_model = None
-        self.LWR_PSD_fit = None
-        self.LER_Leading_PSD = None
-        self.LER_Trailing_PSD = None
-        self.LER_PSD = None
+        self.zero_mean_leading_edge_profiles = None
+        self.zero_mean_trailing_edge_profiles = None
         self.LWR_PSD = None
+        self.LWR_PSD_fit_parameters = None
+        self.LWR_PSD_fit = None
+        self.LWR_PSD_fit_unbiased = None
+        self.LWR_PSD_unbiased = None
+        self.LWR_3s = None
+        self.LWR = None
+        self.LWR_fit_parameters = None
+        self.LWR_fit = None
+        self.LWR_fit_unbiased = None
+        self.LWR_unbiased = None
+
+        self.LER_PSD = None
+        self.LER_PSD_fit_parameters = None
+        self.LER_PSD_fit = None
+        self.LER_PSD_fit_unbiased = None
+        self.LER_PSD_unbiased = None
+
+        self.LER_Leading_PSD = None
+        self.LER_Leading_PSD_fit_parameters = None
+        self.LER_Leading_PSD_fit = None
+        self.LER_Leading_PSD_fit_unbiased = None
+        self.LER_Leading_PSD_unbiased = None
+
+        self.LER_Trailing_PSD = None
+        self.LER_Trailing_PSD_fit_parameters = None
+        self.LER_Trailing_PSD_fit = None
+        self.LER_Trailing_PSD_fit_unbiased = None
+        self.LER_Trailing_PSD_unbiased = None
+
         self.consolidated_leading_edges = None
         self.consolidated_trailing_edges = None
         self.profiles_length = None
@@ -225,11 +251,18 @@ class SmileLinesImage:
             return edges_profiles
 
         def edge_consolidation(raw_edge_profiles):
-            consolidated_edge_profiles = raw_edge_profiles
+            consolidated_edge_profiles = raw_edge_profiles.copy()
             for edge in consolidated_edge_profiles:
                 mean_value = np.nanmean(edge)
                 edge[edge is np.nan] = mean_value
             return consolidated_edge_profiles
+
+        def edge_mean_subtraction(absolute_edge_profiles):
+            zero_mean_edge_profiles = absolute_edge_profiles.copy()
+            for edge in zero_mean_edge_profiles:
+                mean_value = np.nanmean(edge)
+                edge[:] = edge - mean_value
+            return zero_mean_edge_profiles
 
         processed_image = self.processed_image
         # Filter image with a 2d median filter to remove eventual outliers (bright pixels for instance)
@@ -292,6 +325,8 @@ class SmileLinesImage:
         self.trailing_edges = trailing_edges_profiles
         self.consolidated_leading_edges = edge_consolidation(leading_edges_profiles)
         self.consolidated_trailing_edges = edge_consolidation(trailing_edges_profiles)
+        self.zero_mean_leading_edge_profiles = edge_mean_subtraction(self.consolidated_leading_edges)
+        self.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.consolidated_trailing_edges)
 
         profiles_shape = self.leading_edges.shape
         lines_length = profiles_shape[1]
@@ -325,32 +360,60 @@ class SmileLinesImage:
 
     def calculate_metrics(self):
 
-        # def power_spectral_density_fit(psd_model, fit_parameters):
-        #
-        #     beta = [np.nanmean(self.LWR_PSD[0:5]), ]
-        #     model = PSD_models.Palasantzas_2()
-        #     optimized_parameters, covariance = curve_fit(
-        #         model,
-        #         self.frequency,
-        #         self.LWR_PSD,
-        #         p0=beta0,
-        #         bounds=(minimum_values, maximum_values),
-        #     )
-        #
-        #     return beta, fitted_model
-        # Frequency
+
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
         self.frequency = 1000 * np.arange(0, Fs / 2 + Fs / self.profiles_length, Fs / self.profiles_length)
+
+        # Assign chosen PSD model
+        selected_model = self.parameters["PSD_model"]
+        if selected_model == "Palasantzas 2" :
+            model = PSD_models.Palasantzas_2_minimize
+            model_beta = PSD_models.Palasantzas_2_beta
+            model_2 = PSD_models.Palasantzas_2b
+        elif selected_model == "Palasantzas 1":
+            model = PSD_models.Palasantzas_2_minimize
+            model_beta = PSD_models.Palasantzas_2_beta
+            model_2 = PSD_models.Palasantzas_2b
+        elif selected_model == "Integral":
+            model = PSD_models.Palasantzas_2_minimize
+            model_beta = PSD_models.Palasantzas_2_beta
+            model_2 = PSD_models.Palasantzas_2b
+        elif selected_model == "Gaussian":
+            model = PSD_models.Palasantzas_2_minimize
+            model_beta = PSD_models.Palasantzas_2_beta
+            model_2 = PSD_models.Palasantzas_2b
+        elif selected_model == "Floating alpha":
+            model = PSD_models.Palasantzas_2_minimize
+            model_beta = PSD_models.Palasantzas_2_beta
+            model_2 = PSD_models.Palasantzas_2b
+        elif selected_model == "No white noise":
+            model = PSD_models.Palasantzas_2_minimize
+            model_beta = PSD_models.Palasantzas_2_beta
+            model_2 = PSD_models.Palasantzas_2b
+
         # LWR
         line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges) * pixel_size
         self.LWR_PSD = np.nanmean(np.abs(np.fft.rfft(line_width)) ** 2, 0)
         self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
         self.LWR_PSD[0] = self.LWR_PSD[1]
+
         # Calculate Unbiased LWR
-        model = PSD_models.Palasantzas_2
-        beta0, beta_min, beta_max = PSD_models.Palasantzas_2_beta(self)
+        beta0, beta_min, beta_max = model_beta(self, self.LWR_PSD)
+        print("LWR")
+        print(beta0)
         bounds = Bounds(lb=beta_min, ub=beta_max)
+
+        # Alternative fit using scipy.optimize.curve_fit
+        # optimized_parameters, covariance = curve_fit(
+        #     model,
+        #     self.frequency,
+        #     self.LWR_PSD,
+        #     p0=beta0,
+        #     bounds=bounds,
+        #     maxfev=100000,
+        # )
+
         optimized_parameters = minimize(
             model,
             beta0,
@@ -359,17 +422,44 @@ class SmileLinesImage:
             args=(self.frequency, self.LWR_PSD),
             bounds=bounds
         )
-        self.LWR_PSD_fit = PSD_models.Palasantzas_2b(self.frequency, optimized_parameters['x'])
-        self.LWR_PSD_model = PSD_models.Palasantzas_2b(self.frequency, beta0)
 
-        print(beta_min)
-        print(optimized_parameters)
-        print(beta_max)
+        self.LWR_PSD_fit_parameters = optimized_parameters['x']
+        self.LWR_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
+        beta = self.LWR_PSD_fit_parameters
+        self.LWR_PSD_unbiased = self.LWR_PSD - beta[2]
+        beta[2] = 0
+        self.LWR_PSD_fit_unbiased = model_2(self.frequency, beta)
+
+
+        all_edges = np.vstack((
+            self.zero_mean_leading_edge_profiles * pixel_size, self.zero_mean_trailing_edge_profiles * pixel_size))
+        self.LER_PSD = np.nanmean(np.abs(np.fft.rfft(all_edges)) ** 2, 0)
 
         # LER
-        all_edges = np.vstack(
-            (self.consolidated_leading_edges * pixel_size, self.consolidated_trailing_edges * pixel_size))
         self.LER_PSD = np.nanmean(np.abs(np.fft.rfft(all_edges)) ** 2, 0)
+        self.LER_PSD = self.LER_PSD / len(self.LER_PSD) ** 2
+        # Calculate Unbiased LER
+        beta0, beta_min, beta_max = model_beta(self, self.LER_PSD)
+        print("LER")
+        print(beta0)
+        bounds = Bounds(lb=beta_min, ub=beta_max)
+
+        optimized_parameters = minimize(
+            model,
+            beta0,
+            method='Nelder-Mead',
+            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
+            args=(self.frequency, self.LER_PSD),
+            bounds=bounds
+        )
+
+        self.LER_PSD_fit_parameters = optimized_parameters['x']
+        self.LER_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
+        beta = self.LER_PSD_fit_parameters
+        self.LER_PSD_unbiased = self.LER_PSD - beta[2]
+        beta[2] = 0
+        self.LER_PSD_fit_unbiased = model_2(self.frequency, beta)
+
         # Leading edges LER
         self.LER_Leading_PSD = np.nanmean(np.abs(np.fft.rfft(self.consolidated_leading_edges * pixel_size)) ** 2, 0)
         # Trailing edges LER

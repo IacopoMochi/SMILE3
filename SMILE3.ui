@@ -19,6 +19,7 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
+        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -94,6 +95,9 @@
                 <property name="title">
                  <string>Metric</string>
                 </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
                 <widget class="QWidget" name="verticalLayoutWidget_3">
                  <property name="geometry">
                   <rect>
@@ -115,21 +119,21 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_8">
+                   <widget class="QRadioButton" name="LineEdgePSD">
                     <property name="text">
                      <string>Line edge PSD</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_5">
+                   <widget class="QRadioButton" name="LeadingEdgePSD">
                     <property name="text">
                      <string>Leading edge PSD</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_6">
+                   <widget class="QRadioButton" name="TrailingEdgePSD">
                     <property name="text">
                      <string>Trailing edge PSD</string>
                     </property>
@@ -144,22 +148,40 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radioButton_2">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Line edge HHCF</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radioButton_10">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Leading edge HHCF</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radioButton_3">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Trailing edge HHCF</string>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -1203,15 +1225,15 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QComboBox" name="comboBox_3">
+                <widget class="QComboBox" name="PSD_model">
                  <item>
                   <property name="text">
-                   <string>Palasantzas 1</string>
+                   <string>Palasantzas 2</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>Palasantzas 2</string>
+                   <string>Palasantzas 1</string>
                   </property>
                  </item>
                  <item>
