@@ -293,7 +293,7 @@
                </size>
               </property>
               <property name="title">
-               <string>GroupBox</string>
+               <string>Export data</string>
               </property>
               <widget class="QWidget" name="verticalLayoutWidget_5">
                <property name="geometry">
@@ -1320,7 +1320,7 @@
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
-        <string>Page</string>
+        <string>Advanced settings</string>
        </attribute>
       </widget>
      </widget>

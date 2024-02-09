@@ -14,7 +14,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("SMILE3.ui", self)
-        self.line_image_list = LineImageList()
+        self.line_image_list = LineImageList(-1,'Average','Empty', 'Lines')
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
         self.process_lines_button.pressed.connect(self.process_line_images)
         self.linesTable.cellClicked.connect(self.navigateLinesTable)
@@ -36,12 +36,14 @@ class MainWindow(QtWidgets.QMainWindow):
             edge_pen = pg.mkPen(edge_color, width=3)
 
             if not (Image.leading_edges is None):
+                s = np.shape(Image.leading_edges)
+                profiles_length = s[1]
                 for edge in Image.leading_edges:
-                    leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, Image.profiles_length), pen=edge_pen)
+                    leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
                     self.line_image_view.addItem(leading_edge_plot)
             if not (Image.trailing_edges is None):
                 for edge in Image.trailing_edges:
-                    trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0,Image.profiles_length), pen=edge_pen)
+                    trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0,profiles_length), pen=edge_pen)
                     self.line_image_view.addItem(trailing_edge_plot)
             # Display additional stuff (errors, defects, etc)
 
@@ -234,6 +236,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # Update the GUI for each processed image
             QtWidgets.QApplication.processEvents()
+        self.line_image_list.gather_edges()
+        self.line_image_list.parameters = self.line_image_list.lineImages[0].parameters
+        self.line_image_list.calculate_metrics()
         self.status_label.setText("Ready")
     def gather_parameters(self, Image):
 
@@ -274,7 +279,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.display_lines_data(self.line_image_list.lineImages[nrow])
 
     def load_lines_image(self):
-        self.line_image_list = LineImageList()
+        #self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')
         select_folder_dialog = QtWidgets.QFileDialog()
         select_folder_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
         if select_folder_dialog.exec():
@@ -290,6 +295,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         cnt += 1
                         # self.linesTable.setRowCount (cnt+2)
                         image_object = SmileLinesImage(cnt, name, root, "lines")
+                        image_object.load_image()
                         self.gather_parameters(image_object)
                         self.line_image_list.lineImages.append(
                             image_object

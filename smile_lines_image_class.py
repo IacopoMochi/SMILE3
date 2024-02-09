@@ -45,7 +45,6 @@ class SmileLinesImage:
 
         self.consolidated_leading_edges = None
         self.consolidated_trailing_edges = None
-        self.profiles_length = None
         self.pitch_estimate = None
         self.parameters = None
         self.leading_edges = None
@@ -64,15 +63,22 @@ class SmileLinesImage:
         self.intensity_histogram_medium = None
         self.file_name = file_name
         self.folder = path
-        s = os.path.join(path, file_name)
-        img = Image.open(s)
-        # img = np.transpose(np.array(img))
-        img = np.rot90(img, 3)
-        self.image = img
+        #s = os.path.join(path, file_name)
+        #img = Image.open(s)
+        #img = np.rot90(img, 3)
+        #self.image = img
+        self.image = None
         self.feature = feature
         self.id = id
         self.selected = True
         self.processed = False
+
+    def load_image(self):
+        # Load the image
+        s = os.path.join(self.folder, self.file_name)
+        img = Image.open(s)
+        img = np.rot90(img, 3)
+        self.image = img
 
     def pre_processing(self):
         def _poly11(M, *args):
@@ -146,6 +152,8 @@ class SmileLinesImage:
             return (
                     beta[0] * np.exp(-(((x - beta[1]) / beta[2]) ** 2))
             )
+
+
 
         # Crop images to the specified ROI
         x1 = int(self.parameters["X1"])
@@ -329,10 +337,9 @@ class SmileLinesImage:
         self.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.consolidated_trailing_edges)
 
         profiles_shape = self.leading_edges.shape
-        lines_length = profiles_shape[1]
+
         lines_number = profiles_shape[0]
         self.number_of_lines = lines_number
-        self.profiles_length = lines_length
         
 
         self.critical_dimension = trailing_edges_profiles - leading_edges_profiles
@@ -362,7 +369,9 @@ class SmileLinesImage:
 
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
-        self.frequency = 1000 * np.arange(0, Fs / 2 + Fs / self.profiles_length, Fs / self.profiles_length)
+        s = np.shape(self.leading_edges)
+        profiles_length = s[1]
+        self.frequency = 1000 * np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
 
         # Assign chosen PSD model
         selected_model = self.parameters["PSD_model"]
