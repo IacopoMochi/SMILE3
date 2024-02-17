@@ -437,7 +437,6 @@ class SmileLinesImage:
         beta[2] = 0
         self.LWR_PSD_fit_unbiased = model_2(self.frequency, beta)
 
-
         all_edges = np.vstack((
             self.zero_mean_leading_edge_profiles * pixel_size, self.zero_mean_trailing_edge_profiles * pixel_size))
         self.LER_PSD = np.nanmean(np.abs(np.fft.rfft(all_edges)) ** 2, 0)
