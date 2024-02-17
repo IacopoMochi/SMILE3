@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         plot_item = self.line_image_view.getPlotItem()
         plot_item.clear()
         # Check if a processed image exists
-        if Image.processed and not (Image.processed_image is None):
+        if Image.processed and not (Image.processed_image is None) and not (self.line_image_list.current_image == -2):
             # Display image
             image_item = pg.ImageItem(np.array(Image.processed_image))
             self.line_image_view.addItem(image_item)
@@ -48,12 +48,13 @@ class MainWindow(QtWidgets.QMainWindow):
             # Display additional stuff (errors, defects, etc)
 
         else:
-            image_item = pg.ImageItem(np.array(Image.image))
-            self.line_image_view.addItem(image_item)
+            if not(self.line_image_list.current_image == -2):
+                image_item = pg.ImageItem(np.array(Image.image))
+                self.line_image_view.addItem(image_item)
 
         # Display selected metric on the bottom axis of the lines tab
         # Check if the image has been processed
-        if Image.processed and not (Image.processed_image is None):
+        if Image.processed and not (Image.processed_image is None) or self.line_image_list.current_image == -2:
 
             # Define the color and thickness of the curves in the metric plot
             histogram_color = pg.mkColor(200, 200, 200)
@@ -72,7 +73,7 @@ class MainWindow(QtWidgets.QMainWindow):
             PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
             PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
 
-            if self.histogram.isChecked():
+            if self.histogram.isChecked() and not self.line_image_list.current_image == -2:
                 histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram, pen=histogram_pen)
                 histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_low, pen=histogram_curves_pen)
                 histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_medium, pen=histogram_curves_pen)
@@ -276,7 +277,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def navigateLinesTable(self, nrow, ncol):
         self.line_image_list.current_image = nrow
-        self.display_lines_data(self.line_image_list.lineImages[nrow])
+        if nrow < len(self.line_image_list.lineImages):
+            self.display_lines_data(self.line_image_list.lineImages[nrow])
+        else:
+            self.line_image_list.current_image = -2
+            self.display_lines_data(self.line_image_list)
+
+
 
     def load_lines_image(self):
         #self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')

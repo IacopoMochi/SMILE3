@@ -1,4 +1,5 @@
 
+import numpy as np
 from smile_lines_image_class import SmileLinesImage
 class LineImageList(SmileLinesImage):
     lineImages: list
@@ -8,12 +9,20 @@ class LineImageList(SmileLinesImage):
         super().__init__(id, file_name, path, feature)
         self.lineImages = list()
         self.current_image = -1
+        self.frequency = None
+        self.image = 'average'
+        self.processed_image = 'average'
     def gather_edges(self):
-        self.leading_edges = []
-        self.trailing_edges = []
+        self.consolidated_leading_edges = np.empty_like(self.lineImages[0].consolidated_leading_edges)
+        self.consolidated_trailing_edges = np.empty_like(self.lineImages[0].consolidated_leading_edges)
+        self.zero_mean_leading_edge_profiles = np.empty_like(self.lineImages[0].consolidated_leading_edges)
+        self.zero_mean_trailing_edge_profiles = np.empty_like(self.lineImages[0].consolidated_leading_edges)
         for image in self.lineImages:
-            self.leading_edges.append(image.zero_mean_leading_edge_profiles)
-            self.trailing_edges.append(image.zero_mean_trailing_edge_profiles)
+            np.concatenate((self.consolidated_leading_edges,(image.consolidated_leading_edges)))
+            np.concatenate((self.consolidated_trailing_edges,(image.consolidated_trailing_edges)))
+            np.concatenate((self.zero_mean_leading_edge_profiles,(image.zero_mean_leading_edge_profiles)))
+            np.concatenate((self.zero_mean_trailing_edge_profiles,(image.zero_mean_trailing_edge_profiles)))
+            self.frequency = image.frequency
 
 
 class ContactImageList:

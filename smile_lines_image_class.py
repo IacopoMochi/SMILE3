@@ -69,6 +69,7 @@ class SmileLinesImage:
         #self.image = img
         self.image = None
         self.feature = feature
+        self.frequency = None
         self.id = id
         self.selected = True
         self.processed = False
@@ -369,9 +370,9 @@ class SmileLinesImage:
 
         pixel_size = self.parameters["PixelSize"]
         Fs = 1 / pixel_size
-        s = np.shape(self.leading_edges)
+        s = np.shape(self.consolidated_leading_edges)
         profiles_length = s[1]
-        self.frequency = 1000 * np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
+        self.frequency = 1000*np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
 
         # Assign chosen PSD model
         selected_model = self.parameters["PSD_model"]
