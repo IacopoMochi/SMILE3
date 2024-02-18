@@ -4,6 +4,7 @@ import numpy as np
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 import pyqtgraph as pg
+from openpyxl import Workbook
 
 from smile_lines_image_class import SmileLinesImage
 from smile_image_list_class import LineImageList
@@ -19,18 +20,35 @@ class MainWindow(QtWidgets.QMainWindow):
         self.process_lines_button.pressed.connect(self.process_line_images)
         self.linesTable.cellClicked.connect(self.navigateLinesTable)
         self.metric_selection.clicked.connect(self.display_lines_data)
+        self.export_data.clicked.connect(self.export_lines_data)
 
+
+    def export_lines_data(self):
+        wb = Workbook()
+        wb.save('test.xlsx')
     def display_lines_data(self, Image):
+
+        # Display lines image on the axis in the parameters tab
+        plot_item_parameters = self.line_image_view_parameters.getPlotItem()
+        plot_item_parameters.clear()
+        if not (self.line_image_list.current_image == -2):
+            image_item_parameters = pg.ImageItem(np.array(Image.image))
+            ROI = pg.RectROI((0,0),(100,100))
+            self.line_image_view_parameters.addItem(image_item_parameters)
+            self.line_image_view_parameters.addItem(ROI)
+
 
         # Display lines image on the top axis of the lines tab
         # Clean display
         plot_item = self.line_image_view.getPlotItem()
         plot_item.clear()
+
         # Check if a processed image exists
         if Image.processed and not (Image.processed_image is None) and not (self.line_image_list.current_image == -2):
             # Display image
             image_item = pg.ImageItem(np.array(Image.processed_image))
             self.line_image_view.addItem(image_item)
+
             # Display profiles
             edge_color = pg.mkColor(0, 200, 0)
             edge_pen = pg.mkPen(edge_color, width=3)
@@ -286,7 +304,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def load_lines_image(self):
-        #self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')
+        # Initialize image list
+        self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')
+
+        # Open folder dialog
         select_folder_dialog = QtWidgets.QFileDialog()
         select_folder_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
         if select_folder_dialog.exec():

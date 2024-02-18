@@ -19,6 +19,7 @@
      <widget class="QTabWidget" name="tabs">
       <property name="font">
        <font>
+        <weight>50</weight>
         <bold>false</bold>
        </font>
       </property>
@@ -306,7 +307,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_6">
                 <item>
-                 <widget class="QPushButton" name="pushButton_5">
+                 <widget class="QPushButton" name="export_data">
                   <property name="text">
                    <string>Export data</string>
                   </property>
@@ -507,7 +508,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <widget class="QGraphicsView" name="graphicsView_3">
+           <widget class="PlotWidget" name="line_image_view_parameters">
             <property name="maximumSize">
              <size>
               <width>16777215</width>

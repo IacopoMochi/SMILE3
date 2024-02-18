@@ -6,7 +6,6 @@ from scipy.ndimage import histogram
 from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 from PIL import Image
 import PSD_models
-import pyqtgraph as pg
 
 
 class SmileLinesImage:
