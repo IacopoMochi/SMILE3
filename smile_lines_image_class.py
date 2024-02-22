@@ -402,7 +402,7 @@ class SmileLinesImage:
 
         # LWR
         line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges) * pixel_size
-        self.LWR_PSD = np.nanmean(np.abs(np.fft.rfft(line_width)) ** 2, 0)
+        self.LWR_PSD = np.nanmean((np.fft.rfft(line_width)) ** 2, 0)
         self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
         self.LWR_PSD[0] = self.LWR_PSD[1]
 

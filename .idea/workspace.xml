@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/SMILE3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SMILE3.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SMILE3.ui" beforeDir="false" afterPath="$PROJECT_DIR$/SMILE3.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LS_image_simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/LS_image_simulation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/smile_lines_image_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/smile_lines_image_class.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +42,7 @@
     "Python.Robinson.executor": "Run",
     "Python.main.executor": "Run",
     "Python.smile_image_list_class.executor": "Run",
-    "Python.smile_lines_image_class.executor": "Debug",
+    "Python.smile_lines_image_class.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
