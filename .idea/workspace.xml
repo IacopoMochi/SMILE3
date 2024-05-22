@@ -4,10 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="chore: add docker compose file">
-      <change beforePath="$PROJECT_DIR$/.idea/SMILE3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SMILE3.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="chore: update versions">
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controllers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controllers/dialogs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controllers/main_window.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controllers/ui_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/image_processing/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/image_processing/image_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/image_processing/image_models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/image_processing/processors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/psd/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/psd/psd_models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/psd/psd_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utilities/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utilities/file_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utilities/match_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utilities/plotting.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utilities/table_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/view/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LS_image_simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/LS_image_simulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PSD_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities/PSD_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SMILE3.ui" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/SMILE3.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smile_image_list_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_processing/smile_image_list_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smile_lines_image_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_processing/smile_lines_image_class.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,21 +63,53 @@
     "Python.LS_image_simulation.executor": "Run",
     "Python.Robinson.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.main_controller.executor": "Run",
     "Python.smile_image_list_class.executor": "Run",
     "Python.smile_lines_image_class.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/iacopomochi/Documents/GitHub/SMILE3",
+    "last_opened_file_path": "C:/Users/burdak_e/SMILE3/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "terminal"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\burdak_e\SMILE3\src\utils" />
+      <recent name="C:\Users\burdak_e\SMILE3\src\view" />
+      <recent name="C:\Users\burdak_e\SMILE3\src\controllers" />
+      <recent name="C:\Users\burdak_e\SMILE3\src\models" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SMILE3" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\burdak_e\SMILE3\src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_window" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SMILE3" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -69,7 +123,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\burdak_e\SMILE3\src\controllers\main_window.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -78,9 +132,14 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.main_window" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.main_window" />
       </list>
     </recent_temporary>
   </component>
@@ -132,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715956588567</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="chore: update versions">
+      <option name="closed" value="true" />
+      <created>1715956781272</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1715956781272</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -141,9 +208,10 @@
     <MESSAGE value="chore: add requirements.txt for dependencies" />
     <MESSAGE value="chore: add docker file" />
     <MESSAGE value="chore: add docker compose file" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: add docker compose file" />
+    <MESSAGE value="chore: update versions" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: update versions" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1715956625961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1716368850287" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\burdak_e\SMILE3\src" />
   </component>
 </project>

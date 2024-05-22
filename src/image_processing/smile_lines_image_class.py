@@ -5,8 +5,10 @@ from scipy.optimize import curve_fit, minimize, Bounds
 from scipy.ndimage import histogram
 from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 from PIL import Image
-import PSD_models
+from src.utilities import PSD_models
 
+
+# HELPER FUNCTIONS USED IN process_line_images() FUNCTION
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
@@ -73,6 +75,7 @@ class SmileLinesImage:
         self.selected = True
         self.processed = False
 
+# construct the path, open image, rotate to correct position
     def load_image(self):
         # Load the image
         s = os.path.join(self.folder, self.file_name)
@@ -80,6 +83,9 @@ class SmileLinesImage:
         img = np.rot90(img, 3)
         self.image = img
 
+# cropping to desirable region defined by x1,x2,y1,y2
+# normalization, brightness removal (poly11()), rotation to find the lines
+# histogram analysis (gaussian_profile(), binary_image_histogram_model())
     def pre_processing(self):
         def _poly11(M, *args):
             x, y = M
@@ -232,6 +238,11 @@ class SmileLinesImage:
                 0.5 * (beta[2] + beta[5]) * 2 * np.sqrt(-2 * np.log(0.5))
         )
 
+
+# find the pick in image
+# consolidate the edges and try to center that around zero
+# calculate critical dimensions and pitch estimates based on the detected edges
+# basically makes necessary calculations
     def find_edges(self):
         def edge_detection(new_edges, edges_profiles):
             cnt = -1
@@ -365,6 +376,8 @@ class SmileLinesImage:
     def post_processing(self):
         print('Postprocessing')
 
+
+# Make fourier transformation and calculates and optimize parameters
     def calculate_metrics(self):
 
         pixel_size = self.parameters["PixelSize"]

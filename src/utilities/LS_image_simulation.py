@@ -1,6 +1,10 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+
+# VISUAL OUTPUT
+
+
 CD = 16
 pitch = 32
 number_of_lines = 32
