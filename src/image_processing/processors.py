@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from typing import List
+
 import numpy as np
 from skimage.transform import radon, rotate
 from scipy.optimize import curve_fit, minimize, Bounds
@@ -8,30 +11,30 @@ from src.utilities.pre_processing_utils import (_poly11, _poly22, _poly33, poly1
                                                 poly33, binary_image_histogram_model, gaussian_profile)
 
 
+@dataclass
+class PreProcessorResults:
+    processed_image: List[int]
+    lines_snr: int
+    intensity_histogram_medium: int
+    intensity_histogram_high: int
+    intensity_histogram_low: int
+    intensity_histogram_gaussian_fit_parameters: int
+    intensity_histogram: tuple
+
+
 class PreProcessor:
 
     # normalization, brightness removal (poly11()), rotation to find the lines
     # histogram analysis (gaussian_profile(), binary_image_histogram_model())
 
-    def __init__(self, image, parameters):
-        self.processed_image = None
-        self.lines_snr = None
-        self.intensity_histogram_medium = None
-        self.intensity_histogram_high = None
-        self.intensity_histogram_low = None
-        self.intensity_histogram_gaussian_fit_parameters = None
-        self.intensity_histogram = None
-        self.image = image
-        self.parameters = parameters
-
-    def pre_processing(self):
+    def crop_and_rotate_image(self, image, parameters):
         # Crop images to the specified ROI
-        x1 = int(self.parameters["X1"])
-        x2 = int(self.parameters["X2"])
-        y1 = int(self.parameters["Y1"])
-        y2 = int(self.parameters["Y2"])
+        x1 = int(parameters["X1"])
+        x2 = int(parameters["X2"])
+        y1 = int(parameters["Y1"])
+        y2 = int(parameters["Y2"])
 
-        image_cropped = self.image[x1:x2, y1:y2]
+        image_cropped = image[x1:x2, y1:y2]
         theta = np.linspace(85.0, 95.0, 50, endpoint=False)
         radius = np.min(np.array(image_cropped.shape)) / 2 - 2
         dim1 = image_cropped.shape[0]
@@ -45,11 +48,12 @@ class PreProcessor:
         R = np.sum(np.power(sinogram, 2), 0)
         max_id = np.argmax(R)
 
-        rotated_image = rotate(self.image, -float(theta[max_id]) + 90, order=0)
+        rotated_image = rotate(image, -float(theta[max_id]) + 90, order=0)
         image_rotated_cropped = rotated_image[x1:x2, y1:y2]
+        return image_rotated_cropped
 
-        # Remove brightness gradient
-        image = image_rotated_cropped
+    def remove_brightness_gradient(self):
+        image = self.crop_and_rotate_image()
         brightness_map = image > np.mean(image)
         x, y = np.meshgrid(
             np.linspace(-1, 1, image.shape[1]), np.linspace(-1, 1, image.shape[0])
@@ -63,22 +67,21 @@ class PreProcessor:
         )
 
         brightness = poly11((x, y), optimized_parameters)
-
-        # self.data.processed_images[n] = normal(
-        #    filters.median(image - brightness, np.ones((3, 3)))
-        # )
         image_flattened = image - brightness
-        image_flattened_max = np.max(image_flattened)
-        image_flattened_min = np.min(image_flattened)
-        image_normalized = (image_flattened - image_flattened_min) / (image_flattened_max - image_flattened_min)
-        self.processed_image = image_normalized
+        return image_flattened
 
-        # Store the processed image histogram and estimate the image line scan error
-        self.intensity_histogram = histogram(
-            self.processed_image, 0, 1, 256
-        )
+    def normalize_image(self):
+        image = self.remove_brightness_gradient()
+        image_max = np.max(image)
+        image_min = np.min(image)
+        image_normalized = (image - image_min) / (image_max - image_min)
+        return image_normalized
+
+    def calculate_histogram_parameters(self):
+        image_normalized = self.normalize_image()
+        intensity_histogram = np.histogram(image_normalized, 0, 1, 256)
         intensity = np.linspace(0, 1, 256)
-        image_histogram = self.intensity_histogram
+        image_histogram = intensity_histogram
         max_index = np.argmax(image_histogram)
         max_value = image_histogram[max_index]
         low_bounds = [max_value / 4, 0, 0.01, max_value / 4, 0.1, 0.01, 0, 0, 0.01]
@@ -93,14 +96,18 @@ class PreProcessor:
             maxfev=100000,
         )
 
-        self.intensity_histogram_gaussian_fit_parameters = beta
-        self.intensity_histogram_low = gaussian_profile(intensity, *beta[0:3])
-        self.intensity_histogram_high = gaussian_profile(intensity, *beta[6:9])
-        self.intensity_histogram_medium = gaussian_profile(intensity, *beta[3:6])
+        intensity_histogram_gaussian_fit_parameters = beta
+        intensity_histogram_low = gaussian_profile(intensity, *beta[0:3])
+        intensity_histogram_high = gaussian_profile(intensity, *beta[6:9])
+        intensity_histogram_medium = gaussian_profile(intensity, *beta[3:6])
 
-        self.lines_snr = np.abs(beta[1] - beta[4]) / (
+        lines_snr = np.abs(beta[1] - beta[4]) / (
                 0.5 * (beta[2] + beta[5]) * 2 * np.sqrt(-2 * np.log(0.5))
         )
+
+        return PreProcessorResults(image_normalized, lines_snr, intensity_histogram_medium, intensity_histogram_high,
+                                   intensity_histogram_low, intensity_histogram_gaussian_fit_parameters,
+                                   intensity_histogram)
 
 
 class EdgeDetector:
