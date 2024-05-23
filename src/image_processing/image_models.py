@@ -1,11 +1,14 @@
 # from src.image_processing.processors import pre_processing, find_edges, post_processing, calculate_metrics
 from src.image_processing.image_loader import ImageLoader
+from src.image_processing.processors import PreProcessor, EdgeDetector
 
 
 # HELPER FUNCTIONS USED IN process_line_images() FUNCTION
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
+
+        # TODO ask where those atribiutes are uesed
         self.zero_mean_leading_edge_profiles = None
         self.zero_mean_trailing_edge_profiles = None
         self.LWR_PSD = None
@@ -56,13 +59,13 @@ class SmileLinesImage:
         self.intensity_histogram_low = None
         self.intensity_histogram_high = None
         self.intensity_histogram_medium = None
+
         self.file_name = file_name
         self.folder = path
         #s = os.path.join(path, file_name)
         #img = Image.open(s)
         #img = np.rot90(img, 3)
         #self.image = img
-        self.image = None
         self.feature = feature
         self.frequency = None
         self.id = id
@@ -70,6 +73,27 @@ class SmileLinesImage:
         self.processed = False
 
         self.image_loader = ImageLoader(self.folder, self.file_name)
+        self.image = self.image_loader.load_image()
 
+    def pre_processing(self):
+        histogram_params = PreProcessor().calculate_histogram_parameters(self.image, self.parameters)
+        self.processed_image = histogram_params.processed_image
+        self.intensity_histogram_medium = histogram_params.intensity_histogram_medium
+        self.intensity_histogram_low = histogram_params.intensity_histogram_low
+        self.intensity_histogram_high = histogram_params.intensity_histogram_high
+        self.intensity_histogram = histogram_params.intensity_histogram
 
-        # self.image = self.image_loader.load_image()
+    def find_edges(self):
+        edge_detector = EdgeDetector().find_edges(self.processed_image, self.parameters)
+        self.pitch_estimate = edge_detector.pitch_estimate
+        self.critical_dimension = edge_detector.critical_dimension
+        self.critical_dimension_std_estimate = edge_detector.critical_dimension_std_estimate
+        self.critical_dimension_estimate = edge_detector.critical_dimension_estimate
+        self.number_of_lines = edge_detector.number_of_lines
+        self.zero_mean_leading_edge_profiles = edge_detector.zero_mean_leading_edge_profiles
+        self.zero_mean_trailing_edge_profiles = edge_detector.zero_mean_trailing_edge_profiles
+        self.consolidated_leading_edges = edge_detector.consolidated_leading_edges
+        self.consolidated_trailing_edges = edge_detector.consolidated_trailing_edges
+        self.trailing_edges = edge_detector.trailing_edges
+        self.leading_edges = edge_detector.leading_edges
+
