@@ -1,13 +1,12 @@
 # from src.image_processing.processors import pre_processing, find_edges, post_processing, calculate_metrics
 from src.image_processing.image_loader import ImageLoader
-from src.image_processing.processors import PreProcessor, EdgeDetector
+from src.image_processing.processors import PreProcessor, EdgeDetector, MetricCalculator
 
 
 # HELPER FUNCTIONS USED IN process_line_images() FUNCTION
 
 class SmileLinesImage:
     def __init__(self, id, file_name, path, feature):
-
         # TODO ask where those atribiutes are uesed
         self.zero_mean_leading_edge_profiles = None
         self.zero_mean_trailing_edge_profiles = None
@@ -71,9 +70,12 @@ class SmileLinesImage:
         self.id = id
         self.selected = True
         self.processed = False
+        self.image = None
 
-        self.image_loader = ImageLoader(self.folder, self.file_name)
-        self.image = self.image_loader.load_image()
+    def load_image(self):
+        image_loader = ImageLoader(self.folder, self.file_name)
+        self.image = image_loader.load_image()
+
 
     def pre_processing(self):
         histogram_params = PreProcessor().calculate_histogram_parameters(self.image, self.parameters)
@@ -97,3 +99,31 @@ class SmileLinesImage:
         self.trailing_edges = edge_detector.trailing_edges
         self.leading_edges = edge_detector.leading_edges
 
+    def calculate_metrics(self):
+        metric_calculator = MetricCalculator().calculate_metrics(self.parameters, self.consolidated_leading_edges,
+                                                                 self.consolidated_trailing_edges,
+                                                                 self.zero_mean_leading_edge_profiles,
+                                                                 self.zero_mean_trailing_edge_profiles)
+        self.LWR_PSD = metric_calculator.LWR_PSD
+        self.LWR_PSD_fit_parameters = metric_calculator.LWR_PSD_fit_parameters
+        self.LWR_PSD_fit = metric_calculator.LWR_PSD_fit
+        self.LWR_PSD_fit_unbiased = metric_calculator.LWR_PSD_fit_unbiased
+        self.LWR_PSD_unbiased = metric_calculator.LWR_PSD_unbiased
+
+        self.LER_PSD = metric_calculator.LER_PSD
+        self.LER_PSD_fit_parameters = metric_calculator.LER_PSD_fit_parameters
+        self.LER_PSD_fit = metric_calculator.LER_PSD_fit
+        self.LER_PSD_unbiased = metric_calculator.LER_PSD_unbiased
+        self.LER_PSD_fit_unbiased = metric_calculator.LER_PSD_fit_unbiased
+
+        self.LER_Leading_PSD = metric_calculator.LER_Leading_PSD
+        self.LER_Leading_PSD_fit_parameters = metric_calculator.LER_Leading_PSD_fit_parameters
+        self.LER_Leading_PSD_fit = metric_calculator.LER_Leading_PSD_fit
+        self.LER_Leading_PSD_unbiased = metric_calculator.LER_Leading_PSD_unbiased
+        self.LER_Leading_PSD_fit_unbiased = metric_calculator.LER_Leading_PSD_fit_unbiased
+
+        self.LER_Trailing_PSD = metric_calculator.LER_Trailing_PSD
+        self.LER_Trailing_PSD_fit_parameters = metric_calculator.LER_Trailing_PSD_fit_parameters
+        self.LER_Trailing_PSD_fit = metric_calculator.LER_Trailing_PSD_fit
+        self.LER_Trailing_PSD_unbiased = metric_calculator.LER_Trailing_PSD_unbiased
+        self.LER_Trailing_PSD_fit_unbiased = metric_calculator.LER_Trailing_PSD_fit_unbiased

@@ -14,13 +14,13 @@ from src.psd.psd_models import Palasantzas_2_minimize, Palasantzas_2_beta, Palas
 
 @dataclass
 class HistogramParams:
-    processed_image: List[int]
-    lines_snr: int
-    intensity_histogram_medium: int
-    intensity_histogram_high: int
-    intensity_histogram_low: int
-    intensity_histogram_gaussian_fit_parameters: int
-    intensity_histogram: tuple
+    processed_image: List[any]
+    lines_snr: any
+    intensity_histogram_medium: any
+    intensity_histogram_high: any
+    intensity_histogram_low: any
+    intensity_histogram_gaussian_fit_parameters: any
+    intensity_histogram: [any]
 
 
 class PreProcessor:
@@ -113,17 +113,17 @@ class PreProcessor:
 
 @dataclass
 class EdgeDetectorResult:
-    pitch_estimate: int
-    critical_dimension_estimate: int
-    critical_dimension_std_estimate: int
-    critical_dimension: int
-    number_of_lines: int
-    zero_mean_trailing_edge_profiles: int
-    zero_mean_leading_edge_profiles: int
-    consolidated_trailing_edges: int
-    consolidated_leading_edges: int
-    trailing_edges: int
-    leading_edges: int
+    pitch_estimate: any
+    critical_dimension_estimate: any
+    critical_dimension_std_estimate: any
+    critical_dimension: any
+    number_of_lines: any
+    zero_mean_trailing_edge_profiles: any
+    zero_mean_leading_edge_profiles: any
+    consolidated_trailing_edges: any
+    consolidated_leading_edges: any
+    trailing_edges: any
+    leading_edges: any
 
 
 class EdgeDetector:
@@ -231,6 +231,8 @@ class EdgeDetector:
             # critical_dimension = np.mean(new_trailing_edges - new_leading_edges)
             # pitch = 0.5 * (np.mean(np.diff(new_trailing_edges)) + np.mean(np.diff(new_leading_edges)))
 
+# put in constructor
+
             cd_fraction = np.double(parameters["CDFraction"])
             edge_range = np.int16(parameters["EdgeRange"])
 
@@ -296,19 +298,35 @@ def post_processing(self):
     print('Postprocessing')
 
 
+@dataclass
+class ProfileData:
+    LWR_PSD: any
+    LWR_PSD_fit_parameters: any
+    LWR_PSD_fit: any
+    LWR_PSD_fit_unbiased: any
+    LWR_PSD_unbiased: any
+
+    LER_PSD: any
+    LER_PSD_fit_parameters: any
+    LER_PSD_fit: any
+    LER_PSD_unbiased: any
+    LER_PSD_fit_unbiased: any
+
+    LER_Leading_PSD: any
+    LER_Leading_PSD_fit_parameters: any
+    LER_Leading_PSD_fit: any
+    LER_Leading_PSD_unbiased: any
+    LER_Leading_PSD_fit_unbiased: any
+
+    LER_Trailing_PSD: any
+    LER_Trailing_PSD_fit_parameters: any
+    LER_Trailing_PSD_fit: any
+    LER_Trailing_PSD_unbiased: any
+    LER_Trailing_PSD_fit_unbiased: any
+
+
 class MetricCalculator:
     # Make fourier transformation and calculates and optimize parameters
-
-    def __init__(self):
-
-        self.LER_PSD = None
-        self.LWR_PSD_fit_unbiased = None
-        self.LWR_PSD_unbiased = None
-        self.LWR_PSD_fit = None
-        self.LWR_PSD_fit_parameters = None
-        self.LWR_PSD = None
-        self.pixel_size = None
-        self.frequency = None
 
     def setup_frequency(self, parameters, consolidated_leading_edges):
         pixel_size = parameters["PixelSize"]
@@ -332,177 +350,58 @@ class MetricCalculator:
 
         return model, model_beta, model_2
 
-    def calculate_lwr_psd(self, consolidated_leading_edges, consolidated_trailing_edges, pixel_size):
-        line_width = np.abs(consolidated_leading_edges - consolidated_trailing_edges) * pixel_size
-        LWR_PSD = np.nanmean((np.fft.rfft(line_width)) ** 2, 0)
-        LWR_PSD = LWR_PSD / len(LWR_PSD) ** 2
-        LWR_PSD[0] = LWR_PSD[1]
-        return LWR_PSD
+    def calculate_and_fit_psd(self, input_data, pixel_size, model, model_beta, model_2):
+        PSD = np.nanmean((np.fft.rfft(input_data * pixel_size)) ** 2, 0)
+        PSD /= len(PSD) ** 2
+        PSD[0] = PSD[1]
 
-    def calculate_unbiased_lwr(self, frequency, parameters, consolidated_leading_edges, consolidated_trailing_edges,
-                               pixel_size):
-        # Calculate Unbiased LWR
+        beta0, beta_min, beta_max = model_beta(self, PSD)
+        bounds = Bounds(lb=beta_min, ub=beta_max)
+        optimized_parameters = minimize(
+            model,
+            beta0,
+            method='Nelder-Mead',
+            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
+            args=(self.frequency, PSD),
+            bounds=bounds
+        )
 
+        PSD_fit_parameters = optimized_parameters['x']
+        PSD_fit = model_2(self.frequency, optimized_parameters['x'])
+        beta = PSD_fit_parameters
+        PSD_unbiased = PSD - beta[2]
+        beta[2] = 0
+        PSD_fit_unbiased = model_2(self.frequency, beta)
+
+        return PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased
+
+    def calculate_metrics(self, parameters, consolidated_leading_edges, consolidated_trailing_edges,
+                          zero_mean_leading_edge_profiles, zero_mean_trailing_edge_profiles):
         model, model_beta, model_2 = self.select_psd_model(parameters)
-        LWR_PSD = self.calculate_lwr_psd(consolidated_leading_edges, consolidated_trailing_edges, pixel_size)
 
-        beta0, beta_min, beta_max = model_beta(self, self.LWR_PSD)
-        bounds = Bounds(lb=beta_min, ub=beta_max)
+        # LWR PSD
+        line_width = np.abs(consolidated_leading_edges - consolidated_trailing_edges)
+        LWR_PSD, LWR_PSD_fit_parameters, LWR_PSD_fit, LWR_PSD_unbiased, LWR_PSD_fit_unbiased = \
+            self.calculate_and_optimize_psd(line_width, parameters["PixelSize"], model, model_beta, model_2)
 
-        # Alternative fit using scipy.optimize.curve_fit
-        # optimized_parameters, covariance = curve_fit(
-        #     model,
-        #     self.frequency,
-        #     self.LWR_PSD,
-        #     p0=beta0,
-        #     bounds=bounds,
-        #     maxfev=100000,
-        # )
-
-        optimized_parameters = minimize(
-            model,
-            beta0,
-            method='Nelder-Mead',
-            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
-            args=(frequency, LWR_PSD),
-            bounds=bounds
-        )
-
-        LWR_PSD_fit_parameters = optimized_parameters['x']
-        LWR_PSD_fit = model_2(frequency, optimized_parameters['x'])
-        beta = LWR_PSD_fit_parameters
-        LWR_PSD_unbiased = LWR_PSD - beta[2]
-        beta[2] = 0
-        LWR_PSD_fit_unbiased = model_2(self.frequency, beta)
-
-        return LWR_PSD_fit_parameters, LWR_PSD_fit, LWR_PSD_unbiased, LWR_PSD_fit_unbiased
-
-    def calculate_ler_psd(self, zero_mean_leading_edge_profiles, zero_mean_trailing_edge_profiles, parameters):
-        pixel_size = parameters["PixelSize"]
-
-        all_edges = np.vstack((
-            zero_mean_leading_edge_profiles * pixel_size, zero_mean_trailing_edge_profiles * pixel_size))
-        # LER
-        LER_PSD = np.nanmean(np.abs(np.fft.rfft(all_edges)) ** 2, 0)
-        LER_PSD = LER_PSD / len(LER_PSD) ** 2
-
-        return LER_PSD
-
-    def calculate_metrics(self):
-
-        # Calculate Unbiased LER
-        beta0, beta_min, beta_max = model_beta(self, self.LER_PSD)
-        bounds = Bounds(lb=beta_min, ub=beta_max)
-
-        optimized_parameters = minimize(
-            model,
-            beta0,
-            method='Nelder-Mead',
-            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
-            args=(self.frequency, self.LER_PSD),
-            bounds=bounds
-        )
-
-        self.LER_PSD_fit_parameters = optimized_parameters['x']
-        self.LER_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
-        beta = self.LER_PSD_fit_parameters
-        self.LER_PSD_unbiased = self.LER_PSD - beta[2]
-        beta[2] = 0
-        self.LER_PSD_fit_unbiased = model_2(self.frequency, beta)
+        # LER PSD
+        all_edges = np.vstack((zero_mean_leading_edge_profiles, zero_mean_trailing_edge_profiles))
+        LER_PSD, LER_PSD_fit_parameters, LER_PSD_fit, LER_PSD_unbiased, LER_PSD_fit_unbiased = \
+            self.calculate_and_optimize_psd(all_edges, parameters["PixelSize"], model, model_beta, model_2)
 
         # Leading edges LER
-        self.LER_Leading_PSD = np.nanmean(np.abs(np.fft.rfft(self.zero_mean_leading_edge_profiles * pixel_size)) ** 2,
-                                          0)
-        self.LER_Leading_PSD = self.LER_Leading_PSD / len(self.LER_Leading_PSD) ** 2
-        # Calculate Unbiased Leading edges LER
-        beta0, beta_min, beta_max = model_beta(self, self.LER_Leading_PSD)
-        bounds = Bounds(lb=beta_min, ub=beta_max)
-
-        optimized_parameters = minimize(
-            model,
-            beta0,
-            method='Nelder-Mead',
-            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
-            args=(self.frequency, self.LER_Leading_PSD),
-            bounds=bounds
-        )
-
-        self.LER_Leading_PSD_fit_parameters = optimized_parameters['x']
-        self.LER_Leading_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
-        beta = self.LER_Leading_PSD_fit_parameters
-        self.LER_Leading_PSD_unbiased = self.LER_Leading_PSD - beta[2]
-        beta[2] = 0
-        self.LER_Leading_PSD_fit_unbiased = model_2(self.frequency, beta)
+        LER_Leading_PSD, LER_Leading_PSD_fit_parameters, LER_Leading_PSD_fit, LER_Leading_PSD_unbiased, LER_Leading_PSD_fit_unbiased = \
+            self.calculate_and_optimize_psd(zero_mean_leading_edge_profiles, parameters["PixelSize"], model,
+                                            model_beta, model_2)
 
         # Trailing edges LER
-        self.LER_Trailing_PSD = np.nanmean(np.abs(np.fft.rfft(self.zero_mean_trailing_edge_profiles * pixel_size)) ** 2,
-                                           0)
-        self.LER_Trailing_PSD = self.LER_Trailing_PSD / len(self.LER_Trailing_PSD) ** 2
-        # Calculate Unbiased Leading edges LER
-        beta0, beta_min, beta_max = model_beta(self, self.LER_Trailing_PSD)
-        bounds = Bounds(lb=beta_min, ub=beta_max)
+        LER_Trailing_PSD, LER_Trailing_PSD_fit_parameters, LER_Trailing_PSD_fit, LER_Trailing_PSD_unbiased, LER_Trailing_PSD_fit_unbiased = \
+            self.calculate_and_optimize_psd(zero_mean_trailing_edge_profiles, parameters["PixelSize"], model,
+                                            model_beta, model_2)
 
-        optimized_parameters = minimize(
-            model,
-            beta0,
-            method='Nelder-Mead',
-            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
-            args=(self.frequency, self.LER_Trailing_PSD),
-            bounds=bounds
-        )
-
-        self.LER_Trailing_PSD_fit_parameters = optimized_parameters['x']
-        self.LER_Trailing_PSD_fit = model_2(self.frequency, optimized_parameters['x'])
-        beta = self.LER_Trailing_PSD_fit_parameters
-        self.LER_Trailing_PSD_unbiased = self.LER_Trailing_PSD - beta[2]
-        beta[2] = 0
-        self.LER_Trailing_PSD_fit_unbiased = model_2(self.frequency, beta)
-
-
-
-def calculate_and_optimize_psd(self, input_data, pixel_size, model, model_beta, model_2):
-    PSD = np.nanmean((np.fft.rfft(input_data * pixel_size)) ** 2, 0)
-    PSD /= len(PSD)**2
-    PSD[0] = PSD[1]
-
-    beta0, beta_min, beta_max = model_beta(self, PSD)
-    bounds = Bounds(lb=beta_min, ub=beta_max)
-    optimized_parameters = minimize(
-        model,
-        beta0,
-        method='Nelder-Mead',
-        options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
-        args=(self.frequency, PSD),
-        bounds=bounds
-    )
-
-    PSD_fit_parameters = optimized_parameters['x']
-    PSD_fit = model_2(self.frequency, optimized_parameters['x'])
-    beta = PSD_fit_parameters
-    PSD_unbiased = PSD - beta[2]
-    beta[2] = 0
-    PSD_fit_unbiased = model_2(self.frequency, beta)
-
-    return PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased
-
-
-def calculate_metrics(self):
-    model, model_beta, model_2 = self.select_psd_model()
-
-    # LWR PSD
-    line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges)
-    self.LWR_PSD, self.LWR_PSD_fit_parameters, self.LWR_PSD_fit, self.LWR_PSD_unbiased, self.LWR_PSD_fit_unbiased = \
-        self.calculate_and_optimize_psd(line_width, self.parameters["PixelSize"], model, model_beta, model_2)
-
-    # LER PSD
-    all_edges = np.vstack((self.zero_mean_leading_edge_profiles, self.zero_mean_trailing_edge_profiles))
-    self.LER_PSD, self.LER_PSD_fit_parameters, self.LER_PSD_fit, self.LER_PSD_unbiased, self.LER_PSD_fit_unbiased = \
-        self.calculate_and_optimize_psd(all_edges, self.parameters["PixelSize"], model, model_beta, model_2)
-
-    # Leading edges LER
-    self.LER_Leading_PSD, self.LER_Leading_PSD_fit_parameters, self.LER_Leading_PSD_fit, self.LER_Leading_PSD_unbiased, self.LER_Leading_PSD_fit_unbiased = \
-        self.calculate_and_optimize_psd(self.zero_mean_leading_edge_profiles, self.parameters["PixelSize"], model, model_beta, model_2)
-
-    # Trailing edges LER
-    self.LER_Trailing_PSD, self.LER_Trailing_PSD_fit_parameters, self.LER_Trailing_PSD_fit, self.LER_Trailing_PSD_unbiased, self.LER_Trailing_PSD_fit_unbiased = \
-        self.calculate_and_optimize_psd(self.zero_mean_trailing_edge_profiles, self.parameters["PixelSize"], model, model_beta, model_2)
+        return ProfileData(LWR_PSD, LWR_PSD_fit_parameters, LWR_PSD_fit, LWR_PSD_unbiased, LWR_PSD_fit_unbiased,
+                           LER_PSD, LER_PSD_fit_parameters, LER_PSD_fit, LER_PSD_unbiased, LER_PSD_fit_unbiased,
+                           LER_Leading_PSD, LER_Leading_PSD_fit_parameters, LER_Leading_PSD_fit,
+                           LER_Leading_PSD_unbiased, LER_Leading_PSD_fit_unbiased, LER_Trailing_PSD,
+                           LER_Trailing_PSD_fit_parameters, LER_Trailing_PSD_fit,
+                           LER_Trailing_PSD_unbiased, LER_Trailing_PSD_fit_unbiased)
