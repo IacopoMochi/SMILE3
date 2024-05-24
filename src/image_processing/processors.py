@@ -80,7 +80,7 @@ class PreProcessor:
 
     def calculate_histogram_parameters(self, image, parameters) -> HistogramParams:
         image_normalized = self.normalize_image(image, parameters)
-        intensity_histogram = np.histogram(image_normalized, 0, 1, 256)
+        intensity_histogram = histogram(image_normalized, 0, 1, 256)
         intensity = np.linspace(0, 1, 256)
         image_histogram = intensity_histogram
         max_index = np.argmax(image_histogram)
@@ -91,7 +91,7 @@ class PreProcessor:
         beta, covariance = curve_fit(
             binary_image_histogram_model,
             intensity,
-            self.intensity_histogram,
+            intensity_histogram,
             p0=beta0,
             bounds=(low_bounds, high_bounds),
             maxfev=100000,

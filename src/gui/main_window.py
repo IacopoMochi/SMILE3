@@ -278,6 +278,7 @@ class MainWindow(QtWidgets.QMainWindow):
             edge_fit_function = 'threshold'
         else:
             edge_fit_function = 'bright_edge'
+        window = MainWindow()
 
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
                       'MinPeakDistance': np.double(window.minPeakDistance_line_edit.text()),
@@ -359,5 +360,4 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.linesTable.setItem(cnt, 1, item_processed)
                         self.linesTable.setItem(cnt, 2, item_name)
                         self.display_lines_data(image_object)
-
 
