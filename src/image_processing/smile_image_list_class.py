@@ -22,13 +22,13 @@ class LineImageList(SmileLinesImage):
         self.zero_mean_trailing_edge_profiles = np.empty_like(self.lineImages[0].consolidated_leading_edges)
         for image in self.lineImages:
             self.consolidated_leading_edges = np.concatenate(
-                (self.consolidated_leading_edges, (image.consolidated_leading_edges)))
+                (self.consolidated_leading_edges, image.consolidated_leading_edges))
             self.consolidated_trailing_edges = np.concatenate(
-                (self.consolidated_trailing_edges, (image.consolidated_trailing_edges)))
+                (self.consolidated_trailing_edges, image.consolidated_trailing_edges))
             self.zero_mean_leading_edge_profiles = np.concatenate(
-                (self.zero_mean_leading_edge_profiles, (image.zero_mean_leading_edge_profiles)))
+                (self.zero_mean_leading_edge_profiles, image.zero_mean_leading_edge_profiles))
             self.zero_mean_trailing_edge_profiles = np.concatenate(
-                (self.zero_mean_trailing_edge_profiles, (image.zero_mean_trailing_edge_profiles)))
+                (self.zero_mean_trailing_edge_profiles, image.zero_mean_trailing_edge_profiles))
             self.frequency = image.frequency
 
 
