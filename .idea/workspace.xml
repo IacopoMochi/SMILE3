@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="wip">
+    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="refactor: Centralize SmileLineImage data access through constructor injection&#10;&#10;- Refactored all processing functions to be classes with SmileLineImage dependency injection.&#10;- Updated SmileLineImage class to serve as a container class for shared attributes.&#10;- Functions now access and modify SmileLineImage attributes directly, improving coherence and reducing argument passing.&#10;- Enhanced maintainability by centralizing data access and manipulation through SmileLineImage.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/image_processing/processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_processing/processors.py" afterDir="false" />
     </list>
@@ -245,7 +245,31 @@
       <option name="project" value="LOCAL" />
       <updated>1716469756606</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="chore: change function name">
+      <option name="closed" value="true" />
+      <created>1716792865063</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1716792865063</updated>
+    </task>
+    <task id="LOCAL-00014" summary="refactor: Centralize SmileLineImage data access through constructor injection&#10;&#10;- Refactored all processing functions to be classes with SmileLineImage dependency injection.&#10;- Updated SmileLineImage class to serve as a container class for shared attributes.&#10;- Functions now access and modify SmileLineImage attributes directly, improving coherence and reducing argument passing.&#10;- Enhanced maintainability by centralizing data access and manipulation through SmileLineImage.">
+      <option name="closed" value="true" />
+      <created>1716815324441</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1716815324441</updated>
+    </task>
+    <task id="LOCAL-00015" summary="refactor: Centralize SmileLineImage data access through constructor injection&#10;&#10;- Refactored all processing functions to be classes with SmileLineImage dependency injection.&#10;- Updated SmileLineImage class to serve as a container class for shared attributes.&#10;- Functions now access and modify SmileLineImage attributes directly, improving coherence and reducing argument passing.&#10;- Enhanced maintainability by centralizing data access and manipulation through SmileLineImage.">
+      <option name="closed" value="true" />
+      <created>1716815571319</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1716815571319</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -262,9 +286,11 @@
     <MESSAGE value="wip1" />
     <MESSAGE value="refactor: find_edges function was refactored to EdgeDetector class in processors.py file&#10;&#10;- find_edges function() has been divided to smaller functions &#10;&#10;- EdgeDetectorResult dataclass has been introduced for better readability" />
     <MESSAGE value="wip" />
-    <option name="LAST_COMMIT_MESSAGE" value="wip" />
+    <MESSAGE value="chore: change function name" />
+    <MESSAGE value="refactor: Centralize SmileLineImage data access through constructor injection&#10;&#10;- Refactored all processing functions to be classes with SmileLineImage dependency injection.&#10;- Updated SmileLineImage class to serve as a container class for shared attributes.&#10;- Functions now access and modify SmileLineImage attributes directly, improving coherence and reducing argument passing.&#10;- Enhanced maintainability by centralizing data access and manipulation through SmileLineImage." />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: Centralize SmileLineImage data access through constructor injection&#10;&#10;- Refactored all processing functions to be classes with SmileLineImage dependency injection.&#10;- Updated SmileLineImage class to serve as a container class for shared attributes.&#10;- Functions now access and modify SmileLineImage attributes directly, improving coherence and reducing argument passing.&#10;- Enhanced maintainability by centralizing data access and manipulation through SmileLineImage." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1716564685753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\burdak_e\SMILE3\src" />
+    <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1716815839472" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\burdak_e\SMILE3\src" />
   </component>
 </project>

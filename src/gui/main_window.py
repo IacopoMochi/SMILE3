@@ -6,7 +6,7 @@ import pyqtgraph as pg
 from openpyxl import Workbook
 
 from src.image_processing.smile_image_list_class import LineImageList
-from src.image_processing.image_models import SmileLinesImage
+from src.image_processing.image_container import SmileLinesImage
 
 
 class MainWindow(QtWidgets.QMainWindow):

@@ -1,5 +1,5 @@
 import numpy as np
-from src.image_processing.image_models import SmileLinesImage
+from src.image_processing.image_container import SmileLinesImage
 
 
 class LineImageList(SmileLinesImage):
