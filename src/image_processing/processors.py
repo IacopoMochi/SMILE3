@@ -382,21 +382,21 @@ class MetricCalculator:
         # LWR PSD
         line_width = np.abs(consolidated_leading_edges - consolidated_trailing_edges)
         LWR_PSD, LWR_PSD_fit_parameters, LWR_PSD_fit, LWR_PSD_unbiased, LWR_PSD_fit_unbiased = \
-            self.calculate_and_optimize_psd(line_width, parameters["PixelSize"], model, model_beta, model_2)
+            self.calculate_and_fit_psd(line_width, parameters["PixelSize"], model, model_beta, model_2)
 
         # LER PSD
         all_edges = np.vstack((zero_mean_leading_edge_profiles, zero_mean_trailing_edge_profiles))
         LER_PSD, LER_PSD_fit_parameters, LER_PSD_fit, LER_PSD_unbiased, LER_PSD_fit_unbiased = \
-            self.calculate_and_optimize_psd(all_edges, parameters["PixelSize"], model, model_beta, model_2)
+            self.calculate_and_fit_psd(all_edges, parameters["PixelSize"], model, model_beta, model_2)
 
         # Leading edges LER
         LER_Leading_PSD, LER_Leading_PSD_fit_parameters, LER_Leading_PSD_fit, LER_Leading_PSD_unbiased, LER_Leading_PSD_fit_unbiased = \
-            self.calculate_and_optimize_psd(zero_mean_leading_edge_profiles, parameters["PixelSize"], model,
+            self.calculate_and_fit_psd(zero_mean_leading_edge_profiles, parameters["PixelSize"], model,
                                             model_beta, model_2)
 
         # Trailing edges LER
         LER_Trailing_PSD, LER_Trailing_PSD_fit_parameters, LER_Trailing_PSD_fit, LER_Trailing_PSD_unbiased, LER_Trailing_PSD_fit_unbiased = \
-            self.calculate_and_optimize_psd(zero_mean_trailing_edge_profiles, parameters["PixelSize"], model,
+            self.calculate_and_fit_psd(zero_mean_trailing_edge_profiles, parameters["PixelSize"], model,
                                             model_beta, model_2)
 
         return ProfileData(LWR_PSD, LWR_PSD_fit_parameters, LWR_PSD_fit, LWR_PSD_unbiased, LWR_PSD_fit_unbiased,
