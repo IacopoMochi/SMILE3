@@ -1,11 +1,17 @@
 import numpy as np
+from scipy import signal
 from matplotlib import pyplot as plt
+
+def gaussian_profile(x,fwhm):
+    g = np.exp(-(x/fwhm)**2)
+    g = g / sum(g)
+    return g
 
 CD = 16
 pitch = 32
 number_of_lines = 32
 profile_length = 4000
-pixel_size = 0.2
+pixel_size = 0.1
 image_width = int((number_of_lines+2) * pitch/pixel_size)
 x,y = np.meshgrid(np.linspace(-image_width*pixel_size/2,image_width*pixel_size/2,image_width), np.arange(0,profile_length))
 image = np.zeros((profile_length,image_width))
@@ -43,8 +49,14 @@ for n in range(0, number_of_lines-1):
     for m in range(0, profile_length):
         image[m, np.logical_and(x[m,:]>=filtered_profile0[m], x[m,:]<filtered_profile1[m])] = 1
 
+fwhm = 5
+x = np.linspace(-10,10,51)
+g = gaussian_profile(x,fwhm)
+for m in range(0, profile_length):
+    image[m, :] = signal.convolve(image[m, :], g, 'same')
 s = np.shape(image)
-image = image+np.abs(np.random.randn(s[0], s[1]))
+
+image = image+0*np.abs(np.random.randn(s[0], s[1]))
 # fig, axs = plt.subplots(3)
 # axs[0].loglog(frequency[0:1+int(profile_length/2)], y0)
 # axs[1].plot(profile_position, filtered_profile0)

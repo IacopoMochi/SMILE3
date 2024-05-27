@@ -238,8 +238,8 @@ class SmileLinesImage:
             for edge in new_edges:
                 cnt = cnt + 1
                 for row in range(0, image_size[1]):
-                    segment_start = int(np.max([0, edge - edge_range]))
-                    segment_end = int(np.min([edge + edge_range, image_size[0]]))
+                    segment_start = int(np.max([0, edge - self.parameters["edge_range"]]))
+                    segment_end = int(np.min([edge + self.parameters["edge_range"], image_size[0]]))
                     x = np.arange(segment_start, segment_end)
                     segment = processed_image[segment_start:segment_end, row]
                     if (self.parameters["Edge_fit_function"] == "polynomial"):
@@ -275,17 +275,17 @@ class SmileLinesImage:
         processed_image = self.processed_image
         # Filter image with a 2d median filter to remove eventual outliers (bright pixels for instance)
         median_filter_kernel = 5
-        imageF = medfilt2d(processed_image, median_filter_kernel)
+        filtered_image = medfilt2d(processed_image, median_filter_kernel)
 
         # Sum all the columns of the image to calculate the average lines profile
-        S = np.sum(imageF, 1)
+        image_sum = np.sum(filtered_image, 1)
         # Filter the lines profile to reduce the noise
-        b, a = butter(8, 0.125)
-        Sf = filtfilt(b, a, S, method="gust")
+        backward_filter, forward_filter = butter(8, 0.125)
+        image_sum_filtered = filtfilt(backward_filter, forward_filter, image_sum, method="gust")
 
-        dS = np.diff(S)
-        dSf = np.abs(np.diff(Sf))
-        peaks = find_peaks(dSf)
+        image_sum_derivative = np.diff(image_sum)
+        image_sum_filtered_derivative = np.abs(np.diff(image_sum_filtered))
+        peaks = find_peaks(image_sum_filtered_derivative)
         edge_locations = peaks[0]
         leading_edges = np.array([])
         trailing_edges = np.array([])
@@ -294,12 +294,12 @@ class SmileLinesImage:
         else:
             for n in edge_locations:
                 if self.parameters["tone_positive_radiobutton"]:
-                    if dS[n] > 0:
+                    if image_sum_derivative[n] > 0:
                         leading_edges = np.append(leading_edges, n)
                     else:
                         trailing_edges = np.append(trailing_edges, n)
                 else:
-                    if dS[n] < 0:
+                    if image_sum_derivative[n] < 0:
                         leading_edges = np.append(leading_edges, n)
                     else:
                         trailing_edges = np.append(trailing_edges, n)
@@ -312,14 +312,14 @@ class SmileLinesImage:
             if len(trailing_edges[ve]) > 0:
                 new_leading_edges = np.append(new_leading_edges, n)
                 new_trailing_edges = np.append(new_trailing_edges, trailing_edges[ve][0])
-            # Rough Estimate of pitch and Critical Dimension (CD)
-            # critical_dimension = np.mean(new_trailing_edges - new_leading_edges)
-            # pitch = 0.5 * (
-            #         np.mean(np.diff(new_trailing_edges)) + np.mean(np.diff(new_leading_edges))
-            # )
 
-            cd_fraction = np.double(self.parameters["CDFraction"])
-            edge_range = np.int16(self.parameters["EdgeRange"])
+        # Discard first and last line
+        if len(new_leading_edges)>2:
+            new_leading_edges = new_leading_edges[1:-1]
+            new_trailing_edges = new_trailing_edges[1:-1]
+
+        #cd_fraction = np.double(self.parameters["CDFraction"])
+        #edge_range = np.int16(self.parameters["EdgeRange"])
 
         # Determine leading edge profiles
         image_size = processed_image.shape
@@ -402,7 +402,7 @@ class SmileLinesImage:
 
         # LWR
         line_width = np.abs(self.consolidated_leading_edges - self.consolidated_trailing_edges) * pixel_size
-        self.LWR_PSD = np.nanmean((np.fft.rfft(line_width)) ** 2, 0)
+        self.LWR_PSD = np.nanmean(np.abs(np.fft.rfft(line_width)) ** 2, 0)
         self.LWR_PSD = self.LWR_PSD/len(self.LWR_PSD)**2
         self.LWR_PSD[0] = self.LWR_PSD[1]
 
