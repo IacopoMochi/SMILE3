@@ -14,7 +14,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("view/SMILE3.ui", self)
-        self.line_image_list = LineImageList(-1,'Average','Empty', 'Lines')
+        self.line_image_list = LineImageList()
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
         self.process_lines_button.pressed.connect(self.process_line_images)
         self.linesTable.cellClicked.connect(self.navigateLinesTable)
@@ -318,7 +318,7 @@ class MainWindow(QtWidgets.QMainWindow):
 # append image object (in loop) to LineImageList (smile_image_list_class)
     def load_lines_image(self):
         # Initialize image list
-        self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')
+        self.line_image_list = LineImageList()
 
         # Open folder dialog
         select_folder_dialog = QtWidgets.QFileDialog()
@@ -338,9 +338,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         image_object = SmileLinesImage(cnt, name, root, "lines")
                         image_object.load_image()
                         self.gather_parameters(image_object)
-                        self.line_image_list.lineImages.append(
-                            image_object
-                        )
+                        self.line_image_list.add_image(image_object)
                         item_name = QtWidgets.QTableWidgetItem(image_object.file_name)
 
                         item_selected = QtWidgets.QTableWidgetItem()
