@@ -238,8 +238,8 @@ class SmileLinesImage:
             for edge in new_edges:
                 cnt = cnt + 1
                 for row in range(0, image_size[1]):
-                    segment_start = int(np.max([0, edge - self.parameters["edge_range"]]))
-                    segment_end = int(np.min([edge + self.parameters["edge_range"], image_size[0]]))
+                    segment_start = int(np.max([0, edge - self.parameters["EdgeRange"]]))
+                    segment_end = int(np.min([edge + self.parameters["EdgeRange"], image_size[0]]))
                     x = np.arange(segment_start, segment_end)
                     segment = processed_image[segment_start:segment_end, row]
                     if (self.parameters["Edge_fit_function"] == "polynomial"):
@@ -380,9 +380,9 @@ class SmileLinesImage:
             model_beta = PSD_models.Palasantzas_2_beta
             model_2 = PSD_models.Palasantzas_2b
         elif selected_model == "Palasantzas 1":
-            model = PSD_models.Palasantzas_2_minimize
-            model_beta = PSD_models.Palasantzas_2_beta
-            model_2 = PSD_models.Palasantzas_2b
+            model = PSD_models.Palasantzas_1_minimize
+            model_beta = PSD_models.Palasantzas_1_beta
+            model_2 = PSD_models.Palasantzas_1b
         elif selected_model == "Integral":
             model = PSD_models.Palasantzas_2_minimize
             model_beta = PSD_models.Palasantzas_2_beta
