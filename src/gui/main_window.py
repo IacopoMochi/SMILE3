@@ -28,200 +28,123 @@ class MainWindow(QtWidgets.QMainWindow):
         wb.save('test.xlsx')
 
     # display image data on GUI chart, plot -> smaller functions
-    def display_lines_data(self, Image):
+    def clear_plot_items(self):
+        self.line_image_view_parameters.getPlotItem().clear()
+        self.line_image_view.getPlotItem().clear()
 
-        # Display lines image on the axis in the parameters tab
-        plot_item_parameters = self.line_image_view_parameters.getPlotItem()
-        plot_item_parameters.clear()
-        if not (self.line_image_list.current_image == -2):
+    def display_image_on_parameters_tab(self, Image):
+        if self.line_image_list.current_image != -2:
             image_item_parameters = pg.ImageItem(np.array(Image.image))
             ROI = pg.RectROI((0, 0), (100, 100))
             self.line_image_view_parameters.addItem(image_item_parameters)
             self.line_image_view_parameters.addItem(ROI)
 
-        # Display lines image on the top axis of the lines tab
-        # Clean display
-        plot_item = self.line_image_view.getPlotItem()
-        plot_item.clear()
-
-        # Check if a processed image exists
-        if Image.processed and not (Image.processed_image is None) and not (self.line_image_list.current_image == -2):
-            # Display image
+    def display_image_on_lines_tab(self, Image):
+        if Image.processed and Image.processed_image is not None and self.line_image_list.current_image != -2:
             image_item = pg.ImageItem(np.array(Image.processed_image))
-            self.line_image_view.addItem(image_item)
-
-            # Display profiles
-            edge_color = pg.mkColor(0, 200, 0)
-            edge_pen = pg.mkPen(edge_color, width=3)
-
-            if not (Image.leading_edges is None):
-                s = np.shape(Image.leading_edges)
-                profiles_length = s[1]
-                for edge in Image.leading_edges:
-                    leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
-                    self.line_image_view.addItem(leading_edge_plot)
-            if not (Image.trailing_edges is None):
-                for edge in Image.trailing_edges:
-                    trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
-                    self.line_image_view.addItem(trailing_edge_plot)
-            # Display additional stuff (errors, defects, etc)
-
         else:
-            if not (self.line_image_list.current_image == -2):
-                image_item = pg.ImageItem(np.array(Image.image))
-                self.line_image_view.addItem(image_item)
+            image_item = pg.ImageItem(np.array(Image.image))
+        self.line_image_view.addItem(image_item)
 
-        # Display selected metric on the bottom axis of the lines tab
-        # Check if the image has been processed
-        if Image.processed and not (Image.processed_image is None) or self.line_image_list.current_image == -2:
+    def display_profiles(self, Image):
+        edge_color = pg.mkColor(0, 200, 0)
+        edge_pen = pg.mkPen(edge_color, width=3)
 
-            # Define the color and thickness of the curves in the metric plot
-            histogram_color = pg.mkColor(200, 200, 200)
-            histogram_pen = pg.mkPen(histogram_color, width=3)
-            histogram_fit_color = pg.mkColor(0, 20, 200)
-            histogram_fit_pen = pg.mkPen(histogram_fit_color, width=3)
-            histogram_curves_color = pg.mkColor(200, 0, 0)
-            histogram_curves_pen = pg.mkPen(histogram_curves_color, width=3)
+        if Image.leading_edges is not None:
+            profiles_length = np.shape(Image.leading_edges)[1]
+            for edge in Image.leading_edges:
+                leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
+                self.line_image_view.addItem(leading_edge_plot)
 
-            PSD_color = pg.mkColor(200, 200, 200)
-            PSD_fit_color = pg.mkColor(0, 200, 200)
-            PSD_unbiased_color = pg.mkColor(200, 0, 0)
-            PSD_fit_unbiased_color = pg.mkColor(0, 200, 0)
-            PSD_pen = pg.mkPen(PSD_color, width=3)
-            PSD_fit_pen = pg.mkPen(PSD_fit_color, width=3)
-            PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
-            PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
+        if Image.trailing_edges is not None:
+            for edge in Image.trailing_edges:
+                trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
+                self.line_image_view.addItem(trailing_edge_plot)
 
-            if self.histogram.isChecked() and not self.line_image_list.current_image == -2:
-                histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram, pen=histogram_pen)
-                histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_low,
-                                                     pen=histogram_curves_pen)
-                histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_medium,
-                                                        pen=histogram_curves_pen)
-                histogram_plot_high = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_high,
-                                                      pen=histogram_curves_pen)
-                histogram_plot_fit = pg.PlotDataItem(np.linspace(0, 255, 256),
-                                                     Image.intensity_histogram_high + Image.intensity_histogram_low + Image.intensity_histogram_medium,
-                                                     pen=histogram_fit_pen)
-                self.metric_plot.clear()
-                self.metric_plot.addItem(histogram_plot)
-                self.metric_plot.addItem(histogram_plot_low)
-                self.metric_plot.addItem(histogram_plot_medium)
-                self.metric_plot.addItem(histogram_plot_high)
-                self.metric_plot.addItem(histogram_plot_fit)
-                self.metric_plot.setLogMode(False, False)
+    def display_histogram(self, Image):
+        histogram_color = pg.mkColor(200, 200, 200)
+        histogram_pen = pg.mkPen(histogram_color, width=3)
+        histogram_curves_color = pg.mkColor(200, 0, 0)
+        histogram_curves_pen = pg.mkPen(histogram_curves_color, width=3)
+        histogram_fit_color = pg.mkColor(0, 20, 200)
+        histogram_fit_pen = pg.mkPen(histogram_fit_color, width=3)
 
+        histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram, pen=histogram_pen)
+        histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_low,
+                                             pen=histogram_curves_pen)
+        histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_medium,
+                                                pen=histogram_curves_pen)
+        histogram_plot_high = pg.PlotDataItem(np.linspace(0, 255, 256), Image.intensity_histogram_high,
+                                              pen=histogram_curves_pen)
+        histogram_plot_fit = pg.PlotDataItem(np.linspace(0, 255, 256),
+                                             Image.intensity_histogram_high + Image.intensity_histogram_low + Image.intensity_histogram_medium,
+                                             pen=histogram_fit_pen)
+
+        self.metric_plot.clear()
+        self.metric_plot.addItem(histogram_plot)
+        self.metric_plot.addItem(histogram_plot_low)
+        self.metric_plot.addItem(histogram_plot_medium)
+        self.metric_plot.addItem(histogram_plot_high)
+        self.metric_plot.addItem(histogram_plot_fit)
+        self.metric_plot.setLogMode(False, False)
+
+    def display_psd(self, Image, plot_type):
+        PSD_color = pg.mkColor(200, 200, 200)
+        PSD_fit_color = pg.mkColor(0, 200, 200)
+        PSD_unbiased_color = pg.mkColor(200, 0, 0)
+        PSD_fit_unbiased_color = pg.mkColor(0, 200, 0)
+        PSD_pen = pg.mkPen(PSD_color, width=3)
+        PSD_fit_pen = pg.mkPen(PSD_fit_color, width=3)
+        PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
+        PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
+
+        psd_plots = {
+            "LW_PSD": (Image.LWR_PSD, Image.LWR_PSD_fit, Image.LWR_PSD_unbiased, Image.LWR_PSD_fit_unbiased),
+            "LER_PSD": (Image.LER_PSD, Image.LER_PSD_fit, Image.LER_PSD_unbiased, Image.LER_PSD_fit_unbiased),
+            "leading_LER_PSD": (Image.LER_Leading_PSD, Image.LER_Leading_PSD_fit, Image.LER_Leading_PSD_unbiased,
+                                Image.LER_Leading_PSD_fit_unbiased),
+            "trailing_LER_PSD": (Image.LER_Trailing_PSD, Image.LER_Trailing_PSD_fit, Image.LER_Trailing_PSD_unbiased,
+                                 Image.LER_Trailing_PSD_fit_unbiased)
+        }
+
+        plots = psd_plots.get(plot_type)
+        if plots:
+            PSD_plot, PSD_fit_plot, PSD_unbiased_plot, PSD_fit_unbiased_plot = plots
+
+            self.metric_plot.clear()
+            if self.metric_original_data.isChecked():
+                self.metric_plot.addItem(
+                    pg.PlotDataItem(Image.frequency, PSD_plot[0:len(Image.frequency)], pen=PSD_pen))
+            if self.metric_model_fit.isChecked():
+                self.metric_plot.addItem(
+                    pg.PlotDataItem(Image.frequency, PSD_fit_plot[0:len(Image.frequency)], pen=PSD_fit_pen))
+            if self.metric_data_unbiased.isChecked():
+                self.metric_plot.addItem(
+                    pg.PlotDataItem(Image.frequency, PSD_unbiased_plot[0:len(Image.frequency)], pen=PSD_unbiased_pen))
+            if self.metric_model_fit_unbiased.isChecked():
+                self.metric_plot.addItem(pg.PlotDataItem(Image.frequency, PSD_fit_unbiased_plot[0:len(Image.frequency)],
+                                                         pen=PSD_fit_unbiased_pen))
+
+            self.metric_plot.setLogMode(True, True)
+            self.metric_plot.setAutoVisible(y=True)
+
+    def display_lines_data(self, Image):
+        self.clear_plot_items()
+        self.display_image_on_parameters_tab(Image)
+        self.display_image_on_lines_tab(Image)
+        self.display_profiles(Image)
+
+        if Image.processed and Image.processed_image is not None or self.line_image_list.current_image == -2:
+            if self.histogram.isChecked():
+                self.display_histogram(Image)
             elif self.lineWidthPSD.isChecked():
-
-                LW_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD[0:len(Image.frequency)], pen=PSD_pen)
-                LW_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_fit[0:len(Image.frequency)],
-                                                  pen=PSD_fit_pen)
-                LW_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LWR_PSD_unbiased[0:len(Image.frequency)],
-                                                       pen=PSD_unbiased_pen)
-                LW_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
-                                                           Image.LWR_PSD_fit_unbiased[0:len(Image.frequency)],
-                                                           pen=PSD_fit_unbiased_pen)
-                self.metric_plot.clear()
-                if self.metric_original_data.isChecked():
-                    self.metric_plot.addItem(LW_PSD_plot)
-                if self.metric_model_fit.isChecked():
-                    self.metric_plot.addItem(LW_PSD_fit_plot)
-                if self.metric_data_unbiased.isChecked():
-                    self.metric_plot.addItem(LW_PSD_unbiased_plot)
-                if self.metric_model_fit_unbiased.isChecked():
-                    self.metric_plot.addItem(LW_PSD_fit_unbiased_plot)
-
-                self.metric_plot.setLogMode(True, True)
-                self.metric_plot.setAutoVisible(y=True)
-
-
+                self.display_psd(Image, "LW_PSD")
             elif self.LineEdgePSD.isChecked():
-                LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD[0:len(Image.frequency)], pen=PSD_pen)
-                LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD_fit[0:len(Image.frequency)],
-                                                   pen=PSD_fit_pen)
-                LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LER_PSD_unbiased[0:len(Image.frequency)],
-                                                        pen=PSD_unbiased_pen)
-                LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
-                                                            Image.LER_PSD_fit_unbiased[0:len(Image.frequency)],
-                                                            pen=PSD_fit_unbiased_pen)
-                self.metric_plot.clear()
-                if self.metric_original_data.isChecked():
-                    self.metric_plot.addItem(LER_PSD_plot)
-                if self.metric_model_fit.isChecked():
-                    self.metric_plot.addItem(LER_PSD_fit_plot)
-                if self.metric_data_unbiased.isChecked():
-                    self.metric_plot.addItem(LER_PSD_unbiased_plot)
-                if self.metric_model_fit_unbiased.isChecked():
-                    self.metric_plot.addItem(LER_PSD_fit_unbiased_plot)
-
-                self.metric_plot.setLogMode(True, True)
-                self.metric_plot.setAutoVisible(y=True)
-
-
+                self.display_psd(Image, "LER_PSD")
             elif self.LeadingEdgePSD.isChecked():
-
-                leading_LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_Leading_PSD[0:len(Image.frequency)],
-                                                       pen=PSD_pen)
-
-                leading_LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency,
-                                                           Image.LER_Leading_PSD_fit[0:len(Image.frequency)],
-
-                                                           pen=PSD_fit_pen)
-
-                leading_LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency,
-                                                                Image.LER_Leading_PSD_unbiased[0:len(Image.frequency)],
-
-                                                                pen=PSD_unbiased_pen)
-
-                leading_LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
-
-                                                                    Image.LER_Leading_PSD_fit_unbiased[
-                                                                    0:len(Image.frequency)],
-
-                                                                    pen=PSD_fit_unbiased_pen)
-
-                self.metric_plot.clear()
-
-                if self.metric_original_data.isChecked():
-                    self.metric_plot.addItem(leading_LER_PSD_plot)
-
-                if self.metric_model_fit.isChecked():
-                    self.metric_plot.addItem(leading_LER_PSD_fit_plot)
-
-                if self.metric_data_unbiased.isChecked():
-                    self.metric_plot.addItem(leading_LER_PSD_unbiased_plot)
-
-                if self.metric_model_fit_unbiased.isChecked():
-                    self.metric_plot.addItem(leading_LER_PSD_fit_unbiased_plot)
-
-                self.metric_plot.setLogMode(True, True)
-
-                self.metric_plot.setAutoVisible(y=True)
+                self.display_psd(Image, "leading_LER_PSD")
             elif self.TrailingEdgePSD.isChecked():
-                trailing_LER_PSD_plot = pg.PlotDataItem(Image.frequency, Image.LER_Trailing_PSD[0:len(Image.frequency)],
-                                                        pen=PSD_pen)
-                trailing_LER_PSD_fit_plot = pg.PlotDataItem(Image.frequency,
-                                                            Image.LER_Trailing_PSD_fit[0:len(Image.frequency)],
-                                                            pen=PSD_fit_pen)
-                trailing_LER_PSD_unbiased_plot = pg.PlotDataItem(Image.frequency, Image.LER_Trailing_PSD_unbiased[
-                                                                                  0:len(Image.frequency)],
-                                                                 pen=PSD_unbiased_pen)
-                trailing_LER_PSD_fit_unbiased_plot = pg.PlotDataItem(Image.frequency,
-                                                                     Image.LER_Trailing_PSD_fit_unbiased[
-                                                                     0:len(Image.frequency)],
-                                                                     pen=PSD_fit_unbiased_pen)
-                self.metric_plot.clear()
-                if self.metric_original_data.isChecked():
-                    self.metric_plot.addItem(trailing_LER_PSD_plot)
-                if self.metric_model_fit.isChecked():
-                    self.metric_plot.addItem(trailing_LER_PSD_fit_plot)
-                if self.metric_data_unbiased.isChecked():
-                    self.metric_plot.addItem(trailing_LER_PSD_unbiased_plot)
-                if self.metric_model_fit_unbiased.isChecked():
-                    self.metric_plot.addItem(trailing_LER_PSD_fit_unbiased_plot)
-
-                self.metric_plot.setLogMode(True, True)
-                self.metric_plot.setAutoVisible(y=True)
+                self.display_psd(Image, "trailing_LER_PSD")
 
         # image_view = self.line_image_view.getView()
         # pci = pg.PlotCurveItem(x=[1, 50, 100, 150, 200], y=[1, 50, 100, 150, 200])
@@ -233,12 +156,10 @@ class MainWindow(QtWidgets.QMainWindow):
     # update the parameters in table
     # use gather_edges() from mile_image_list_class()
     def process_line_images(self):
-        # Count how many images have been selected for processing
-        number_of_selected_images = 0
-        for lines_image in self.line_image_list.lineImages:
-            if self.linesTable.item(lines_image.id, 0).checkState() == Qt.CheckState.Checked:
-                number_of_selected_images += 1
+        number_of_selected_images = self.get_number_selected_images()
         number_of_processed_images = 0
+
+        # set up for progress bar
         self.image_progressBar.setMinimum(0)
         self.image_progressBar.setMaximum(number_of_selected_images)
         self.image_progressBar.setValue(0)
@@ -247,20 +168,17 @@ class MainWindow(QtWidgets.QMainWindow):
             self.status_label.setText(
                 "Processing " + str(number_of_processed_images + 1) + " of " + str(number_of_selected_images))
             if self.linesTable.item(lines_image.id, 0).checkState() == Qt.CheckState.Checked:
+
+                # process image
                 self.gather_parameters(lines_image)
                 self.line_image_list.current_image = lines_image.id
                 lines_image.pre_processing()
                 lines_image.find_edges()
                 lines_image.calculate_metrics()
 
-                item_averageCD = QtWidgets.QTableWidgetItem(f"{lines_image.critical_dimension_estimate:{0}.{5}}")
-                item_number_of_lines = QtWidgets.QTableWidgetItem(str(lines_image.number_of_lines))
-                item_averageCDstd = QtWidgets.QTableWidgetItem(f"{lines_image.critical_dimension_std_estimate:{0}.{5}}")
-                item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{lines_image.pitch_estimate:{0}.{5}}")
-                self.linesTable.setItem(lines_image.id, 3, item_number_of_lines)
-                self.linesTable.setItem(lines_image.id, 4, item_pitchEstimate)
-                self.linesTable.setItem(lines_image.id, 5, item_averageCD)
-                self.linesTable.setItem(lines_image.id, 6, item_averageCDstd)
+                self.update_table_with_processed_image(lines_image)
+
+                # update progress bar
                 lines_image.processed = True
                 number_of_processed_images += 1
                 self.image_progressBar.setValue(number_of_processed_images)
@@ -274,9 +192,29 @@ class MainWindow(QtWidgets.QMainWindow):
             # Update the GUI for each processed image
             QtWidgets.QApplication.processEvents()
         self.line_image_list.gather_edges()
+
+        # make average image
         self.line_image_list.parameters = self.line_image_list.lineImages[0].parameters
         self.line_image_list.calculate_metrics()
         self.status_label.setText("Ready")
+
+    def update_table_with_processed_image(self, lines_image):
+        item_averageCD = QtWidgets.QTableWidgetItem(f"{lines_image.critical_dimension_estimate:{0}.{5}}")
+        item_number_of_lines = QtWidgets.QTableWidgetItem(str(lines_image.number_of_lines))
+        item_averageCDstd = QtWidgets.QTableWidgetItem(f"{lines_image.critical_dimension_std_estimate:{0}.{5}}")
+        item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{lines_image.pitch_estimate:{0}.{5}}")
+        self.linesTable.setItem(lines_image.id, 3, item_number_of_lines)
+        self.linesTable.setItem(lines_image.id, 4, item_pitchEstimate)
+        self.linesTable.setItem(lines_image.id, 5, item_averageCD)
+        self.linesTable.setItem(lines_image.id, 6, item_averageCDstd)
+
+    def get_number_selected_images(self):
+        # Count how many images have been selected for processing
+        number_of_selected_images = 0
+        for lines_image in self.line_image_list.lineImages:
+            if self.linesTable.item(lines_image.id, 0).checkState() == Qt.CheckState.Checked:
+                number_of_selected_images += 1
+        return number_of_selected_images
 
     # helper function to prepare image parameters needed by SmileLinesImage (smile_lines_image_class)
     # parameters collected from UI elements
@@ -352,6 +290,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def add_new_row(self, image_id, name, root):
         image_object = SmileLinesImage(image_id, name, root, "lines")
         image_object.load_image()
+        # TODO why second time call gather_parameters if already is called in process_line_image
         self.gather_parameters(image_object)
         self.line_image_list.lineImages.append(
             image_object
