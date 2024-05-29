@@ -14,7 +14,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi("view/SMILE3.ui", self)
-        self.line_image_list = LineImageList()
+        self.line_image_list = LineImageList(-1,'Average','Empty', 'Lines')
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
         self.process_lines_button.pressed.connect(self.process_line_images)
         self.linesTable.cellClicked.connect(self.navigateLinesTable)
@@ -318,44 +318,57 @@ class MainWindow(QtWidgets.QMainWindow):
 # append image object (in loop) to LineImageList (smile_image_list_class)
     def load_lines_image(self):
         # Initialize image list
-        self.line_image_list = LineImageList()
+        self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')
 
         # Open folder dialog
-        select_folder_dialog = QtWidgets.QFileDialog()
-        select_folder_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
-        if select_folder_dialog.exec():
-            file_names = select_folder_dialog.selectedFiles()
-            cnt = -1
-            for root, dirs, files in os.walk(file_names[0], topdown=True):
-                for name in files:
-                    if (
-                            name.endswith(".tif")
-                            | name.endswith(".jpg")
-                            | name.endswith(".png")
-                    ):
-                        cnt += 1
-                        # self.linesTable.setRowCount (cnt+2)
-                        image_object = SmileLinesImage(cnt, name, root, "lines")
-                        image_object.load_image()
-                        self.gather_parameters(image_object)
-                        self.line_image_list.add_image(image_object)
-                        item_name = QtWidgets.QTableWidgetItem(image_object.file_name)
+        file_names = folder_loader()
+        cnt = -1
+        for root, dirs, files in os.walk(file_names[0], topdown=True):
+            for name in files:
+                if (
+                        name.endswith(".tif")
+                        | name.endswith(".jpg")
+                        | name.endswith(".png")
+                ):
+                    cnt += 1
+                    # self.linesTable.setRowCount (cnt+2)
+                    image_object = SmileLinesImage(cnt, name, root, "lines")
+                    image_object.load_image()
+                    self.gather_parameters(image_object)
+                    self.line_image_list.lineImages.append(
+                        image_object
+                    )
+                    item_name = QtWidgets.QTableWidgetItem(image_object.file_name)
 
-                        item_selected = QtWidgets.QTableWidgetItem()
-                        item_selected.setFlags(
-                            Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled
-                        )
-                        item_selected.setCheckState(Qt.CheckState.Checked)
+                    item_selected = QtWidgets.QTableWidgetItem()
+                    item_selected.setFlags(
+                        Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled
+                    )
+                    item_selected.setCheckState(Qt.CheckState.Checked)
 
-                        item_processed = QtWidgets.QTableWidgetItem()
-                        item_processed.setFlags(
-                            Qt.ItemFlag.ItemIsEnabled
-                        )
-                        item_processed.setCheckState(Qt.CheckState.Unchecked)
+                    item_processed = QtWidgets.QTableWidgetItem()
+                    item_processed.setFlags(
+                        Qt.ItemFlag.ItemIsEnabled
+                    )
+                    item_processed.setCheckState(Qt.CheckState.Unchecked)
 
-                        self.linesTable.setRowCount(cnt + 2)
-                        self.linesTable.setItem(cnt, 0, item_selected)
-                        self.linesTable.setItem(cnt, 1, item_processed)
-                        self.linesTable.setItem(cnt, 2, item_name)
-                        self.display_lines_data(image_object)
+                    self.linesTable.setRowCount(cnt + 2)
+                    self.linesTable.setItem(cnt, 0, item_selected)
+                    self.linesTable.setItem(cnt, 1, item_processed)
+                    self.linesTable.setItem(cnt, 2, item_name)
+                    self.display_lines_data(image_object)
+
+
+def folder_loader():
+    select_folder_dialog = QtWidgets.QFileDialog()
+    select_folder_dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
+    if select_folder_dialog.exec():
+        file_names = select_folder_dialog.selectedFiles()
+        return file_names
+    else:
+        raise ValueError('Cannot open this folder')
+
+
+
+
 
