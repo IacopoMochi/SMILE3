@@ -9,6 +9,7 @@ from src.image_processing.smile_image_list_class import LineImageList
 from src.image_processing.image_container import SmileLinesImage
 
 
+
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -281,15 +282,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # parameters collected from UI elements
     def gather_parameters(self, Image):
 
-        if self.Polynomial.isChecked():
-            edge_fit_function = 'polynomial'
-        elif self.Linear.isChecked():
-            edge_fit_function = 'linear'
-        elif self.ThresholdEdge.isChecked():
-            edge_fit_function = 'threshold'
-        else:
-            edge_fit_function = 'bright_edge'
-        window = MainWindow()
+        edge_fit_function, window = self.get_fit_function()
 
         parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
                       'MinPeakDistance': np.double(window.minPeakDistance_line_edit.text()),
@@ -313,6 +306,18 @@ class MainWindow(QtWidgets.QMainWindow):
                       'PSD_model': window.PSD_model.currentText(),
                       }
         Image.parameters = parameters
+
+    def get_fit_function(self):
+        if self.Polynomial.isChecked():
+            edge_fit_function = 'polynomial'
+        elif self.Linear.isChecked():
+            edge_fit_function = 'linear'
+        elif self.ThresholdEdge.isChecked():
+            edge_fit_function = 'threshold'
+        else:
+            edge_fit_function = 'bright_edge'
+        window = MainWindow()
+        return edge_fit_function, window
 
     # helper function, handles the navigation in display selected line image data when a cell in the lines table is clicked
     def navigateLinesTable(self, nrow, ncol):
