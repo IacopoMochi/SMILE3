@@ -1,0 +1,29 @@
+<ui version="4.0">
+    <class>TableView</class>
+    <widget class="QWidget" name="TableView">
+        <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+                <widget class="QTableWidget" name="tableWidget">
+                    <property name="columnCount">
+                        <number>9</number>
+                    </property>
+                    <property name="horizontalHeaderLabels">
+                        <stringlist>
+                            <string>Selected</string>
+                            <string>Processed</string>
+                            <string>Name</string>
+                            <string>N of Lines</string>
+                            <string>Average pitch</string>
+                            <string>Average CD</string>
+                            <string>CD std</string>
+                            <string>Unbiased LWR</string>
+                            <string>Unbiased LWR fit</string>
+                        </stringlist>
+                    </property>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>
