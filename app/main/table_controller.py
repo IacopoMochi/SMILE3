@@ -20,9 +20,11 @@ class TableController(QtWidgets.QWidget):
             check_box.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
             check_box.setCheckState(Qt.CheckState.Unchecked if not image.selected else Qt.CheckState.Checked)
 
+            image_name = image.file_name.split('.')[0]
+
             self.table_widget.setItem(idx, 0, check_box)
             self.table_widget.setItem(idx, 1, QTableWidgetItem('Yes' if image.processed else 'No'))
-            self.table_widget.setItem(idx, 2, QTableWidgetItem(image.file_name))
+            self.table_widget.setItem(idx, 2, QTableWidgetItem(image_name))
 
 
 
