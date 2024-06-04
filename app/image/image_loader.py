@@ -12,7 +12,7 @@ class ImageLoader:
     # construct the path, open image, rotate to correct position
     def load_image(self):
         # Load the image
-        file_path = os.path.join(self.file_name, self.folder)
+        file_path = os.path.join(self.folder, self.file_name)
         with Image.open(file_path) as img:
             img = np.rot90(img, 3)
             return img

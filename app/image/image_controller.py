@@ -3,7 +3,7 @@ from app.image.image_processors import PreProcessor, EdgeDetector, MetricCalcula
 
 
 class Image:
-    def __init__(self, id, file_name, path):
+    def __init__(self, id, path, file_name):
         self.zero_mean_leading_edge_profiles = None
         self.zero_mean_trailing_edge_profiles = None
         self.LWR_PSD = None
