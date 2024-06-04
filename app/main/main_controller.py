@@ -9,6 +9,8 @@ from openpyxl import Workbook
 from app.image.image_controller import Image
 from app.image.images_list import ImagesList
 from app.main.table_controller import TableController
+from app.main.parameters_collector import gather_parameters
+
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -34,6 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         image_object = Image(image_id, root, file_name)
                         try:
                             image_object.load_image()
+                            gather_parameters(self, image_object)
                             self.images_list.add_image_to_list(image_object)
                             image_id += 1
                         except PermissionError as e:
