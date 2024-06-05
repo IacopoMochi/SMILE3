@@ -1,5 +1,5 @@
-from app.image.image_loader import ImageLoader
-from app.image.image_processors import PreProcessor, EdgeDetector, MetricCalculator
+from app.processors.image_loader import ImageLoader
+from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator
 
 
 class Image:
@@ -60,7 +60,7 @@ class Image:
         #s = os.path.join(path, file_name)
         #img = Image.open(s)
         #img = np.rot90(img, 3)
-        #self.image = img
+        #self.models = img
         self.frequency = None
         self.id = id
         self.selected = True

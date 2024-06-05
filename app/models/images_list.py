@@ -1,4 +1,4 @@
-from app.image.image_controller import Image
+from app.models.image_container import Image
 
 
 class ImagesList:
@@ -9,4 +9,4 @@ class ImagesList:
         if isinstance(image, Image):
             self.images_list.append(image)
         else:
-            raise ValueError('Invalid image type')
+            raise ValueError('Invalid models type')

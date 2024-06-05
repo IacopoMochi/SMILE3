@@ -100,7 +100,7 @@ class EdgeDetector:
     def __init__(self, smile_lines_image):
         self.image = smile_lines_image
 
-    # find the pick in image
+    # find the pick in models
     # consolidate the edges and try to center that around zero
     # calculate critical dimensions and pitch estimates based on the detected edges
     # basically makes necessary calculations
@@ -148,11 +148,11 @@ class EdgeDetector:
         return zero_mean_edge_profiles
 
     def filter_and_reduce_noise(self):
-        # Filter image with a 2d median filter to remove eventual outliers (bright pixels for instance)
+        # Filter models with a 2d median filter to remove eventual outliers (bright pixels for instance)
         median_filter_kernel = 5
         filtered_image = medfilt2d(self.image.processed_image, median_filter_kernel)
 
-        # Sum all the columns of the image to calculate the average lines profile
+        # Sum all the columns of the models to calculate the average lines profile
         image_sum = np.sum(filtered_image, 1)
         # Filter the lines profile to reduce the noise
         backward_filter, forward_filter = butter(8, 0.125)
