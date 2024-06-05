@@ -5,12 +5,13 @@ from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 import pyqtgraph as pg
 from openpyxl import Workbook
+from pyqtgraph import PlotWidget
 
 from app.image.image_controller import Image
 from app.image.images_list import ImagesList
 from app.main.table_controller import TableController
 from app.main.parameters_collector import gather_parameters
-
+from app.main.display_image import ImageDisplayManager
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -20,8 +21,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.images_list = ImagesList()
         self.setup_connections()
 
-        self.linesTable = self.findChild(QtWidgets.QTableWidget, "linesTable")
-        self.table_controller = TableController(self.linesTable)
+        self.table = self.findChild(QtWidgets.QTableWidget, "linesTable")
+        self.table_controller = TableController(self.table)
+
+        self.plot_widget = self.findChild(PlotWidget, "line_image_view_parameters")
+        self.image_display_manager = ImageDisplayManager(self.plot_widget)
+
+
 
     def setup_connections(self):
         self.pushButton_ImageFolder.pressed.connect(self.load_images_from_folder)
@@ -43,5 +49,6 @@ class MainWindow(QtWidgets.QMainWindow):
                             print(f"PermissionError: {e}")
                         except Exception as e:
                             print(f"An unexpected error occurred: {e}")
+                        self.image_display_manager.display_image_on_parameters_tab(self.plot_widget, image_object)
 
             self.table_controller.update_with_image(self.images_list.images_list)
