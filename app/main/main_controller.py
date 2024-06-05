@@ -24,8 +24,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.table = self.findChild(QtWidgets.QTableWidget, "linesTable")
         self.table_controller = TableController(self.table)
 
-        self.plot_widget = self.findChild(PlotWidget, "line_image_view_parameters")
-        self.image_display_manager = ImageDisplayManager(self.plot_widget)
+        self.plot_widget_parameters_tab = self.findChild(PlotWidget, "line_image_view_parameters")
+        self.plot_widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
+        self.image_display_manager = ImageDisplayManager(self.plot_widget_parameters_tab, self.plot_widget_lines_tab)
+
+
 
 
 
@@ -49,6 +52,6 @@ class MainWindow(QtWidgets.QMainWindow):
                             print(f"PermissionError: {e}")
                         except Exception as e:
                             print(f"An unexpected error occurred: {e}")
-                        self.image_display_manager.display_image_on_parameters_tab(self.plot_widget, image_object)
-
+                        self.image_display_manager.display_image_on_parameters_tab(self.plot_widget_parameters_tab, image_object)
+                        self.image_display_manager.display_image_on_lines_tab(self.plot_widget_lines_tab, image_object)
             self.table_controller.update_with_image(self.images_list.images_list)
