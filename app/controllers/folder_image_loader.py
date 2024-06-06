@@ -5,12 +5,12 @@ from app.processors.parameters_collector import gather_parameters
 
 
 class FolderImageLoader:
-    def __init__(self, images_list, parent):
+    def __init__(self, images_list, window):
         self.images_list = images_list
-        self.parent = parent
+        self.window = window
 
     def load_images_from_folder(self):
-        folder_path = QtWidgets.QFileDialog.getExistingDirectory(self.parent, 'Select images folder')
+        folder_path = QtWidgets.QFileDialog.getExistingDirectory(self.window, 'Select images folder')
         if not folder_path:
             return
 
@@ -21,7 +21,7 @@ class FolderImageLoader:
                     image_object = Image(image_id, root, file_name)
                     try:
                         image_object.load_image()
-                        gather_parameters(self.parent, image_object)
+                        gather_parameters(self.window, image_object)
                         self.images_list.add_image_to_list(image_object)
                         image_id += 1
                     except PermissionError as e:
