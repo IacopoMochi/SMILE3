@@ -6,7 +6,7 @@ import numpy as np
 
 def Palasantzas_2_beta(image, PSD):
     beta = [0, 0, 0, 0]
-    parameters = image.smile_image.parameters
+    parameters = image.image.parameters
     High_frequency_max = parameters["High_frequency_cut"]
     High_frequency_average = parameters["High_frequency_average"]
     High_frequency_min = -High_frequency_max - High_frequency_average
