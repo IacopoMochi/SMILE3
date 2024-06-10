@@ -15,7 +15,7 @@ class TableController(QtWidgets.QWidget):
                                                      "Average CD", "CD std", "Unbiased LWR", "Unbiased LWR fit"])
 
     def update_with_image(self, images_list):
-        self.table_widget.setRowCount(len(images_list) + 2)
+        self.table_widget.setRowCount(len(images_list) + 1)
         for idx, image in enumerate(images_list):
             check_box = QTableWidgetItem()
             check_box.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
