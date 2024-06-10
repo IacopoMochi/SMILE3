@@ -28,15 +28,16 @@ class TableController(QtWidgets.QWidget):
             self.table_widget.setItem(idx, 2, QTableWidgetItem(image_name))
 
     def mark_image_as_processed(self, image_id):
-        item_processed = QTableWidgetItem()
-        item_processed.setCheckState(Qt.CheckState.Checked)
-        self.table_widget.setItem(image_id, 1, item_processed)
+        self.table_widget.setItem(image_id, 1, QTableWidgetItem("Yes"))
 
     def update_with_processed_image(self, image: Image):
-        item_averageCD = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_estimate:.5f}")
+        if image.critical_dimension_estimate is not None:
+            item_averageCD = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_estimate:.5f}")
         item_number_of_lines = QtWidgets.QTableWidgetItem(str(image.number_of_lines))
-        item_averageCDstd = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_std_estimate:.5f}")
-        item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{image.pitch_estimate:.5f}")
+        if image.critical_dimension_std_estimate is not None:
+            item_averageCDstd = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_std_estimate:.5f}")
+        if image.pitch_estimate is not None:
+            item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{image.pitch_estimate:.5f}")
 
         self.table_widget.setItem(image.id, 3, item_number_of_lines)
         self.table_widget.setItem(image.id, 4, item_pitchEstimate)
