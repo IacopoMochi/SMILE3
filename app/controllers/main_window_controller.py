@@ -37,6 +37,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def setup_connections(self):
         self.push_button_image_folder.pressed.connect(self.prepare_image)
         self.push_button_process_images.pressed.connect(self.process_image)
+        self.table.cellClicked.connect(self.display_corresponding_images)
 
     def prepare_image(self):
         self.image_loader.load_images_from_folder()
@@ -59,3 +60,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.result_images_manager.display_profiles_on_lines_tab(image)
                 self.result_images_manager.display_plot_on_metric_tab(image)
         QtWidgets.QApplication.processEvents()
+
+    def display_corresponding_images(self, row):
+        image = self.images_list.images_list[row]
+        if self.table.item(row, 0).checkState() == Qt.CheckState.Checked:
+            self.image_display_manager.display_image_on_lines_tab(image)
+            self.image_display_manager.display_image_on_parameters_tab(image)
+            self.result_images_manager.display_profiles_on_lines_tab(image)
+            self.result_images_manager.display_plot_on_metric_tab(image)
+        else:
+            self.widget_parameters_tab.clear()
+            self.widget_lines_tab.clear()
+            self.widget_metric_tab.clear()
+
+
