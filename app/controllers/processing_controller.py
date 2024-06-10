@@ -26,7 +26,7 @@ class ProcessingController:
 
     def update_progress_bar(self, number_processed_images):
         self.window.image_progressBar.setValue(number_processed_images)
-        self.window.status_label.setText(f'Processing {number_processed_images + 1} of {self.number_selected_images}')
+        self.window.status_label.setText(f'Processing {number_processed_images} of {self.number_selected_images}')
         QtWidgets.QApplication.processEvents()
 
     def get_number_selected_images(self):

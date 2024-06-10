@@ -34,17 +34,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
         self.widget_metric_tab = self.findChild(PlotWidget, "metric_plot")
 
-    # def ui_checkboxes(self):
-    #     self.histogram_radiobutton = self.findChild(QtWidgets.QRadioButton, "histogram")
-    #     self.lineWidthPSD_radiobutton = self.findChild(QtWidgets.QRadioButton, "lineWidthPSD")
-    #     self.LineEdgePSD_radiobutton = self.findChild(QtWidgets.QRadioButton, "LineEdgePSD")
-    #     self.LeadingEdgePSD_radiobutton = self.findChild(QtWidgets.QRadioButton, "LeadingEdgePSD")
-    #     self.TrailingEdgePSD_radiobutton = self.findChild(QtWidgets.QRadioButton, "TrailingEdgePSD")
-    #     self.metric_original_data_checkbox = self.findChild(QtWidgets.QCheckBox, "metric_original_data")
-    #     self.metric_model_fit_checkbox = self.findChild(QtWidgets.QCheckBox, "metric_model_fit")
-    #     self.metric_data_unbiased_checkbox = self.findChild(QtWidgets.QCheckBox, "metric_data_unbiased")
-    #     self.metric_data_unbiasedic_model_fit_unbiased_checkbox = self.findChild(QtWidgets.QCheckBox, "metric_model_fit_unbiased")
-
 
     def setup_connections(self):
         self.push_button_image_folder.pressed.connect(self.prepare_image)
@@ -64,6 +53,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.processing_controller.process_image(image)
             self.table_controller.update_with_processed_image(image)
             number_processed_images += 1
+            self.processing_controller.get_number_selected_images()
+            self.processing_controller.set_up_progress_bar()
             self.processing_controller.update_progress_bar(number_processed_images)
             self.table_controller.mark_image_as_processed(image.id)
             self.result_images_manager.display_profiles_on_lines_tab(image)

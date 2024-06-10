@@ -29,7 +29,7 @@ class ResultImagesManager(QtWidgets.QWidget):
 
         if image.trailing_edges is not None:
             for edge in image.trailing_edges:
-                trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_color)
+                trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
                 self.plot_widget_lines_tab.addItem(trailing_edge_plot)
         else:
             raise ValueError("Trailing edges were not found")
