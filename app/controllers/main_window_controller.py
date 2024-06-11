@@ -42,13 +42,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.table.cellClicked.connect(self.display_corresponding_images)
 
     def prepare_image(self):
+        # self.clean_tab()
         self.image_loader.load_images_from_folder()
         for image in self.images_list.images_list:
             self.image_display_manager.display_image_on_parameters_tab(image)
             self.image_display_manager.display_image_on_lines_tab(image)
         self.table_controller.update_with_image(self.images_list.images_list)
 
-        print([image.id for image in self.images_list.images_list])
+    def clean_tab(self):
+        self.images_list.images_list = []
+        self.table.clearContents()
 
     def process_image(self):
         number_processed_images = 0
