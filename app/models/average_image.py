@@ -10,7 +10,6 @@ class AverageImage:
         self.image = copy.deepcopy(images_list.images_list[0])
         self.image.id = len(images_list.images_list) + 1
 
-
     def gather_edges(self, images_list: ImagesList):
         if not self.image:
             return None

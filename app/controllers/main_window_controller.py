@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 from pyqtgraph import PlotWidget
 
+from app.models import images_list
 from app.models.images_list import ImagesList
 from app.controllers.table_controller import TableController
 from app.view.display_calculation_result_images import ResultImagesManager
@@ -46,6 +47,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.image_display_manager.display_image_on_parameters_tab(image)
             self.image_display_manager.display_image_on_lines_tab(image)
         self.table_controller.update_with_image(self.images_list.images_list)
+
+        print([image.id for image in self.images_list.images_list])
 
     def process_image(self):
         number_processed_images = 0

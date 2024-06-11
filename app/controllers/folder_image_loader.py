@@ -15,7 +15,7 @@ class FolderImageLoader:
             return
 
         for root, dirs, files in os.walk(folder_path):
-            image_id = 0
+            image_id = len(self.images_list.images_list)
             for file_name in files:
                 if file_name.lower().endswith(('.jpg', '.tiff', '.png', '.tif', '.jpeg')):
                     image_object = Image(image_id, root, file_name)
