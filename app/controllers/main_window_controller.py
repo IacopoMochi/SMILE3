@@ -8,6 +8,7 @@ from app.view.display_calculation_result_images import ResultImagesManager
 from app.view.display_image import ImageDisplayManager
 from app.controllers.folder_image_loader import FolderImageLoader
 from app.controllers.processing_controller import ProcessingController
+from app.models.average_image import AverageImage
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -59,18 +60,30 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.table_controller.mark_image_as_processed(image.id)
                 self.result_images_manager.display_profiles_on_lines_tab(image)
                 self.result_images_manager.display_plot_on_metric_tab(image)
+                QtWidgets.QApplication.processEvents()
+        AverageImage(self.images_list).prepare_average_image(self.images_list)
+        self.table_controller.add_average_image(AverageImage(self.images_list).image)
+        self.result_images_manager.display_plot_on_metric_tab(AverageImage(self.images_list).image)
         QtWidgets.QApplication.processEvents()
 
     def display_corresponding_images(self, row):
-        image = self.images_list.images_list[row]
-        if self.table.item(row, 0).checkState() == Qt.CheckState.Checked:
-            self.image_display_manager.display_image_on_lines_tab(image)
-            self.image_display_manager.display_image_on_parameters_tab(image)
-            self.result_images_manager.display_profiles_on_lines_tab(image)
-            self.result_images_manager.display_plot_on_metric_tab(image)
+        if row <= len(self.images_list.images_list) - 1:
+            image = self.images_list.images_list[row]
+            if self.table.item(row, 0).checkState() == Qt.CheckState.Checked:
+                self.image_display_manager.display_image_on_lines_tab(image)
+                self.image_display_manager.display_image_on_parameters_tab(image)
+                self.result_images_manager.display_profiles_on_lines_tab(image)
+                self.result_images_manager.display_plot_on_metric_tab(image)
+            else:
+                self.widget_parameters_tab.clear()
+                self.widget_lines_tab.clear()
+                self.widget_metric_tab.clear()
         else:
+            image = AverageImage(self.images_list).image
             self.widget_parameters_tab.clear()
             self.widget_lines_tab.clear()
-            self.widget_metric_tab.clear()
+            self.result_images_manager.display_plot_on_metric_tab(image)
+
+
 
 

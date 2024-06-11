@@ -15,7 +15,7 @@ class TableController(QtWidgets.QWidget):
                                                      "Average CD", "CD std", "Unbiased LWR", "Unbiased LWR fit"])
 
     def update_with_image(self, images_list):
-        self.table_widget.setRowCount(len(images_list) + 1)
+        self.table_widget.setRowCount(len(images_list) + 2)
         for idx, image in enumerate(images_list):
             check_box = QTableWidgetItem()
             check_box.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
@@ -43,3 +43,7 @@ class TableController(QtWidgets.QWidget):
         self.table_widget.setItem(image.id, 4, item_pitchEstimate)
         self.table_widget.setItem(image.id, 5, item_averageCD)
         self.table_widget.setItem(image.id, 6, item_averageCDstd)
+
+    def add_average_image(self, average_image):
+        self.table_widget.setItem(average_image.id, 2, QTableWidgetItem('average'))
+
