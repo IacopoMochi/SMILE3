@@ -19,20 +19,17 @@ class ResultImagesManager(QtWidgets.QWidget):
         edge_color = pg.mkColor(0, 200, 0)
         edge_pen = pg.mkPen(edge_color, width=3)
 
-        if image.leading_edges is not None:
-            profiles_length = np.shape(image.leading_edges)[1]
-            for edge in image.leading_edges:
-                leading_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
-                self.plot_widget_lines_tab.addItem(leading_edge_plot)
-        else:
-            raise ValueError("Leading edges were not found")
+        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen)
+        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen)
 
-        if image.trailing_edges is not None:
-            for edge in image.trailing_edges:
-                trailing_edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=edge_pen)
-                self.plot_widget_lines_tab.addItem(trailing_edge_plot)
+    def _display_edges(self, edges, error_message, pen):
+        if edges is not None:
+            profiles_length = np.shape(edges)[1]
+            for edge in edges:
+                edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=pen)
+                self.plot_widget_lines_tab.addItem(edge_plot)
         else:
-            raise ValueError("Trailing edges were not found")
+            self.window.show_error_message(error_message)
 
     def display_plot_on_metric_tab(self, image):
         if self.window.histogram.isChecked():
