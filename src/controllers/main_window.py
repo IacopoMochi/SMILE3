@@ -5,8 +5,8 @@ from PyQt6.QtCore import Qt
 import pyqtgraph as pg
 from openpyxl import Workbook
 
-from src.image_processing.smile_image_list_class import LineImageList
-from src.image_processing.image_container import SmileLinesImage
+from src.models.smile_image_list_class import LineImageList
+from src.models.image_container import SmileLinesImage
 
 
 
@@ -14,8 +14,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi("view/SMILE3.ui", self)
-        self.line_image_list = LineImageList(-1, 'Average', 'Empty', 'Lines')
+        uic.loadUi("ui/SMILE3.ui", self)
+        self.line_image_list = LineImageList(-1, 'Average', 'Empty')
         self.pushButton_ImageFolder.pressed.connect(self.load_lines_image)
         self.process_lines_button.pressed.connect(self.process_line_images)
         self.linesTable.cellClicked.connect(self.navigateLinesTable)
@@ -169,7 +169,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 "Processing " + str(number_of_processed_images + 1) + " of " + str(number_of_selected_images))
             if self.linesTable.item(lines_image.id, 0).checkState() == Qt.CheckState.Checked:
 
-                # process image
                 self.gather_parameters(lines_image)
                 self.line_image_list.current_image = lines_image.id
                 lines_image.pre_processing()
@@ -188,12 +187,9 @@ class MainWindow(QtWidgets.QMainWindow):
             item_processed.setCheckState(Qt.CheckState.Checked)
             self.linesTable.setItem(lines_image.id, 1, item_processed)
             self.display_lines_data(lines_image)
-
             # Update the GUI for each processed image
             QtWidgets.QApplication.processEvents()
         self.line_image_list.gather_edges()
-
-        # make average image
         self.line_image_list.parameters = self.line_image_list.lineImages[0].parameters
         self.line_image_list.calculate_metrics()
         self.status_label.setText("Ready")
@@ -271,7 +267,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # append image object (in loop) to LineImageList (smile_image_list_class)
     def load_lines_image(self):
         # Initialize image list
-        self.line_image_list = LineImageList('-1', 'imageList', 'Empty', 'Empty')
+        self.line_image_list = LineImageList('-1', 'imageList', 'Empty')
 
         file_names = folder_loader()
         image_id = -1
@@ -288,7 +284,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     raise ValueError('Invalid file extension')
 
     def add_new_row(self, image_id, name, root):
-        image_object = SmileLinesImage(image_id, name, root, "lines")
+        image_object = SmileLinesImage(image_id, name, root)
+        print(image_object)
         image_object.load_image()
         # TODO why second time call gather_parameters if already is called in process_line_image
         self.gather_parameters(image_object)

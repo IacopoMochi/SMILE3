@@ -1,4 +1,4 @@
-# PSD image_processing
+# PSD models
 import numpy as np
 
 
