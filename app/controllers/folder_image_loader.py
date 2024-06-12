@@ -25,6 +25,7 @@ class FolderImageLoader:
                         self.images_list.add_image_to_list(image_object)
                         image_id += 1
                     except PermissionError as e:
-                        print(f"PermissionError: {e}")
+                        self.window.show_error_message(f"PermissionError: {str(e)}")
                     except Exception as e:
-                        print(f"An unexpected error occurred: {e}")
+                        self.window.show_error_message(f"An unexpected error occurred: {str(e)}."
+                                                       f"Make sure that you have selected at least one image to process")

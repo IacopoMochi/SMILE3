@@ -6,7 +6,7 @@ from app.processors.image_processors import MetricCalculator
 
 
 class AverageImage:
-    def __init__(self, images_list):
+    def __init__(self, images_list: ImagesList) -> None:
         self.image = copy.deepcopy(images_list.images_list[0])
         self.image.id = len(images_list.images_list) + 1
         self.images_list = images_list

@@ -18,11 +18,14 @@ class ProcessingController:
 
     def process_image(self, image: Image):
         if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
-            gather_parameters(self.window, image)
-            image.pre_processing()
-            image.find_edges()
-            image.calculate_metrics()
-            image.processed = True
+            try:
+                gather_parameters(self.window, image)
+                image.pre_processing()
+                image.find_edges()
+                image.calculate_metrics()
+                image.processed = True
+            except Exception as e:
+                self.window.show_error_message(f"Error has occurred while processing image: {e}")
 
     def update_progress_bar(self, number_processed_images):
         self.window.image_progressBar.setValue(number_processed_images)

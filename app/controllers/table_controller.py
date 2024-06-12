@@ -1,11 +1,15 @@
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
+
 from app.models.image_container import Image
 
 
 class TableController(QtWidgets.QWidget):
+    error_signal = pyqtSignal(str)
+
     def __init__(self, table_widget: QTableWidget):
+        super().__init__()
         self.table_widget = table_widget
         self.configure_table()
 
@@ -31,18 +35,21 @@ class TableController(QtWidgets.QWidget):
         self.table_widget.setItem(image_id, 1, QTableWidgetItem("Yes"))
 
     def update_with_processed_image(self, image: Image):
-        if image.critical_dimension_estimate is not None:
-            item_averageCD = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_estimate:.5f}")
-        item_number_of_lines = QtWidgets.QTableWidgetItem(str(image.number_of_lines))
-        if image.critical_dimension_std_estimate is not None:
-            item_averageCDstd = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_std_estimate:.5f}")
-        if image.pitch_estimate is not None:
-            item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{image.pitch_estimate:.5f}")
+        try:
+            if image.critical_dimension_estimate is not None:
+                item_averageCD = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_estimate:.5f}")
+            item_number_of_lines = QtWidgets.QTableWidgetItem(str(image.number_of_lines))
+            if image.critical_dimension_std_estimate is not None:
+                item_averageCDstd = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_std_estimate:.5f}")
+            if image.pitch_estimate is not None:
+                item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{image.pitch_estimate:.5f}")
 
-        self.table_widget.setItem(image.id, 3, item_number_of_lines)
-        self.table_widget.setItem(image.id, 4, item_pitchEstimate)
-        self.table_widget.setItem(image.id, 5, item_averageCD)
-        self.table_widget.setItem(image.id, 6, item_averageCDstd)
+            self.table_widget.setItem(image.id, 3, item_number_of_lines)
+            self.table_widget.setItem(image.id, 4, item_pitchEstimate)
+            self.table_widget.setItem(image.id, 5, item_averageCD)
+            self.table_widget.setItem(image.id, 6, item_averageCDstd)
+        except Exception as e:
+            self.error_signal.emit(f"Error occurred while completing the table with processed image data: {str(e)}")
 
     def add_average_image(self, average_image):
         self.table_widget.setItem(average_image.id, 2, QTableWidgetItem('average'))

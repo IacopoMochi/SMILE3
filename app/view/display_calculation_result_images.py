@@ -32,18 +32,21 @@ class ResultImagesManager(QtWidgets.QWidget):
             self.window.show_error_message(error_message)
 
     def display_plot_on_metric_tab(self, image):
-        if self.window.histogram.isChecked():
-            self.display_histogram(image)
-        elif self.window.lineWidthPSD.isChecked():
-            self.display_psd(image, "LW_PSD")
-        elif self.window.LineEdgePSD.isChecked():
-            self.display_psd(image, "LER_PSD")
-        elif self.window.LeadingEdgePSD.isChecked():
-            self.display_psd(image, "leading_LER_PSD")
-        elif self.window.TrailingEdgePSD.isChecked():
-            self.display_psd(image, "trailing_LER_PSD")
+        try:
+            if self.window.histogram.isChecked():
+                self._display_histogram(image)
+            elif self.window.lineWidthPSD.isChecked():
+                self._display_psd(image, "LW_PSD")
+            elif self.window.LineEdgePSD.isChecked():
+                self._display_psd(image, "LER_PSD")
+            elif self.window.LeadingEdgePSD.isChecked():
+                self._display_psd(image, "leading_LER_PSD")
+            elif self.window.TrailingEdgePSD.isChecked():
+                self._display_psd(image, "trailing_LER_PSD")
+        except Exception as e:
+            self.window.show_error_message(f"Plot can not be display. {str(e)}")
 
-    def display_histogram(self, image):
+    def _display_histogram(self, image):
         histogram_color = pg.mkColor(200, 200, 200)
         histogram_pen = pg.mkPen(histogram_color, width=3)
         histogram_curves_color = pg.mkColor(200, 0, 0)
@@ -70,7 +73,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         self.widget_metric_tab.addItem(histogram_plot_fit)
         self.widget_metric_tab.setLogMode(False, False)
 
-    def display_psd(self, image, plot_type):
+    def _display_psd(self, image, plot_type):
         PSD_color = pg.mkColor(200, 200, 200)
         PSD_fit_color = pg.mkColor(0, 200, 200)
         PSD_unbiased_color = pg.mkColor(200, 0, 0)

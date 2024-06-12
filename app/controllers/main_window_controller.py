@@ -1,8 +1,8 @@
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 from pyqtgraph import PlotWidget
+from PyQt6.QtWidgets import QMessageBox
 
-from app.models import images_list
 from app.models.images_list import ImagesList
 from app.controllers.table_controller import TableController
 from app.view.display_calculation_result_images import ResultImagesManager
@@ -19,7 +19,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.images_list = ImagesList()
 
         self.init_ui()
-        self.setup_connections()
 
         self.image_loader = FolderImageLoader(self.images_list, self)
         self.table_controller = TableController(self.table)
@@ -28,6 +27,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                                          self.widget_metric_tab, self)
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
         self.average_image = None
+
+        self.setup_connections()
 
     def init_ui(self):
         self.push_button_image_folder = self.findChild(QtWidgets.QPushButton, "pushButton_ImageFolder")
@@ -41,6 +42,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_image_folder.pressed.connect(self.prepare_image)
         self.push_button_process_images.pressed.connect(self.process_image)
         self.table.cellClicked.connect(self.display_corresponding_images)
+
+        self.table_controller.error_signal.connect(self.show_error_message)
+        self.image_display_manager.error_signal.connect(self.show_error_message)
 
     def prepare_image(self):
         # self.clean_tab()
@@ -92,6 +96,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.widget_parameters_tab.clear()
             self.widget_lines_tab.clear()
             self.result_images_manager.display_plot_on_metric_tab(image)
+
+    def show_error_message(self, message):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Icon.Critical)
+        error_dialog.setText(message)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.exec()
 
 
 
