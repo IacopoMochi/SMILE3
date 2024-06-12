@@ -27,6 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.result_images_manager = ResultImagesManager(self.widget_parameters_tab, self.widget_lines_tab,
                                                          self.widget_metric_tab, self)
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
+        self.average_image = None
 
     def init_ui(self):
         self.push_button_image_folder = self.findChild(QtWidgets.QPushButton, "pushButton_ImageFolder")
@@ -67,9 +68,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.result_images_manager.display_profiles_on_lines_tab(image)
                 self.result_images_manager.display_plot_on_metric_tab(image)
                 QtWidgets.QApplication.processEvents()
-        AverageImage(self.images_list).prepare_average_image(self.images_list)
-        self.table_controller.add_average_image(AverageImage(self.images_list).image)
-        self.result_images_manager.display_plot_on_metric_tab(AverageImage(self.images_list).image)
+        self.average_image = AverageImage(self.images_list)
+        self.table_controller.add_average_image(self.average_image.image)
+        self.result_images_manager.display_plot_on_metric_tab(self.average_image.image)
         QtWidgets.QApplication.processEvents()
 
     def display_corresponding_images(self, row):

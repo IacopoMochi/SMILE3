@@ -9,8 +9,10 @@ class AverageImage:
     def __init__(self, images_list):
         self.image = copy.deepcopy(images_list.images_list[0])
         self.image.id = len(images_list.images_list) + 1
+        self.images_list = images_list
+        self.prepare_average_image()
 
-    def gather_edges(self, images_list: ImagesList):
+    def gather_edges(self):
         if not self.image:
             return None
 
@@ -20,7 +22,7 @@ class AverageImage:
         zero_mean_trailing_edge_profiles = []
         frequency_set = set()
 
-        for image in images_list.images_list:
+        for image in self.images_list.images_list:
             leading_edges.append(image.consolidated_leading_edges)
             trailing_edges.append(image.consolidated_trailing_edges)
             zero_mean_leading_edge_profiles.append(image.zero_mean_leading_edge_profiles)
@@ -39,7 +41,7 @@ class AverageImage:
     def calculate_metrics(self):
         MetricCalculator(self.image).calculate_metrics()
 
-    def prepare_average_image(self, images_list: ImagesList):
-        self.gather_edges(images_list)
+    def prepare_average_image(self):
+        self.gather_edges()
         self.calculate_metrics()
 
