@@ -1,10 +1,11 @@
 # PSD image_processing
-import numpy as np
+from typing import List
 
+import numpy as np
 
 # HELPER FUNCIONS THAT ARE UESED IN smile_lines_image_class.py
 
-def Palasantzas_2_beta(image, PSD):
+def Palasantzas_2_beta(image, PSD: np.ndarray) -> tuple[list[float], list[float], list[float]]:
     beta = [0, 0, 0, 0]
     parameters = image.image.parameters
     High_frequency_max = parameters["High_frequency_cut"]
@@ -28,7 +29,7 @@ def Palasantzas_2_beta(image, PSD):
 
 
 #Model for use with the scipy.optimize.minimize function
-def Palasantzas_2_minimize(beta, freq, PSD):
+def Palasantzas_2_minimize(beta: List[float], freq: np.ndarray, PSD: np.ndarray) -> float:
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -39,7 +40,7 @@ def Palasantzas_2_minimize(beta, freq, PSD):
 
 
 #Model for use with the scipy.optimize.curve_fit function
-def Palasantzas_2(freq, *beta):
+def Palasantzas_2(freq: np.ndarray, *beta: float) -> np.ndarray:
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -48,7 +49,7 @@ def Palasantzas_2(freq, *beta):
     return y
 
 
-def Palasantzas_2b(freq, beta):
+def Palasantzas_2b(freq: np.ndarray, beta: List[float]) -> np.ndarray:
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -57,7 +58,7 @@ def Palasantzas_2b(freq, beta):
     return y
 
 
-def Palasantzas_1(freq, *beta):
+def Palasantzas_1(freq: np.ndarray, *beta: float) -> np.ndarray:
     sig2 = beta[0]
     Lc = 1.0 / beta[1]
     Nl = beta[2]
@@ -67,7 +68,7 @@ def Palasantzas_1(freq, *beta):
     return y
 
 
-def Gaussian(freq, *beta):
+def Gaussian(freq: np.ndarray, *beta: float) -> np.ndarray:
     A = beta[0]
     B = beta[1]
     C = beta[2]
@@ -75,7 +76,7 @@ def Gaussian(freq, *beta):
     return y
 
 
-def NoWhiteNoise(freq, *beta):
+def NoWhiteNoise(freq: np.ndarray, *beta: float) -> np.ndarray:
     sig2 = beta[0]
     Lc = 1.0 / beta[1]
     alpha = beta[2]

@@ -12,7 +12,7 @@ class AverageImage:
         self.images_list = images_list
         self.prepare_average_image()
 
-    def gather_edges(self):
+    def gather_edges(self) -> None:
         if not self.image:
             return None
 
@@ -38,10 +38,10 @@ class AverageImage:
         else:
             raise ValueError('Frequency not consistent')
 
-    def calculate_metrics(self):
+    def calculate_metrics(self) -> None:
         MetricCalculator(self.image).calculate_metrics()
 
-    def prepare_average_image(self):
+    def prepare_average_image(self) -> None:
         self.gather_edges()
         self.calculate_metrics()
 

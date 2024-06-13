@@ -1,12 +1,15 @@
-from app.view.display_image import ImageDisplayManager
-from PyQt6 import QtWidgets, uic
+from pyqtgraph import PlotWidget
+from PyQt6 import QtWidgets
 import pyqtgraph as pg
 import numpy as np
 
+from app.view.display_image import ImageDisplayManager
+from app.models.image_container import Image
 
 class ResultImagesManager(QtWidgets.QWidget):
 
-    def __init__(self, plot_widget_parameters_tab, plot_widget_lines_tab, widget_metric_tab, window):
+    def __init__(self, plot_widget_parameters_tab: PlotWidget, plot_widget_lines_tab: PlotWidget,
+                 widget_metric_tab: PlotWidget, window) -> None:
         self.plot_widget_parameters_tab = plot_widget_parameters_tab
         self.plot_widget_lines_tab = plot_widget_lines_tab
         self.widget_metric_tab = widget_metric_tab
@@ -14,7 +17,7 @@ class ResultImagesManager(QtWidgets.QWidget):
 
         self.base_images = ImageDisplayManager(self.plot_widget_parameters_tab, self.plot_widget_lines_tab)
 
-    def display_profiles_on_lines_tab(self, image):
+    def display_profiles_on_lines_tab(self, image: Image) -> None:
         self.base_images.display_image_on_lines_tab(image)
         edge_color = pg.mkColor(0, 200, 0)
         edge_pen = pg.mkPen(edge_color, width=3)
@@ -22,7 +25,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen)
         self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen)
 
-    def _display_edges(self, edges, error_message, pen):
+    def _display_edges(self, edges: np.ndarray, error_message: str, pen: str) -> None:
         if edges is not None:
             profiles_length = np.shape(edges)[1]
             for edge in edges:
@@ -31,7 +34,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         else:
             self.window.show_error_message(error_message)
 
-    def display_plot_on_metric_tab(self, image):
+    def display_plot_on_metric_tab(self, image: Image) -> None:
         try:
             if self.window.histogram.isChecked():
                 self._display_histogram(image)
@@ -46,7 +49,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         except Exception as e:
             self.window.show_error_message(f"Plot can not be display. {str(e)}")
 
-    def _display_histogram(self, image):
+    def _display_histogram(self, image: Image) -> None:
         histogram_color = pg.mkColor(200, 200, 200)
         histogram_pen = pg.mkPen(histogram_color, width=3)
         histogram_curves_color = pg.mkColor(200, 0, 0)
@@ -73,7 +76,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         self.widget_metric_tab.addItem(histogram_plot_fit)
         self.widget_metric_tab.setLogMode(False, False)
 
-    def _display_psd(self, image, plot_type):
+    def _display_psd(self, image: Image, plot_type: str) -> None:
         PSD_color = pg.mkColor(200, 200, 200)
         PSD_fit_color = pg.mkColor(0, 200, 200)
         PSD_unbiased_color = pg.mkColor(200, 0, 0)

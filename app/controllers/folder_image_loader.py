@@ -1,15 +1,16 @@
 import os
 from PyQt6 import QtWidgets
 from app.models.image_container import Image
+from app.models.images_list import ImagesList
 from app.processors.parameters_collector import gather_parameters
 
 
 class FolderImageLoader:
-    def __init__(self, images_list, window):
+    def __init__(self, images_list: ImagesList, window):
         self.images_list = images_list
         self.window = window
 
-    def load_images_from_folder(self):
+    def load_images_from_folder(self) -> None:
         folder_path = QtWidgets.QFileDialog.getExistingDirectory(self.window, 'Select images folder')
         if not folder_path:
             return

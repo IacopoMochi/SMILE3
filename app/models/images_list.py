@@ -5,7 +5,7 @@ class ImagesList:
     def __init__(self):
         self.images_list = []
 
-    def add_image_to_list(self, image: Image):
+    def add_image_to_list(self, image: Image) -> None:
         if isinstance(image, Image):
             self.images_list.append(image)
         else:

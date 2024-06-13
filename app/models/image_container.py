@@ -57,33 +57,29 @@ class Image:
 
         self.file_name = file_name
         self.folder = path
-        #s = os.path.join(path, file_name)
-        #img = Image.open(s)
-        #img = np.rot90(img, 3)
-        #self.models = img
         self.frequency = None
         self.id = id
         self.selected = True
         self.processed = False
         self.image = None
 
-    def load_image(self):
+    def load_image(self) -> None:
         image_loader = ImageLoader(self.folder, self.file_name)
         self.image = image_loader.load_image()
 
-    def pre_processing(self):
+    def pre_processing(self) -> None:
         pre_processor = PreProcessor(self)
         pre_processor.normalize_image()
         pre_processor.calculate_histogram_parameters()
 
-    def find_edges(self):
+    def find_edges(self) -> None:
         edge_detector = EdgeDetector(self)
         edge_detector.find_edges()
 
-    def calculate_metrics(self):
+    def calculate_metrics(self) -> None:
         metric_calculator = MetricCalculator(self)
         metric_calculator.setup_frequency()
         metric_calculator.calculate_metrics()
 
-    def post_processing(self):
+    def post_processing(self) -> None:
         print('Postprocessing')

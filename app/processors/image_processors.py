@@ -1,3 +1,5 @@
+from typing import Union, Callable
+
 import numpy as np
 from skimage.transform import radon, rotate
 from scipy.optimize import curve_fit, minimize, Bounds
@@ -17,7 +19,7 @@ class PreProcessor:
     def __init__(self, image):
         self.image = image
 
-    def crop_and_rotate_image(self):
+    def crop_and_rotate_image(self) -> np.ndarray:
         # Crop images to the specified ROI
         x1 = int(self.image.parameters["X1"])
         x2 = int(self.image.parameters["X2"])
@@ -42,7 +44,7 @@ class PreProcessor:
         image_rotated_cropped = rotated_image[x1:x2, y1:y2]
         return image_rotated_cropped
 
-    def remove_brightness_gradient(self):
+    def remove_brightness_gradient(self) -> np.ndarray:
         image = self.crop_and_rotate_image()
         brightness_map = image > np.mean(image)
         x, y = np.meshgrid(
@@ -61,14 +63,14 @@ class PreProcessor:
 
         return image_flattened
 
-    def normalize_image(self):
+    def normalize_image(self) -> None:
         image = self.remove_brightness_gradient()
         image_max = np.max(image)
         image_min = np.min(image)
         image_normalized = (image - image_min) / (image_max - image_min)
         self.image.processed_image = image_normalized
 
-    def calculate_histogram_parameters(self):
+    def calculate_histogram_parameters(self) -> None:
         self.image.intensity_histogram = histogram(self.image.processed_image, 0, 1, 256)
         intensity = np.linspace(0, 1, 256)
         max_index = np.argmax(self.image.intensity_histogram)
@@ -97,8 +99,8 @@ class PreProcessor:
 
 class EdgeDetector:
 
-    def __init__(self, smile_lines_image):
-        self.image = smile_lines_image
+    def __init__(self, image):
+        self.image = image
 
     # find the pick in models
     # consolidate the edges and try to center that around zero
@@ -106,7 +108,7 @@ class EdgeDetector:
     # basically makes necessary calculations
     # call in determine_edge_profiles
 
-    def edge_detection(self, new_edges, edges_profiles):
+    def edge_detection(self, new_edges: np.ndarray, edges_profiles: np.ndarray) -> np.ndarray:
         cnt = -1
         image_size = self.image.processed_image.shape
         edge_range = self.image.parameters["EdgeRange"]
@@ -133,21 +135,21 @@ class EdgeDetector:
                     print("Add code for bright edge finding")
         return edges_profiles
 
-    def edge_consolidation(self, raw_edge_profiles):
+    def edge_consolidation(self, raw_edge_profiles: np.ndarray) -> np.ndarray:
         consolidated_edge_profiles = raw_edge_profiles.copy()
         for edge in consolidated_edge_profiles:
             mean_value = np.nanmean(edge)
             edge[edge is np.nan] = mean_value
         return consolidated_edge_profiles
 
-    def edge_mean_subtraction(self, absolute_edge_profiles):
+    def edge_mean_subtraction(self, absolute_edge_profiles: np.ndarray) -> np.ndarray:
         zero_mean_edge_profiles = absolute_edge_profiles.copy()
         for edge in zero_mean_edge_profiles:
             mean_value = np.nanmean(edge)
             edge[:] = edge - mean_value
         return zero_mean_edge_profiles
 
-    def filter_and_reduce_noise(self):
+    def filter_and_reduce_noise(self) -> tuple[float, np.ndarray]:
         # Filter models with a 2d median filter to remove eventual outliers (bright pixels for instance)
         median_filter_kernel = 5
         filtered_image = medfilt2d(self.image.processed_image, median_filter_kernel)
@@ -159,14 +161,14 @@ class EdgeDetector:
         image_sum_filtered = filtfilt(backward_filter, forward_filter, image_sum, method="gust")
         return image_sum, image_sum_filtered
 
-    def detect_peaks(self):
+    def detect_peaks(self) -> tuple[np.ndarray, tuple[np.ndarray, dict]]:
         image_sum, image_sum_filtered = self.filter_and_reduce_noise()
         image_sum_derivative = np.diff(image_sum)
         image_sum_filtered_derivative = np.abs(np.diff(image_sum_filtered))
         peaks = find_peaks(image_sum_filtered_derivative)
         return image_sum_derivative, peaks
 
-    def classify_edges(self):
+    def classify_edges(self) -> tuple[np.ndarray, np.ndarray]:
         image_sum_derivative, peaks = self.detect_peaks()
         edge_locations = peaks[0]
         leading_edges = np.array([])
@@ -188,7 +190,7 @@ class EdgeDetector:
 
         return leading_edges, trailing_edges
 
-    def find_leading_and_trailing_edges(self):
+    def find_leading_and_trailing_edges(self) -> tuple[np.ndarray, np.ndarray]:
         leading_edges, trailing_edges = self.classify_edges()
 
         # Consider only complete lines: for each trailing edge there must be 1 leading edge
@@ -206,7 +208,7 @@ class EdgeDetector:
 
         return new_leading_edges, new_trailing_edges
 
-    def determine_edge_profiles(self, ):
+    def determine_edge_profiles(self) -> tuple[np.ndarray, np.ndarray]:
         # Determine leading edge profiles
 
         new_leading_edges, new_trailing_edges = self.find_leading_and_trailing_edges()
@@ -220,7 +222,7 @@ class EdgeDetector:
 
         return leading_edges_profiles, trailing_edges_profiles
 
-    def find_edges(self):
+    def find_edges(self) -> None:
         self.image.leading_edges, self.image.trailing_edges = self.determine_edge_profiles()
 
         self.image.consolidated_leading_edges = self.edge_consolidation(self.image.leading_edges)
@@ -259,17 +261,17 @@ class EdgeDetector:
 class MetricCalculator:
     # Make fourier transformation and calculates and optimize parameters
 
-    def __init__(self, smile_lines_image):
-        self.image = smile_lines_image
+    def __init__(self, image):
+        self.image = image
 
-    def setup_frequency(self):
+    def setup_frequency(self) -> None:
         self.image.pixel_size = self.image.parameters["PixelSize"]
         Fs = 1 / self.image.pixel_size
         s = np.shape(self.image.consolidated_leading_edges)
         profiles_length = s[1]
         self.image.frequency = 1000 * np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
 
-    def select_psd_model(self):
+    def select_psd_model(self) -> tuple[Union[Callable, None], Union[Callable, None], Union[Callable, None]]:
         # Assign chosen PSD model
 
         selected_model = self.image.parameters["PSD_model"]
@@ -283,7 +285,7 @@ class MetricCalculator:
 
         return model, model_beta, model_2
 
-    def calculate_and_fit_psd(self, input_data):
+    def calculate_and_fit_psd(self, input_data: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         model, model_beta, model_2 = self.select_psd_model()
         PSD = np.nanmean(np.abs(np.fft.rfft(input_data)) ** 2, 0)
         PSD /= len(PSD) ** 2
@@ -309,7 +311,7 @@ class MetricCalculator:
 
         return PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased
 
-    def calculate_metrics(self):
+    def calculate_metrics(self) -> None:
 
         # LWR PSD
         line_width = np.abs(

@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from app.models.image_container import Image
+from app.models.images_list import ImagesList
+from app.models.average_image import AverageImage
 
 
 class TableController(QtWidgets.QWidget):
@@ -18,9 +20,9 @@ class TableController(QtWidgets.QWidget):
         self.table_widget.setHorizontalHeaderLabels(["Selected", "Processed", "Name", "N of Lines", "Average pitch",
                                                      "Average CD", "CD std", "Unbiased LWR", "Unbiased LWR fit"])
 
-    def update_with_image(self, images_list):
-        self.table_widget.setRowCount(len(images_list) + 2)
-        for idx, image in enumerate(images_list):
+    def update_with_image(self, images_list: ImagesList) -> None:
+        self.table_widget.setRowCount(len(images_list.images_list) + 2)
+        for idx, image in enumerate(images_list.images_list):
             check_box = QTableWidgetItem()
             check_box.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
             check_box.setCheckState(Qt.CheckState.Unchecked if not image.selected else Qt.CheckState.Checked)
@@ -31,10 +33,10 @@ class TableController(QtWidgets.QWidget):
             self.table_widget.setItem(idx, 1, QTableWidgetItem('Yes' if image.processed else 'No'))
             self.table_widget.setItem(idx, 2, QTableWidgetItem(image_name))
 
-    def mark_image_as_processed(self, image_id):
+    def mark_image_as_processed(self, image_id: int) -> None:
         self.table_widget.setItem(image_id, 1, QTableWidgetItem("Yes"))
 
-    def update_with_processed_image(self, image: Image):
+    def update_with_processed_image(self, image: Image) -> None:
         try:
             if image.critical_dimension_estimate is not None:
                 item_averageCD = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_estimate:.5f}")
@@ -51,6 +53,6 @@ class TableController(QtWidgets.QWidget):
         except Exception as e:
             self.error_signal.emit(f"Error occurred while completing the table with processed image data: {str(e)}")
 
-    def add_average_image(self, average_image):
-        self.table_widget.setItem(average_image.id, 2, QTableWidgetItem('average'))
+    def add_average_image(self, average_image: AverageImage) -> None:
+        self.table_widget.setItem(average_image.image.id, 2, QTableWidgetItem('average'))
 

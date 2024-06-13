@@ -1,7 +1,8 @@
 import numpy as np
+from app.models.image_container import Image
 
 
-def gather_parameters(window, image):
+def gather_parameters(window, image: Image) -> None:
     edge_fit_function = get_fit_function(window)
 
     parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
