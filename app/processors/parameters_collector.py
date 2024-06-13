@@ -3,6 +3,14 @@ from app.models.image_container import Image
 
 
 def gather_parameters(window, image: Image) -> None:
+    """
+    Gathers parameters from the GUI and assigns them to the image object.
+
+    Args:
+        window: The GUI window object containing input fields.
+        image (Image): The image object to which the parameters will be assigned.
+    """
+
     edge_fit_function = get_fit_function(window)
 
     parameters = {'Threshold': np.double(window.threshold_line_edit.text()),
@@ -29,7 +37,17 @@ def gather_parameters(window, image: Image) -> None:
     image.parameters = parameters
 
 
-def get_fit_function(window):
+def get_fit_function(window) -> str:
+    """
+    Determines the edge fit function based on the GUI settings.
+
+    Args:
+        window: The GUI window object containing input fields.
+
+    Returns:
+        str: The selected edge fit function.
+    """
+
     if window.Polynomial.isChecked():
         edge_fit_function = 'polynomial'
     elif window.Linear.isChecked():

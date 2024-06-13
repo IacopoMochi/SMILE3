@@ -1,11 +1,20 @@
-# PSD image_processing
-from typing import List
-
+from typing import List, Tuple
 import numpy as np
 
-# HELPER FUNCIONS THAT ARE UESED IN smile_lines_image_class.py
 
-def Palasantzas_2_beta(image, PSD: np.ndarray) -> tuple[list[float], list[float], list[float]]:
+def Palasantzas_2_beta(image, PSD: np.ndarray) -> Tuple[List[float], List[float], List[float]]:
+    """
+    Calculates the beta parameters and their min and max ranges for the Palasantzas 2 model.
+
+    Args:
+        image: The image object containing the parameters.
+        PSD (np.ndarray): The power spectral density data.
+
+    Returns:
+        Tuple[List[float], List[float], List[float]]: A tuple containing the beta parameters,
+                                                      their minimum values, and their maximum values.
+    """
+
     beta = [0, 0, 0, 0]
     parameters = image.image.parameters
     High_frequency_max = parameters["High_frequency_cut"]
@@ -28,8 +37,19 @@ def Palasantzas_2_beta(image, PSD: np.ndarray) -> tuple[list[float], list[float]
     return beta, beta_min, beta_max
 
 
-#Model for use with the scipy.optimize.minimize function
 def Palasantzas_2_minimize(beta: List[float], freq: np.ndarray, PSD: np.ndarray) -> float:
+    """
+    Model for use with the scipy.optimize.minimize function.
+
+    Args:
+        beta (List[float]): List of beta parameters.
+        freq (np.ndarray): Frequency data.
+        PSD (np.ndarray): Power spectral density data.
+
+    Returns:
+        float: The minimized value.
+    """
+
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -39,8 +59,18 @@ def Palasantzas_2_minimize(beta: List[float], freq: np.ndarray, PSD: np.ndarray)
     return S
 
 
-#Model for use with the scipy.optimize.curve_fit function
 def Palasantzas_2(freq: np.ndarray, *beta: float) -> np.ndarray:
+    """
+    Model for use with the scipy.optimize.curve_fit function.
+
+    Args:
+        freq (np.ndarray): Frequency data.
+        *beta (float): Beta parameters.
+
+    Returns:
+        np.ndarray: The computed model values.
+    """
+
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -50,6 +80,17 @@ def Palasantzas_2(freq: np.ndarray, *beta: float) -> np.ndarray:
 
 
 def Palasantzas_2b(freq: np.ndarray, beta: List[float]) -> np.ndarray:
+    """
+    Computes the Palasantzas 2b model.
+
+    Args:
+        freq (np.ndarray): Frequency data.
+        beta (List[float]): List of beta parameters.
+
+    Returns:
+        np.ndarray: The computed model values.
+    """
+
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -59,6 +100,17 @@ def Palasantzas_2b(freq: np.ndarray, beta: List[float]) -> np.ndarray:
 
 
 def Palasantzas_1(freq: np.ndarray, *beta: float) -> np.ndarray:
+    """
+    Computes the Palasantzas 1 model.
+
+    Args:
+        freq (np.ndarray): Frequency data.
+        *beta (float): Beta parameters.
+
+    Returns:
+        np.ndarray: The computed model values.
+    """
+
     sig2 = beta[0]
     Lc = 1.0 / beta[1]
     Nl = beta[2]
@@ -69,6 +121,17 @@ def Palasantzas_1(freq: np.ndarray, *beta: float) -> np.ndarray:
 
 
 def Gaussian(freq: np.ndarray, *beta: float) -> np.ndarray:
+    """
+    Computes the Gaussian model.
+
+    Args:
+        freq (np.ndarray): Frequency data.
+        *beta (float): Beta parameters.
+
+    Returns:
+        np.ndarray: The computed Gaussian model values.
+    """
+
     A = beta[0]
     B = beta[1]
     C = beta[2]
@@ -77,8 +140,22 @@ def Gaussian(freq: np.ndarray, *beta: float) -> np.ndarray:
 
 
 def NoWhiteNoise(freq: np.ndarray, *beta: float) -> np.ndarray:
+    """
+    Computes the NoWhiteNoise model.
+
+    Args:
+        freq (np.ndarray): Frequency data.
+        *beta (float): Beta parameters.
+
+    Returns:
+        np.ndarray: The computed NoWhiteNoise model values.
+    """
+
     sig2 = beta[0]
     Lc = 1.0 / beta[1]
     alpha = beta[2]
     y = Lc * sig2 / (1 + (freq * Lc) ** 2) ** (0.5 + alpha)
+    return y
+
+    y = (Lc * sig2 / (1 + a * (freq * Lc) ** 2) ** (1 + alpha)) + np.abs(Nl)
     return y

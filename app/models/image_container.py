@@ -3,6 +3,12 @@ from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCa
 
 
 class Image:
+    """
+    A container class to represent and process an image with methods for loading, preprocessing,
+    edge detection, and metric calculation. The actual functionality is delegated to various
+    helper classes.
+    """
+
     def __init__(self, id, path, file_name):
         self.zero_mean_leading_edge_profiles = None
         self.zero_mean_trailing_edge_profiles = None
@@ -64,19 +70,35 @@ class Image:
         self.image = None
 
     def load_image(self) -> None:
+        """
+        A method that calls ImageLoader class for loading the image and rotates it.
+        """
+
         image_loader = ImageLoader(self.folder, self.file_name)
         self.image = image_loader.load_image()
 
     def pre_processing(self) -> None:
+        """
+        A method that calls PreProcessing class for preprocessing images, including cropping, rotating, and normalizing.
+        """
+
         pre_processor = PreProcessor(self)
         pre_processor.normalize_image()
         pre_processor.calculate_histogram_parameters()
 
     def find_edges(self) -> None:
+        """
+        A method that calls EdgeDetector class for detecting and analyzing edges in an image.
+        """
+
         edge_detector = EdgeDetector(self)
         edge_detector.find_edges()
 
     def calculate_metrics(self) -> None:
+        """
+        A method that calls MetricCalculator for calculating the metrics of the image.
+        """
+
         metric_calculator = MetricCalculator(self)
         metric_calculator.setup_frequency()
         metric_calculator.calculate_metrics()

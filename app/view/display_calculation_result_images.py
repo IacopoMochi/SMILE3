@@ -6,7 +6,18 @@ import numpy as np
 from app.view.display_image import ImageDisplayManager
 from app.models.image_container import Image
 
+
 class ResultImagesManager(QtWidgets.QWidget):
+    """
+    Manages the display of result images on various tabs in the GUI.
+
+    Attributes:
+        plot_widget_parameters_tab (PlotWidget): The widget for displaying image in parameters tab.
+        plot_widget_lines_tab (PlotWidget): The widget for displaying image in line tab.
+        widget_metric_tab (PlotWidget): The widget for displaying metric plots.
+        window: The main window of the application.
+        base_images (ImageDisplayManager): Manages the display of base images.
+    """
 
     def __init__(self, plot_widget_parameters_tab: PlotWidget, plot_widget_lines_tab: PlotWidget,
                  widget_metric_tab: PlotWidget, window) -> None:
@@ -18,6 +29,13 @@ class ResultImagesManager(QtWidgets.QWidget):
         self.base_images = ImageDisplayManager(self.plot_widget_parameters_tab, self.plot_widget_lines_tab)
 
     def display_profiles_on_lines_tab(self, image: Image) -> None:
+        """
+        Marks profiles on the image.
+
+        Args:
+            image (Image): The image object, contain profiles attributes to display.
+        """
+
         self.base_images.display_image_on_lines_tab(image)
         edge_color = pg.mkColor(0, 200, 0)
         edge_pen = pg.mkPen(edge_color, width=3)
@@ -26,6 +44,15 @@ class ResultImagesManager(QtWidgets.QWidget):
         self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen)
 
     def _display_edges(self, edges: np.ndarray, error_message: str, pen: str) -> None:
+        """
+        Helper function to add edges on the image in lines tab.
+
+        Args:
+            edges (np.ndarray): The edges to display.
+            error_message (str): The error message to show if edges are not found.
+            pen (str): The pen for drawing the edges.
+        """
+
         if edges is not None:
             profiles_length = np.shape(edges)[1]
             for edge in edges:
@@ -35,6 +62,13 @@ class ResultImagesManager(QtWidgets.QWidget):
             self.window.show_error_message(error_message)
 
     def display_plot_on_metric_tab(self, image: Image) -> None:
+        """
+        Displays the appropriate plot on the metric tab based on user selection.
+
+        Args:
+            image (Image): The image object containing the data to plot.
+        """
+
         try:
             if self.window.histogram.isChecked():
                 self._display_histogram(image)
@@ -50,6 +84,13 @@ class ResultImagesManager(QtWidgets.QWidget):
             self.window.show_error_message(f"Plot can not be display. {str(e)}")
 
     def _display_histogram(self, image: Image) -> None:
+        """
+        Helper method to display the histogram on the metric tab.
+
+        Args:
+            image (Image): The image object containing the histogram data.
+        """
+
         histogram_color = pg.mkColor(200, 200, 200)
         histogram_pen = pg.mkPen(histogram_color, width=3)
         histogram_curves_color = pg.mkColor(200, 0, 0)
@@ -77,6 +118,14 @@ class ResultImagesManager(QtWidgets.QWidget):
         self.widget_metric_tab.setLogMode(False, False)
 
     def _display_psd(self, image: Image, plot_type: str) -> None:
+        """
+        Helper method to display the PSD plot on the metric tab.
+
+        Args:
+            image (Image): The image object containing the PSD data.
+            plot_type (str): The type of PSD plot to display.
+        """
+
         PSD_color = pg.mkColor(200, 200, 200)
         PSD_fit_color = pg.mkColor(0, 200, 200)
         PSD_unbiased_color = pg.mkColor(200, 0, 0)

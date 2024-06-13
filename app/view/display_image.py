@@ -8,6 +8,14 @@ from app.models.image_container import Image
 
 
 class ImageDisplayManager(QtWidgets.QWidget):
+    """
+    Manages the display of images on various tabs in the GUI.
+
+    Attributes:
+        error_signal (pyqtSignal): Signal to emit error messages.
+        widget_parameters_tab (PlotWidget): The widget for displaying parameter images.
+        widget_lines_tab (PlotWidget): The widget for displaying line images.
+    """
     error_signal = pyqtSignal(str)
 
     def __init__(self, widget_parameters_tab: PlotWidget, widget_lines_tab: PlotWidget):
@@ -16,6 +24,12 @@ class ImageDisplayManager(QtWidgets.QWidget):
         self.widget_lines_tab = widget_lines_tab
 
     def display_image_on_parameters_tab(self, image: Image) -> None:
+        """
+        Displays the image on the parameters tab.
+
+        Args:
+            image (Image): The image object to display.
+        """
         try:
             self.widget_parameters_tab.clear()
             if image is not None:
@@ -27,6 +41,12 @@ class ImageDisplayManager(QtWidgets.QWidget):
             self.error_signal.emit(f"Error occurred while displaying the image: {str(e)}")
 
     def display_image_on_lines_tab(self, image: Image) -> None:
+        """
+        Displays the image on the lines tab.
+
+        Args:
+            image (Image): The image object to display.
+        """
         try:
             self.widget_lines_tab.clear()
             if image.processed_image is not None:

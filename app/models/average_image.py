@@ -6,6 +6,13 @@ from app.processors.image_processors import MetricCalculator
 
 
 class AverageImage:
+    """
+    A class to create and manage an average image from a list of images.
+
+    Attributes:
+        image (Image): A deep copy of the first image in the images list, used to fill missing data.
+        images_list (ImagesList): The list of images to average.
+    """
     def __init__(self, images_list: ImagesList) -> None:
         self.image = copy.deepcopy(images_list.images_list[0])
         self.image.id = len(images_list.images_list) + 1
@@ -13,6 +20,14 @@ class AverageImage:
         self.prepare_average_image()
 
     def gather_edges(self) -> None:
+        """
+        Gathers and concatenates edges and zero-mean edge profiles from all images in the list.
+        Ensures frequency consistency across all images.
+
+        Raises:
+            ValueError: If frequencies are not consistent across all images.
+        """
+
         if not self.image:
             return None
 
@@ -39,9 +54,17 @@ class AverageImage:
             raise ValueError('Frequency not consistent')
 
     def calculate_metrics(self) -> None:
+        """
+        Calculates metrics for the average image using the MetricCalculator class.
+        """
+
         MetricCalculator(self.image).calculate_metrics()
 
     def prepare_average_image(self) -> None:
+        """
+        Prepares the average image by calling gathering edges and calculating metrics functions.
+        """
+
         self.gather_edges()
         self.calculate_metrics()
 

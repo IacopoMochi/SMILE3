@@ -13,6 +13,11 @@ from app.models.average_image import AverageImage
 
 
 class MainWindow(QtWidgets.QMainWindow):
+    """
+    Main window class for the application that handles UI setup, image loading,
+    processing, and displaying results.
+
+    """
     def __init__(self):
         super(MainWindow, self).__init__()
         uic.loadUi("ui/window.ui", self)
@@ -31,6 +36,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_connections()
 
     def init_ui(self) -> None:
+        """
+        Finds and initializes UI components.
+        """
+
         self.push_button_image_folder = self.findChild(QtWidgets.QPushButton, "pushButton_ImageFolder")
         self.push_button_process_images = self.findChild(QtWidgets.QPushButton, "process_lines_button")
         self.table = self.findChild(QtWidgets.QTableWidget, "linesTable")
@@ -39,6 +48,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_metric_tab = self.findChild(PlotWidget, "metric_plot")
 
     def setup_connections(self) -> None:
+        """
+        Sets up push-buttons and signal-slot connections for UI components.
+        """
+
         self.push_button_image_folder.pressed.connect(self.prepare_image)
         self.push_button_process_images.pressed.connect(self.process_image)
         self.table.cellClicked.connect(self.display_corresponding_images)
@@ -47,6 +60,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.image_display_manager.error_signal.connect(self.show_error_message)
 
     def prepare_image(self) -> None:
+        """
+        Loads images from a folder and updates the UI with loaded images.
+        """
+
         # self.clean_tab()
         self.image_loader.load_images_from_folder()
         for image in self.images_list.images_list:
@@ -55,10 +72,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.table_controller.update_with_image(self.images_list)
 
     def clean_tab(self) -> None:
+        """
+        Clears the images list and table contents.
+        """
+
         self.images_list.images_list = []
         self.table.clearContents()
 
     def process_image(self) -> None:
+        """
+        Processes selected images and updates the UI with results.
+        """
+
         self.processing_controller.get_number_selected_images()
         self.processing_controller.set_up_progress_bar()
 
@@ -80,6 +105,10 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QApplication.processEvents()
 
     def display_corresponding_images(self, row: int) -> None:
+        """
+        Displays images and metrics corresponding to the selected table row.
+        """
+
         if row <= len(self.images_list.images_list) - 1:
             image = self.images_list.images_list[row]
             if self.table.item(row, 0).checkState() == Qt.CheckState.Checked:
@@ -98,6 +127,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.result_images_manager.display_plot_on_metric_tab(image)
 
     def show_error_message(self, message: str) -> None:
+        """
+        Displays an error message in a message box.
+        """
+
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Icon.Critical)
         error_dialog.setText(message)
