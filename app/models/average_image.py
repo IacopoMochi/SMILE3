@@ -2,6 +2,7 @@ import numpy as np
 import copy
 
 from app.models.images_list import ImagesList
+from app.models.image_container import Image
 from app.processors.image_processors import MetricCalculator
 
 
@@ -14,7 +15,7 @@ class AverageImage:
         images_list (ImagesList): The list of images to average.
     """
     def __init__(self, images_list: ImagesList) -> None:
-        self.image = copy.deepcopy(images_list.images_list[0])
+        self.image: Image = copy.deepcopy(images_list.images_list[0])
         self.image.id = len(images_list.images_list) + 1
         self.images_list = images_list
         self.prepare_average_image()
