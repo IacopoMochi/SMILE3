@@ -73,7 +73,7 @@ class ResultImagesManager(QtWidgets.QWidget):
             if self.window.histogram.isChecked():
                 self._display_histogram(image)
             elif self.window.lineWidthPSD.isChecked():
-                self._display_psd(image, "LW_PSD")
+                self._display_psd(image, "LWR_PSD")
             elif self.window.LineEdgePSD.isChecked():
                 self._display_psd(image, "LER_PSD")
             elif self.window.LeadingEdgePSD.isChecked():
@@ -136,7 +136,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
 
         psd_plots = {
-            "LW_PSD": (image.LWR_PSD, image.LWR_PSD_fit, image.LWR_PSD_unbiased, image.LWR_PSD_fit_unbiased),
+            "LWR_PSD": (image.LWR_PSD, image.LWR_PSD_fit, image.LWR_PSD_unbiased, image.LWR_PSD_fit_unbiased),
             "LER_PSD": (image.LER_PSD, image.LER_PSD_fit, image.LER_PSD_unbiased, image.LER_PSD_fit_unbiased),
             "leading_LER_PSD": (image.LER_Leading_PSD, image.LER_Leading_PSD_fit, image.LER_Leading_PSD_unbiased,
                                 image.LER_Leading_PSD_fit_unbiased),
