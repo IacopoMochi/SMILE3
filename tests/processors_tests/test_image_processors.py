@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
-from app.processors.image_processors import PreProcessor
+from app.processors.image_processors import PreProcessor, EdgeDetector
 
 
 class MockImage:
@@ -100,6 +100,126 @@ class TestPreProcessor(unittest.TestCase):
         self.assertIsNotNone(self.image.intensity_histogram_high)
         self.assertIsNotNone(self.image.intensity_histogram_medium)
         self.assertIsNotNone(self.image.lines_snr)
+
+
+class TestEdgeDetector(unittest.TestCase):
+
+    def setUp(self):
+
+        class DummyImage:
+            def __init__(self):
+                self.processed_image = np.random.rand(100, 100)
+                self.parameters = {
+                    "EdgeRange": 5,
+                    "Edge_fit_function": "polynomial",
+                    "Threshold": 0.5,
+                    "brightEdge": False,
+                    "tone_positive_radiobutton": True
+                }
+                self.leading_edges = None
+                self.trailing_edges = None
+                self.consolidated_leading_edges = None
+                self.consolidated_trailing_edges = None
+                self.zero_mean_leading_edge_profiles = None
+                self.zero_mean_trailing_edge_profiles = None
+                self.number_of_lines = None
+                self.critical_dimension = None
+                self.critical_dimension_std_estimate = None
+                self.critical_dimension_estimate = None
+                self.pitch_estimate = None
+
+        self.image = DummyImage()
+        self.edge_detector = EdgeDetector(self.image)
+
+    def test_edge_detection(self):
+        new_edges = np.array([10, 20, 30])
+        edges_profiles = np.nan * np.zeros([len(new_edges), self.image.processed_image.shape[1]])
+        result = self.edge_detector.edge_detection(new_edges, edges_profiles)
+
+        self.assertEqual(result.shape, edges_profiles.shape)
+        self.assertFalse(np.isnan(result).all())
+
+    def test_edge_consolidation(self):
+        raw_edge_profiles = np.array([
+            [2, 3, np.nan, 4],
+            [np.nan, np.nan, 3, 4],
+            [5, 6, 7, 8]
+        ])
+
+        expected_result = np.array([
+            [2, 3, 3, 4],
+            [3.5, 3.5, 3, 4],
+            [5, 6, 7, 8]
+        ])
+
+        result = self.edge_detector.edge_consolidation(raw_edge_profiles)
+        print(result)
+
+        np.testing.assert_array_almost_equal(result, expected_result)
+
+    def test_edge_mean_subtraction(self):
+        absolute_edge_profiles = np.random.rand(3, 100)
+        zero_mean_profiles = self.edge_detector.edge_mean_subtraction(absolute_edge_profiles)
+        self.assertAlmostEqual(np.mean(zero_mean_profiles), 0, places=5)
+
+    def test_filter_and_reduce_noise(self):
+        image_sum, image_sum_filtered = self.edge_detector.filter_and_reduce_noise()
+
+        self.assertEqual(image_sum.shape[0], self.image.processed_image.shape[0])
+        self.assertEqual(image_sum_filtered.shape[0], self.image.processed_image.shape[0])
+        self.assertFalse(np.allclose(image_sum, image_sum_filtered))
+
+    def test_detect_peaks(self):
+        image_sum_derivative, peaks = self.edge_detector.detect_peaks()
+
+        self.assertEqual(len(peaks), 2)
+        self.assertIsInstance(peaks[0], np.ndarray)
+        self.assertIsInstance(peaks[1], dict)
+
+    @patch.object(EdgeDetector, 'detect_peaks')
+    def test_classify_edges(self, mock_detect_peaks):
+        mock_detect_peaks.return_value = (np.array([0, 2, 1, 2]), (np.array([0, 2]), {}))
+
+        leading_edges, trailing_edges = self.edge_detector.classify_edges()
+
+        expected_leading_edges = np.array([2.0])
+        expected_trailing_edges = np.array([0.0])
+
+        np.testing.assert_array_equal(leading_edges, expected_leading_edges)
+        np.testing.assert_array_equal(trailing_edges, expected_trailing_edges)
+
+    @patch.object(EdgeDetector, 'classify_edges')
+    def test_find_leading_and_trailing_edges(self, mock_classify_edges):
+        mock_classify_edges.return_value = (np.array([2.0, 3.0]), np.array([1.0, 3.0]))
+
+        new_leading_edges, new_trailing_edges = self.edge_detector.find_leading_and_trailing_edges()
+
+        self.assertEqual(new_leading_edges, [2.0])
+        self.assertEqual(new_trailing_edges, [3.0])
+
+    @patch.object(EdgeDetector, 'find_leading_and_trailing_edges')
+    def test_determine_edge_profiles(self, mock_find_leading_and_trailing_edges):
+        mock_find_leading_and_trailing_edges.return_value = (np.array([2.0, 3.0]), np.array([1.0, 3.0]))
+
+        new_leading_edges, new_trailing_edges = self.edge_detector.determine_edge_profiles()
+        self.assertEqual(new_leading_edges.shape, (2, self.edge_detector.image.processed_image.shape[1]))
+        self.assertEqual(new_trailing_edges.shape, (2, self.edge_detector.image.processed_image.shape[1]))
+
+    @patch.object(EdgeDetector, 'determine_edge_profiles')
+    def test_find_edges(self, mock_determine_edge_profiles):
+        mock_determine_edge_profiles.return_value = (
+            np.array([[1.3, 1.4], [2.0, 2.2]]),
+            np.array([[1.8, 2.0], [3.0, 4.1]])
+        )
+        self.edge_detector.find_edges()
+
+        self.assertEqual(self.image.consolidated_leading_edges.shape, (2, 2))
+        self.assertEqual(self.image.consolidated_trailing_edges.shape, (2, 2))
+        self.assertEqual(self.image.zero_mean_leading_edge_profiles.shape, (2, 2))
+        self.assertEqual(self.image.zero_mean_trailing_edge_profiles.shape, (2, 2))
+        self.assertEqual(self.image.critical_dimension_std_estimate, 0.44999999999999984)
+        self.assertEqual(self.image.critical_dimension_estimate, 0.9999999999999999)
+        self.assertEqual(self.image.pitch_estimate, 1.2)
 
 
 if __name__ == '__main__':
