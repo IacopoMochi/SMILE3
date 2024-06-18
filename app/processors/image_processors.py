@@ -5,6 +5,7 @@ import numpy as np
 from skimage.transform import radon, rotate
 from scipy.optimize import curve_fit
 from scipy.ndimage import histogram
+from copy import deepcopy
 
 from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
@@ -146,11 +147,18 @@ class EdgeDetector:
         """
         Consolidates raw edge profiles.
         """
+        # consolidated_edge_profiles = raw_edge_profiles.copy()
+        # for edge in consolidated_edge_profiles:
+        #     mean_value = np.nanmean(edge)
+        #     print(edge)
+        #     edge[edge is np.nan] = mean_value
+        #     print(edge)
 
         consolidated_edge_profiles = raw_edge_profiles.copy()
-        for edge in consolidated_edge_profiles:
+        for i, edge in enumerate(consolidated_edge_profiles):
             mean_value = np.nanmean(edge)
-            edge[edge is np.nan] = mean_value
+            consolidated_edge_profiles[i] = np.where(np.isnan(edge), mean_value, edge)
+
         return consolidated_edge_profiles
 
     def edge_mean_subtraction(self, absolute_edge_profiles: np.ndarray) -> np.ndarray:
