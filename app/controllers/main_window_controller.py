@@ -100,6 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 QtWidgets.QApplication.processEvents()
 
         self.average_image = AverageImage(self.images_list)
+        self.average_image.prepare_average_image()
         self.table_controller.add_average_image(self.average_image)
         self.result_images_manager.display_plot_on_metric_tab(self.average_image.image)
         QtWidgets.QApplication.processEvents()
