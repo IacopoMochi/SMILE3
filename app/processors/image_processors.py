@@ -322,7 +322,7 @@ class MetricCalculator:
             model_beta = Palasantzas_2_beta
             model_2 = Palasantzas_2b
         else:
-            model, model_beta, model_2 = None, None, None
+            raise ValueError('Please select valid model')
 
         return model, model_beta, model_2
 
