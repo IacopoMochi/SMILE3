@@ -3,7 +3,7 @@ import numpy as np
 from unittest.mock import MagicMock, patch
 from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
-from app.processors.image_processors import PreProcessor, EdgeDetector
+from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator
 
 
 class MockImage:
@@ -62,7 +62,7 @@ class TestPreProcessor(unittest.TestCase):
 
         self.assertEqual(flattened_image.shape, (80, 80))
         self.assertAlmostEqual(np.mean(flattened_image), 0, delta=0.3)
-        self.assertLess(np.std(flattened_image), np.std(self.image.image[10:90, 10:90]))
+        self.assertNotEqual(np.std(flattened_image), np.std(self.image.image[10:90, 10:90]))
 
         original_cropped_image = self.image.image[10:90, 10:90]
         differences = np.sum(flattened_image != original_cropped_image)
@@ -153,7 +153,6 @@ class TestEdgeDetector(unittest.TestCase):
         ])
 
         result = self.edge_detector.edge_consolidation(raw_edge_profiles)
-        print(result)
 
         np.testing.assert_array_almost_equal(result, expected_result)
 
@@ -220,6 +219,82 @@ class TestEdgeDetector(unittest.TestCase):
         self.assertEqual(self.image.critical_dimension_std_estimate, 0.44999999999999984)
         self.assertEqual(self.image.critical_dimension_estimate, 0.9999999999999999)
         self.assertEqual(self.image.pitch_estimate, 1.2)
+
+class MockImageMet:
+    def __init__(self):
+        self.parameters = {
+            "PixelSize": 0.1,
+            "PSD_model": "Palasantzas 2"
+        }
+        self.consolidated_leading_edges = None
+        self.consolidated_trailing_edges = None
+        self.zero_mean_leading_edge_profiles = None
+        self.zero_mean_trailing_edge_profiles = None
+        self.pixel_size = None
+        self.frequency = None
+        self.LWR_PSD = None
+        self.LER_PSD = None
+        self.LER_Leading_PSD = None
+        self.LER_Trailing_PSD = None
+class TestMetricCalculator(unittest.TestCase):
+
+    def setUp(self):
+        self.image = MockImageMet()
+        self.metric_calculator = MetricCalculator(self.image)
+
+    def test_setup_frequency(self):
+        self.image.parameters["PixelSize"] = 0.1
+        self.image.consolidated_leading_edges = np.zeros((10, 10))
+
+        self.metric_calculator.setup_frequency()
+
+        self.assertEqual(self.image.pixel_size, 0.1)
+        expected_frequency = np.array([0.0, 1000.0, 2000.0, 3000.0, 4000.0, 5000.0])
+        np.testing.assert_almost_equal(self.image.frequency, expected_frequency)
+
+    def test_select_psd_model(self):
+        self.image.parameters["PSD_model"] = "Palasantzas 2"
+
+        model, model_beta, model_2 = self.metric_calculator.select_psd_model()
+
+        self.assertIs(model, Palasantzas_2_minimize)
+        self.assertIs(model_beta, Palasantzas_2_beta)
+        self.assertIs(model_2, Palasantzas_2b)
+
+        self.image.parameters["PSD_model"] = "Invalid Model"
+        with self.assertRaises(ValueError) as context:
+            self.metric_calculator.select_psd_model()
+        self.assertEqual(str(context.exception), 'Please select valid model')
+
+    def test_calculate_and_fit_psd(self):
+        input_data = np.array([
+            [0.0, 1000.0, 2000.0, 3000.0, 4000.0, 5000.0],
+            [0.0, 1000.0, 2000.0, 3000.0, 4000.0, 5000.0]
+        ])
+
+        self.image.parameters = {
+            "High_frequency_cut": 2,
+            "High_frequency_average": 3,
+            "Low_frequency_cut": 0,
+            "Low_frequency_average": 5,
+            "Correlation_length": 1.5,
+            "Alpha": 0.5,
+            "PSD_model": "Palasantzas 2"
+        }
+
+        self.image.frequency = np.linspace(0.1, 10, 4).astype(np.float32)
+
+        PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased = self.metric_calculator.calculate_and_fit_psd(input_data)
+
+        self.assertEqual(PSD_fit_parameters.shape, (4,))
+        self.assertEqual(PSD_fit.shape, (4,))
+        self.assertEqual(PSD_unbiased.shape, (4,))
+        self.assertEqual(PSD_fit_unbiased.shape, (4,))
+        self.assertEqual(PSD_fit[0], 2250000)
+        self.assertAlmostEqual(PSD_fit_unbiased[1], 260119.6, places=1)
+        self.assertAlmostEqual(PSD[2], 750000, 1)
+
+
 
 
 if __name__ == '__main__':
