@@ -10,27 +10,6 @@ class TestFolderImageLoader(unittest.TestCase):
     @patch('app.controllers.folder_image_loader.gather_parameters')
     def test_load_images_from_folder(self, mock_gather_parameters, mock_load_image, mock_os_walk,
                                      mock_get_existing_directory):
-        """
-        Tests the load_images_from_folder method of the FolderImageLoader class.
-
-        This test checks the following:
-        1. The method correctly opens a file dialog to select a folder.
-        2. It iterates over the files in the selected folder, filtering for supported image formats.
-        3. It loads each valid image, gathers parameters, and adds it to the images list.
-        4. It handles PermissionError and generic exceptions properly, showing error messages when necessary.
-
-        The test uses mocks to simulate:
-        - The folder selection dialog returning a predefined folder path.
-        - The os.walk function returning a predefined directory structure with a mix of image and non-image files.
-        - The Image.load_image method to avoid actual image loading.
-        - The gather_parameters function to avoid actual parameter gathering.
-
-        Assertions check:
-        - The number of images added to the images list matches the expected count.
-        - The filenames of the images added to the list are as expected.
-        - The load_image and gather_parameters functions are called appropriately.
-        - The correct error messages are shown if exceptions occur.
-        """
 
         mock_get_existing_directory.return_value = '/mocked/folder'
         mock_os_walk.return_value = [

@@ -8,10 +8,6 @@ from app.models.average_image import AverageImage
 
 
 class TestAverageImage(unittest.TestCase):
-    """
-    Unit tests for the AverageImage class.
-    """
-
     def setUp(self):
         self.images_list = ImagesList()
         self.image1 = Image(id=1, path="/path/to/image1", file_name="image1.jpg")
@@ -32,10 +28,6 @@ class TestAverageImage(unittest.TestCase):
         self.images_list.images_list = [self.image1, self.image2]
 
     def test_average_image_gather_edges(self):
-        """
-        Test that the gather_edges method correctly concatenates leading edges and ensures trailing edges are not None.
-        """
-
         avg_image = AverageImage(self.images_list)
         avg_image.gather_edges()
 
@@ -47,10 +39,6 @@ class TestAverageImage(unittest.TestCase):
         self.assertIsNotNone(avg_image.image.consolidated_trailing_edges)
 
     def test_frequency_not_consistent(self):
-        """
-        Test that ValueError is raised when images have inconsistent frequencies.
-        """
-
         self.image2.frequency = np.linspace(0.1, 15, 20).astype(np.float32)
 
         with self.assertRaises(ValueError) as context:

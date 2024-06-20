@@ -9,19 +9,8 @@ from app.view.display_calculation_result_images import ResultImagesManager
 
 
 class TestResultImagesManager(unittest.TestCase):
-    """
-    Test case for the ResultImagesManager class.
-
-    This test case ensures that the ResultImagesManager class correctly handles the display of various
-    plots (profiles, histograms, and PSD) on different tabs in the GUI.
-    """
 
     def setUp(self):
-        """
-        Set up the test environment.
-
-        Creates mock objects for PlotWidget and initializes the ResultImagesManager with these mocks.
-        """
         self.app = QApplication([])
 
         self.mock_plot_widget_parameters_tab = MagicMock(spec=PlotWidget)
@@ -66,18 +55,9 @@ class TestResultImagesManager(unittest.TestCase):
         self.mock_widget_metric_tab.addItem = MagicMock()
 
     def tearDown(self):
-        """
-        Clean up after each test.
-        """
         self.app.quit()
 
     def test_display_profiles_on_lines_tab(self):
-        """
-        Test displaying profiles on the lines tab.
-
-        Verifies that the right amount of items has been added to image in lines tab.
-
-        """
 
         self.result_manager.display_profiles_on_lines_tab(self.mock_image)
 
@@ -86,13 +66,6 @@ class TestResultImagesManager(unittest.TestCase):
                          len(self.mock_image.leading_edges) + len(self.mock_image.trailing_edges))
 
     def test_display_histogram_on_metric_tab(self):
-        """
-        Test displaying histogram plot on the metric tab.
-
-        Verifies that the right amount of items has been displayed on the metric tab.
-
-        """
-
         self.result_manager.window.histogram.isChecked.return_value = True
         self.result_manager.display_plot_on_metric_tab(self.mock_image)
 
@@ -101,12 +74,6 @@ class TestResultImagesManager(unittest.TestCase):
         self.assertEqual(self.mock_widget_metric_tab.addItem.call_count, 5)
 
     def test_display_psd_on_metric_tab(self):
-        """
-        Test displaying PSD plot on the metric tab.
-
-        Verifies that the right amount of items has been displayed on the metric tab.
-        """
-
         self.result_manager.window.lineWidthPSD.isChecked.return_value = True
 
         self.result_manager.display_plot_on_metric_tab(self.mock_image)

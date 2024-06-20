@@ -10,10 +10,6 @@ from app.controllers.table_controller import TableController
 class TestTableController(unittest.TestCase):
 
     def setUp(self):
-        """
-        Set up the QTableWidget, TableController, and test images before each test.
-        """
-
         self.app = QApplication([])
 
         self.table_widget = QTableWidget()
@@ -36,20 +32,12 @@ class TestTableController(unittest.TestCase):
         self.images_list.images_list = [self.image1, self.image2]
 
     def test_configure_table(self):
-        """
-        Test that the table is configured correctly with the right number of columns and headers.
-        """
-
         self.table_controller.configure_table()
         self.assertEqual(self.table_widget.columnCount(), 9)
         self.assertEqual(self.table_widget.horizontalHeaderItem(0).text(), "Selected")
         self.assertEqual(self.table_widget.horizontalHeaderItem(4).text(), "Average pitch")
 
     def test_update_with_image(self):
-        """
-        Test that the table is updated correctly with the images from the images list.
-        """
-
         self.table_controller.update_with_image(self.images_list)
         self.assertEqual(self.table_widget.rowCount(), len(self.images_list.images_list) + 2)
 
@@ -62,19 +50,11 @@ class TestTableController(unittest.TestCase):
             self.assertEqual(self.table_widget.item(idx, 2).text(), image.file_name.split('.')[0])
 
     def test_mark_image_as_processed(self):
-        """
-        Test that an image is marked as processed in the table.
-        """
-
         self.table_controller.update_with_image(self.images_list)
         self.table_controller.mark_image_as_processed(0)
         self.assertEqual(self.table_widget.item(0, 1).text(), "Yes")
 
     def test_update_with_processed_image(self):
-        """
-        Test that the table is updated correctly with the processed data of an image.
-        """
-
         self.table_controller.update_with_image(self.images_list)
         self.table_controller.update_with_processed_image(self.image1)
 
@@ -84,10 +64,6 @@ class TestTableController(unittest.TestCase):
         self.assertEqual(self.table_widget.item(0, 6).text(), "0.45000")
 
     def test_add_average_image(self):
-        """
-        Test that an average image is added correctly to the table.
-        """
-
         average_image = AverageImage(self.images_list)
 
         row_count_needed = average_image.image.id + 1
