@@ -122,10 +122,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.widget_lines_tab.clear()
                 self.widget_metric_tab.clear()
         else:
-            image = AverageImage(self.images_list).image
+            average_image = AverageImage(self.images_list)
+            average_image.prepare_average_image()
             self.widget_parameters_tab.clear()
             self.widget_lines_tab.clear()
-            self.result_images_manager.display_plot_on_metric_tab(image)
+            self.result_images_manager.display_plot_on_metric_tab(average_image.image)
 
     def show_error_message(self, message: str) -> None:
         """

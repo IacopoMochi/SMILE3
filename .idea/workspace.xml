@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="refactor: isolate functions from display_lines_data for modularity and readability.&#10;&#10;- isolated functions clear_plot_items, display_image_on_parameters_tab, display_image_on_lines_tab, display_profiles, display_histogram, display_psd" />
+    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="refactor: apply merge">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,27 +45,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Python.LS_image_simulation.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Robinson.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.main_controller.executor&quot;: &quot;Run&quot;,
-    &quot;Python.smile_image_list_class.executor&quot;: &quot;Run&quot;,
-    &quot;Python.smile_lines_image_class.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tes.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Merging refactor-part-2&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/burdak_e/SMILE3/src&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.LS_image_simulation.executor": "Run",
+    "Python.Robinson.executor": "Run",
+    "Python.main (1).executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.main_controller.executor": "Run",
+    "Python.smile_image_list_class.executor": "Run",
+    "Python.smile_lines_image_class.executor": "Run",
+    "Python.tes.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "refactor-part-2",
+    "last_opened_file_path": "C:/Users/burdak_e/PycharmProjects/smile_new",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "terminal",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\burdak_e\SMILE3\src\psd" />
@@ -184,7 +189,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-5a2391486177-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13763.11" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
       </set>
     </attachedChunks>
   </component>
@@ -196,6 +202,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1703883807467</updated>
+      <workItem from="1718881550110" duration="1169000" />
     </task>
     <task id="LOCAL-00001" summary="Add gitignore">
       <option name="closed" value="true" />
@@ -373,7 +380,15 @@
       <option name="project" value="LOCAL" />
       <updated>1716991902951</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="refactor: apply merge">
+      <option name="closed" value="true" />
+      <created>1718881857058</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1718881857058</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -420,6 +435,15 @@
         </entry>
       </map>
     </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
@@ -441,7 +465,8 @@
     <MESSAGE value="refactor: isolate add_new_row function from load_lines_image and change variable name from cnt to image_id" />
     <MESSAGE value="refactor: isolate get_fit_function from gather_parameters" />
     <MESSAGE value="refactor: isolate functions from display_lines_data for modularity and readability.&#10;&#10;- isolated functions clear_plot_items, display_image_on_parameters_tab, display_image_on_lines_tab, display_profiles, display_histogram, display_psd" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: isolate functions from display_lines_data for modularity and readability.&#10;&#10;- isolated functions clear_plot_items, display_image_on_parameters_tab, display_image_on_lines_tab, display_profiles, display_histogram, display_psd" />
+    <MESSAGE value="refactor: apply merge" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: apply merge" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -455,7 +480,8 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1718880690184" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/SMILE3$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1718881765130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1718881722367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/SMILE3$.coverage" NAME=" Coverage Results" MODIFIED="1718881428965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/processors_tests" />
     <SUITE FILE_PATH="coverage/SMILE3$tes.coverage" NAME="tes Coverage Results" MODIFIED="1717428039118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
