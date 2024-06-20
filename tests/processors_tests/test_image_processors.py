@@ -1,12 +1,11 @@
 import unittest
 import numpy as np
-from unittest.mock import MagicMock, patch
-from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
+from unittest.mock import patch
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
 from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator
 
 
-class MockImage:
+class MockImagePreProcessor:
     def __init__(self, image, parameters):
         self.image = image
         self.parameters = parameters
@@ -21,12 +20,6 @@ class MockImage:
 
 class TestPreProcessor(unittest.TestCase):
     def setUp(self):
-        """
-        Set up a mock image and PreProcessor instance before each test.
-
-        This method initializes a mock image with random data and sets up
-        a PreProcessor instance to be tested.
-        """
         image_data = np.random.rand(100, 100)
         parameters = {
             "X1": 10,
@@ -34,30 +27,14 @@ class TestPreProcessor(unittest.TestCase):
             "Y1": 10,
             "Y2": 90
         }
-        self.image = MockImage(image_data, parameters)
+        self.image = MockImagePreProcessor(image_data, parameters)
         self.preprocessor = PreProcessor(self.image)
 
     def test_crop_and_rotate_image(self):
-        """
-        Test the crop_and_rotate_image method for correctness.
-
-        This test verifies that the crop_and_rotate_image method correctly
-        crops and rotates the image, ensuring the resulting image shape is
-        (80, 80).
-        """
         cropped_rotated_image = self.preprocessor.crop_and_rotate_image()
         self.assertEqual(cropped_rotated_image.shape, (80, 80))
 
     def test_remove_brightness_gradient(self):
-        """
-        Test the remove_brightness_gradient method for correctness.
-
-        This test checks that the remove_brightness_gradient method correctly
-        removes the brightness gradient from the image. It verifies that the
-        resulting flattened image has a shape of (80, 80), the mean value is
-        approximately 0, and the standard deviation is less than that of the
-        original cropped image.
-        """
         flattened_image = self.preprocessor.remove_brightness_gradient()
 
         self.assertEqual(flattened_image.shape, (80, 80))
@@ -69,28 +46,12 @@ class TestPreProcessor(unittest.TestCase):
         self.assertGreater(differences, 0)
 
     def test_normalize_image(self):
-        """
-        Test the normalize_image method to ensure the image is normalized.
-
-        This test verifies that the normalize_image method correctly normalizes
-        the image, ensuring that the processed image has values between 0 and 1.
-        It checks the maximum and minimum values of the processed image with
-        precision up to 5 decimal places.
-        """
         self.preprocessor.normalize_image()
         self.assertIsNotNone(self.image.processed_image)
         self.assertAlmostEqual(np.max(self.image.processed_image), 1.0, places=5)
         self.assertAlmostEqual(np.min(self.image.processed_image), 0.0, places=5)
 
     def test_calculate_histogram_parameters(self):
-        """
-        Test the calculate_histogram_parameters method for correctness.
-
-        This test validates that the calculate_histogram_parameters method
-        correctly computes histogram parameters after normalizing the image.
-        It ensures that the intensity histogram and its Gaussian fit parameters,
-        as well as other related attributes, are set and not None.
-        """
         self.preprocessor.normalize_image()
         self.preprocessor.calculate_histogram_parameters()
 
@@ -102,33 +63,34 @@ class TestPreProcessor(unittest.TestCase):
         self.assertIsNotNone(self.image.lines_snr)
 
 
+class MockImageEdgeDetector:
+    def __init__(self):
+        self.processed_image = np.random.rand(100, 100)
+        self.parameters = {
+            "EdgeRange": 5,
+            "Edge_fit_function": "polynomial",
+            "Threshold": 0.5,
+            "brightEdge": False,
+            "tone_positive_radiobutton": True
+        }
+        self.leading_edges = None
+        self.trailing_edges = None
+        self.consolidated_leading_edges = None
+        self.consolidated_trailing_edges = None
+        self.zero_mean_leading_edge_profiles = None
+        self.zero_mean_trailing_edge_profiles = None
+        self.number_of_lines = None
+        self.critical_dimension = None
+        self.critical_dimension_std_estimate = None
+        self.critical_dimension_estimate = None
+        self.pitch_estimate = None
+
+
 class TestEdgeDetector(unittest.TestCase):
 
     def setUp(self):
 
-        class DummyImage:
-            def __init__(self):
-                self.processed_image = np.random.rand(100, 100)
-                self.parameters = {
-                    "EdgeRange": 5,
-                    "Edge_fit_function": "polynomial",
-                    "Threshold": 0.5,
-                    "brightEdge": False,
-                    "tone_positive_radiobutton": True
-                }
-                self.leading_edges = None
-                self.trailing_edges = None
-                self.consolidated_leading_edges = None
-                self.consolidated_trailing_edges = None
-                self.zero_mean_leading_edge_profiles = None
-                self.zero_mean_trailing_edge_profiles = None
-                self.number_of_lines = None
-                self.critical_dimension = None
-                self.critical_dimension_std_estimate = None
-                self.critical_dimension_estimate = None
-                self.pitch_estimate = None
-
-        self.image = DummyImage()
+        self.image = MockImageEdgeDetector()
         self.edge_detector = EdgeDetector(self.image)
 
     def test_edge_detection(self):
@@ -220,11 +182,11 @@ class TestEdgeDetector(unittest.TestCase):
         self.assertEqual(self.image.critical_dimension_estimate, 0.9999999999999999)
         self.assertEqual(self.image.pitch_estimate, 1.2)
 
-class MockImageMet:
+
+class MockImageMetricCalculator:
     def __init__(self):
         self.parameters = {
             "PixelSize": 0.1,
-            "PSD_model": "Palasantzas 2"
         }
         self.consolidated_leading_edges = None
         self.consolidated_trailing_edges = None
@@ -236,14 +198,15 @@ class MockImageMet:
         self.LER_PSD = None
         self.LER_Leading_PSD = None
         self.LER_Trailing_PSD = None
+
+
 class TestMetricCalculator(unittest.TestCase):
 
     def setUp(self):
-        self.image = MockImageMet()
+        self.image = MockImageMetricCalculator()
         self.metric_calculator = MetricCalculator(self.image)
 
     def test_setup_frequency(self):
-        self.image.parameters["PixelSize"] = 0.1
         self.image.consolidated_leading_edges = np.zeros((10, 10))
 
         self.metric_calculator.setup_frequency()
@@ -293,8 +256,6 @@ class TestMetricCalculator(unittest.TestCase):
         self.assertEqual(PSD_fit[0], 2250000)
         self.assertAlmostEqual(PSD_fit_unbiased[1], 260119.6, places=1)
         self.assertAlmostEqual(PSD[2], 750000, 1)
-
-
 
 
 if __name__ == '__main__':
