@@ -3,6 +3,7 @@ from PyQt6 import QtWidgets
 from app.models.image_container import Image
 from app.models.images_list import ImagesList
 from app.processors.parameters_collector import gather_parameters
+from PyQt6.QtCore import QSettings
 
 
 class FolderImageLoader:
@@ -16,6 +17,7 @@ class FolderImageLoader:
     def __init__(self, images_list: ImagesList, window):
         self.images_list = images_list
         self.window = window
+        self.settings = QSettings("PSI", "SMILE3")
 
     def load_images_from_folder(self) -> None:
         """
@@ -30,9 +32,18 @@ class FolderImageLoader:
            Exception: For any unexpected errors that occur during image loading.
        """
 
-        folder_path = QtWidgets.QFileDialog.getExistingDirectory(self.window, 'Select images folder')
+        last_directory = self.settings.value("last_directory", "")
+
+        if last_directory:
+            parent_directory = os.path.dirname(last_directory)
+        else:
+            parent_directory = ""
+
+        folder_path = QtWidgets.QFileDialog.getExistingDirectory(self.window, 'Select images folder', parent_directory)
         if not folder_path:
             return
+
+        self.settings.setValue("last_directory", folder_path)
 
         for root, dirs, files in os.walk(folder_path):
             image_id = len(self.images_list.images_list)
@@ -49,3 +60,7 @@ class FolderImageLoader:
                     except Exception as e:
                         self.window.show_error_message(f"An unexpected error occurred: {str(e)}."
                                                        f"Make sure that you have selected at least one image to process")
+
+
+
+
