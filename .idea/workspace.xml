@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="refactor: apply merge">
+    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,6 +48,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python tests.Python tests in controller_tests.executor": "Run",
+    "Python tests.Python tests in test_table_controller.py.executor": "Run",
+    "Python tests.Python tests in tests.executor": "Run",
     "Python.LS_image_simulation.executor": "Run",
     "Python.Robinson.executor": "Run",
     "Python.main (1).executor": "Run",
@@ -78,7 +81,7 @@
       <recent name="C:\Users\burdak_e\SMILE3\src\controllers" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main (1)">
+  <component name="RunManager" selected="Python tests.Python tests in controller_tests">
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SMILE3" />
       <option name="ENV_FILES" value="" />
@@ -125,64 +128,68 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main_window" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests in controller_tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="SMILE3" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\burdak_e\SMILE3\src\gui\main_window.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="tes" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="SMILE3" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/controller_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/tes.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/controller_tests&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in test_table_controller.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SMILE3" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/controller_tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/controller_tests/test_table_controller.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="SMILE3" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Python.main" />
       <item itemvalue="Python.main (1)" />
-      <item itemvalue="Python.main_window" />
-      <item itemvalue="Python.tes" />
+      <item itemvalue="Python tests.Python tests in controller_tests" />
+      <item itemvalue="Python tests.Python tests in test_table_controller.py" />
+      <item itemvalue="Python tests.Python tests in tests" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests in controller_tests" />
+        <item itemvalue="Python tests.Python tests in test_table_controller.py" />
+        <item itemvalue="Python tests.Python tests in tests" />
         <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.tes" />
-        <item itemvalue="Python.main_window" />
       </list>
     </recent_temporary>
   </component>
@@ -202,7 +209,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1703883807467</updated>
-      <workItem from="1718881550110" duration="1169000" />
+      <workItem from="1718881550110" duration="1562000" />
     </task>
     <task id="LOCAL-00001" summary="Add gitignore">
       <option name="closed" value="true" />
@@ -388,7 +395,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718881857058</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
+      <option name="closed" value="true" />
+      <created>1718888803531</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1718888803531</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -466,7 +481,8 @@
     <MESSAGE value="refactor: isolate get_fit_function from gather_parameters" />
     <MESSAGE value="refactor: isolate functions from display_lines_data for modularity and readability.&#10;&#10;- isolated functions clear_plot_items, display_image_on_parameters_tab, display_image_on_lines_tab, display_profiles, display_histogram, display_psd" />
     <MESSAGE value="refactor: apply merge" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: apply merge" />
+    <MESSAGE value="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -480,9 +496,9 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SMILE3$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1718881765130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/SMILE3$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1718888721117" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/SMILE3$main.coverage" NAME="main Coverage Results" MODIFIED="1718881722367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SMILE3$.coverage" NAME=" Coverage Results" MODIFIED="1718881428965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/processors_tests" />
+    <SUITE FILE_PATH="coverage/SMILE3$.coverage" NAME=" Coverage Results" MODIFIED="1718956807244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/controller_tests" />
     <SUITE FILE_PATH="coverage/SMILE3$tes.coverage" NAME="tes Coverage Results" MODIFIED="1717428039118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

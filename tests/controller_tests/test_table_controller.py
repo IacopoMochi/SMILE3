@@ -9,9 +9,11 @@ from app.controllers.table_controller import TableController
 
 class TestTableController(unittest.TestCase):
 
-    def setUp(self):
-        self.app = QApplication([])
+    @classmethod
+    def setUpClass(cls):
+        cls.app = QApplication([])
 
+    def setUp(self):
         self.table_widget = QTableWidget()
         self.table_controller = TableController(self.table_widget)
 
@@ -30,6 +32,14 @@ class TestTableController(unittest.TestCase):
 
         self.images_list = ImagesList()
         self.images_list.images_list = [self.image1, self.image2]
+
+    def tearDown(self):
+        self.table_widget = None
+        self.table_controller = None
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.app.quit()
 
     def test_configure_table(self):
         self.table_controller.configure_table()
