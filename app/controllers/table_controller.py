@@ -40,7 +40,7 @@ class TableController(QtWidgets.QWidget):
             images_list (ImagesList): The list of images to iterate through.
         """
 
-        self.table_widget.setRowCount(len(images_list.images_list) + 2)
+        self.table_widget.setRowCount(len(images_list.images_list) + 1)
         for idx, image in enumerate(images_list.images_list):
             check_box = QTableWidgetItem()
             check_box.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
