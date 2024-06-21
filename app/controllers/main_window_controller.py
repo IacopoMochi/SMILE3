@@ -70,20 +70,12 @@ class MainWindow(QtWidgets.QMainWindow):
         Loads images from a folder and updates the UI with loaded images.
         """
 
-        # self.clean_tab()
+        self.clean_tab()
         self.image_loader.load_images_from_folder()
         for image in self.images_list.images_list:
             self.image_display_manager.display_image_on_parameters_tab(image)
             self.image_display_manager.display_image_on_lines_tab(image)
         self.table_controller.update_with_image(self.images_list)
-
-    def clean_tab(self) -> None:
-        """
-        Clears the images list and table contents.
-        """
-
-        self.images_list.images_list = []
-        self.table.clearContents()
 
     def process_image(self) -> None:
         """
@@ -144,6 +136,17 @@ class MainWindow(QtWidgets.QMainWindow):
         error_dialog.setText(message)
         error_dialog.setWindowTitle("Error")
         error_dialog.exec()
+
+    def clean_tab(self) -> None:
+        """
+        Clears the images list and table contents.
+        """
+
+        self.images_list.images_list = []
+        self.table.clearContents()
+        self.widget_lines_tab.clear()
+        self.widget_parameters_tab.clear()
+        self.widget_metric_tab.clear()
 
 
 
