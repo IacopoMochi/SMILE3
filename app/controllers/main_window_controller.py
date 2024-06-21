@@ -16,8 +16,8 @@ class MainWindow(QtWidgets.QMainWindow):
     """
     Main window class for the application that handles UI setup, image loading,
     processing, and displaying results.
-
     """
+
     def __init__(self):
         super(MainWindow, self).__init__()
         uic.loadUi("ui/window.ui", self)
@@ -39,7 +39,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                                          self.widget_metric_tab, self)
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
         self.average_image = None
-
 
     def init_ui(self) -> None:
         """
@@ -82,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Processes selected images and updates the UI with results.
         """
 
+        self.push_button_process_images.setEnabled(False)
         self.processing_controller.get_number_selected_images()
         self.processing_controller.set_up_progress_bar()
 
@@ -102,6 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.table_controller.add_average_image(self.average_image)
         self.result_images_manager.display_plot_on_metric_tab(self.average_image.image)
         QtWidgets.QApplication.processEvents()
+        self.push_button_process_images.setEnabled(True)
 
     def display_corresponding_images(self, row: int) -> None:
         """
