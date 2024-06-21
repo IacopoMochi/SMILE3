@@ -21,10 +21,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         uic.loadUi("ui/window.ui", self)
-        self.images_list = ImagesList()
 
         self.init_ui()
+        self.init_classes()
+        self.setup_connections()
 
+    def init_classes(self):
+        """
+        Initialize the main window class.
+        """
+
+        self.images_list = ImagesList()
         self.image_loader = FolderImageLoader(self.images_list, self)
         self.table_controller = TableController(self.table)
         self.image_display_manager = ImageDisplayManager(self.widget_parameters_tab, self.widget_lines_tab)
@@ -33,7 +40,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
         self.average_image = None
 
-        self.setup_connections()
 
     def init_ui(self) -> None:
         """
