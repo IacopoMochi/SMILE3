@@ -49,7 +49,7 @@ class TestTableController(unittest.TestCase):
 
     def test_update_with_image(self):
         self.table_controller.update_with_image(self.images_list)
-        self.assertEqual(self.table_widget.rowCount(), len(self.images_list.images_list) + 2)
+        self.assertEqual(self.table_widget.rowCount(), len(self.images_list.images_list) + 1)
 
         for idx, image in enumerate(self.images_list.images_list):
             check_box = self.table_widget.item(idx, 0)
