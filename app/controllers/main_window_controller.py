@@ -23,6 +23,7 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi("ui/window.ui", self)
 
         self.init_ui()
+        self.init_ui_for_roi()
         self.init_classes()
         self.setup_connections()
 
@@ -52,6 +53,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
         self.widget_metric_tab = self.findChild(PlotWidget, "metric_plot")
 
+    def init_ui_for_roi(self) -> None:
+
+        self.x1_widget = self.findChild(QtWidgets.QLineEdit, "X1")
+        self.x2_widget = self.findChild(QtWidgets.QLineEdit, "X2")
+        self.y1_widget = self.findChild(QtWidgets.QLineEdit, "Y1")
+        self.y2_widget = self.findChild(QtWidgets.QLineEdit, "Y2")
+
     def setup_connections(self) -> None:
         """
         Sets up push-buttons and signal-slot connections for UI components.
@@ -73,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.image_loader.load_images_from_folder()
         for image in self.images_list.images_list:
             self.image_display_manager.display_image_on_parameters_tab(image)
+            self.image_display_manager.set_roi(self.x1_widget, self.x2_widget, self.y1_widget, self.y2_widget)
             self.image_display_manager.display_image_on_lines_tab(image)
         self.table_controller.update_with_image(self.images_list)
 
