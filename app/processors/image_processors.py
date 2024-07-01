@@ -9,6 +9,7 @@ from copy import deepcopy
 
 from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
+from app.utils.processors_service import edge_consolidation, edge_mean_subtraction
 
 
 class PreProcessor:
@@ -143,35 +144,6 @@ class EdgeDetector:
                     print("Add code for bright edge finding")
         return edges_profiles
 
-    def edge_consolidation(self, raw_edge_profiles: np.ndarray) -> np.ndarray:
-        """
-        Consolidates raw edge profiles.
-        """
-        # consolidated_edge_profiles = raw_edge_profiles.copy()
-        # for edge in consolidated_edge_profiles:
-        #     mean_value = np.nanmean(edge)
-        #     print(edge)
-        #     edge[edge is np.nan] = mean_value
-        #     print(edge)
-
-        consolidated_edge_profiles = raw_edge_profiles.copy()
-        for i, edge in enumerate(consolidated_edge_profiles):
-            mean_value = np.nanmean(edge)
-            consolidated_edge_profiles[i] = np.where(np.isnan(edge), mean_value, edge)
-
-        return consolidated_edge_profiles
-
-    def edge_mean_subtraction(self, absolute_edge_profiles: np.ndarray) -> np.ndarray:
-        """
-        Subtracts the mean value from edge profiles to center them around zero.
-        """
-
-        zero_mean_edge_profiles = absolute_edge_profiles.copy()
-        for edge in zero_mean_edge_profiles:
-            mean_value = np.nanmean(edge)
-            edge[:] = edge - mean_value
-        return zero_mean_edge_profiles
-
     def filter_and_reduce_noise(self) -> tuple[float, np.ndarray]:
         """
         Filters the image to reduce noise using median filtering and Butterworth filtering.
@@ -260,11 +232,11 @@ class EdgeDetector:
 
         self.image.leading_edges, self.image.trailing_edges = self.determine_edge_profiles()
 
-        self.image.consolidated_leading_edges = self.edge_consolidation(self.image.leading_edges)
-        self.image.consolidated_trailing_edges = self.edge_consolidation(self.image.trailing_edges)
-        self.image.zero_mean_leading_edge_profiles = self.edge_mean_subtraction(
+        self.image.consolidated_leading_edges = edge_consolidation(self.image.leading_edges)
+        self.image.consolidated_trailing_edges = edge_consolidation(self.image.trailing_edges)
+        self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(
             self.image.consolidated_leading_edges)
-        self.image.zero_mean_trailing_edge_profiles = self.edge_mean_subtraction(
+        self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(
             self.image.consolidated_trailing_edges)
 
         profiles_shape = self.image.leading_edges.shape
