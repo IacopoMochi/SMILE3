@@ -69,6 +69,11 @@ class Image:
         self.processed = False
         self.image = None
 
+        self.basic_consolidated_leading_edges = None
+        self.basic_consolidated_trailing_edges = None
+        self.basic_zero_mean_leading_edge_profiles = None
+        self.basic_zero_mean_trailing_edge_profiles = None
+
     def load_image(self) -> None:
         """
         A method that calls ImageLoader class for loading the image and rotates it.

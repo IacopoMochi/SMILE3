@@ -5,7 +5,7 @@ import numpy as np
 from skimage.transform import radon, rotate
 from scipy.optimize import curve_fit
 from scipy.ndimage import histogram
-from copy import deepcopy
+from copy import deepcopy, copy
 
 from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
@@ -239,6 +239,8 @@ class EdgeDetector:
         self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(
             self.image.consolidated_trailing_edges)
 
+        self.copy_base_attributes()
+
         profiles_shape = self.image.leading_edges.shape
         lines_number = profiles_shape[0]
 
@@ -256,6 +258,12 @@ class EdgeDetector:
             pass
         else:
             self.image.pitch_estimate = np.nan
+
+    def copy_base_attributes(self):
+        self.image.basic_consolidated_leading_edges = copy(self.image.consolidated_leading_edges)
+        self.image.basic_consolidated_trailing_edges = copy(self.image.consolidated_trailing_edges)
+        self.image.basic_zero_mean_leading_edge_profiles = copy(self.image.zero_mean_leading_edge_profiles)
+        self.image.basic_zero_mean_trailing_edge_profiles = copy(self.image.zero_mean_trailing_edge_profiles)
 
 
 class MetricCalculator:
