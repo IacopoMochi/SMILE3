@@ -50,9 +50,11 @@ class ProcessingController:
                 gather_parameters(self.window, image)
                 image.pre_processing()
                 image.find_edges()
+                image.post_processing(True if self.window.checkBox_9.isChecked() else False)
                 image.calculate_metrics()
                 image.processed = True
             except Exception as e:
+                # print(e)
                 self.window.show_error_message(f"Error has occurred while processing image: {e}")
 
     def update_progress_bar(self, number_processed_images: int) -> None:

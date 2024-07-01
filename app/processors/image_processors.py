@@ -266,6 +266,37 @@ class EdgeDetector:
         self.image.basic_zero_mean_trailing_edge_profiles = copy(self.image.zero_mean_trailing_edge_profiles)
 
 
+class PostProcessor:
+    def __init__(self, image):
+        self.image = image
+
+    def post_processing(self, use_post_processing=False):
+        if use_post_processing:
+
+            self.calculate_new_post_processed_consolidated_edges()
+
+            self.calculate_new_post_processed_zero_mean_edges()
+
+        else:
+            self.restore_base_attributes()
+
+    def calculate_new_post_processed_consolidated_edges(self):
+        pass
+        # TODO: function to post process consolidated edges and save them in image container
+
+    def calculate_new_post_processed_zero_mean_edges(self):
+        self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(
+            self.image.consolidated_leading_edges)
+        self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(
+            self.image.consolidated_trailing_edges)
+
+    def restore_base_attributes(self):
+        self.image.consolidated_leading_edges = self.image.basic_consolidated_leading_edges
+        self.image.consolidated_trailing_edges = self.image.basic_consolidated_trailing_edges
+        self.image.zero_mean_leading_edge_profiles = self.image.basic_zero_mean_leading_edge_profiles
+        self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
+
+
 class MetricCalculator:
     """
     Class for calculating metrics related to edge profiles and image precision
