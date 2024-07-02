@@ -316,8 +316,12 @@ class MultiTaper:
 
     def multi_taper(self, use_multi_taper=False):
         if use_multi_taper:
-            self.calculate_new_multi_taper_consolidated_edges()
-            self.calculate_new_multi_taper_zero_mean_edges()
+            if self.image.multi_taper_cache:
+                self.restore_cache()
+            else:
+                self.calculate_new_multi_taper_consolidated_edges()
+                self.calculate_new_multi_taper_zero_mean_edges()
+                self.store_cache()
         else:
             self.restore_base_attributes()
 
@@ -333,6 +337,20 @@ class MultiTaper:
         self.image.consolidated_trailing_edges = self.image.basic_consolidated_trailing_edges
         self.image.zero_mean_leading_edge_profiles = self.image.basic_zero_mean_leading_edge_profiles
         self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
+
+    def store_cache(self):
+        self.image.multi_taper_cache = (
+            copy(self.image.consolidated_leading_edges),
+            copy(self.image.consolidated_trailing_edges),
+            copy(self.image.zero_mean_leading_edge_profiles),
+            copy(self.image.zero_mean_trailing_edge_profiles),
+        )
+
+    def restore_cache(self):
+        (self.image.consolidated_leading_edges,
+         self.image.consolidated_trailing_edges,
+         self.image.zero_mean_leading_edge_profiles,
+         self.image.zero_mean_trailing_edge_profiles) = self.image.multi_taper_cache
 
 
 class MetricCalculator:
