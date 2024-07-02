@@ -297,6 +297,31 @@ class PostProcessor:
         self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
 
 
+class MultiTaper:
+    def __init__(self, image):
+        self.image = image
+
+    def multi_taper(self, use_multi_taper=False):
+        if use_multi_taper:
+            self.calculate_new_multi_taper_consolidated_edges()
+            self.calculate_new_multi_taper_zero_mean_edges()
+        else:
+            self.restore_base_attributes()
+
+    def calculate_new_multi_taper_consolidated_edges(self):
+        pass  # TODO: Implement the function to apply multi-taper and save the results in the image container
+
+    def calculate_new_multi_taper_zero_mean_edges(self):
+        self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(self.image.consolidated_leading_edges)
+        self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.image.consolidated_trailing_edges)
+
+    def restore_base_attributes(self):
+        self.image.consolidated_leading_edges = self.image.post_processed_consolidated_leading_edges
+        self.image.consolidated_trailing_edges = self.image.post_processed_consolidated_trailing_edges
+        self.image.zero_mean_leading_edge_profiles = self.image.post_processed_zero_mean_leading_edge_profiles
+        self.image.zero_mean_trailing_edge_profiles = self.image.post_processed_zero_mean_trailing_edge_profiles
+
+
 class MetricCalculator:
     """
     Class for calculating metrics related to edge profiles and image precision

@@ -1,5 +1,5 @@
 from app.processors.image_loader import ImageLoader
-from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator, PostProcessor
+from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator, PostProcessor, MultiTaper
 
 
 class Image:
@@ -111,3 +111,7 @@ class Image:
     def post_processing(self, use_post_processing=False):
         post_processor = PostProcessor(self)
         post_processor.post_processing(use_post_processing)
+
+    def multi_taper(self, use_multi_taper=False):
+        multi_taper = MultiTaper(self)
+        multi_taper.multi_taper(use_multi_taper)
