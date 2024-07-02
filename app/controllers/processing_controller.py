@@ -37,8 +37,8 @@ class ProcessingController:
         """
         Processes a single image if it is selected in the table.
 
-        The image goes through several processing steps from the Image class, which in turn
-        utilizes methods from the ProcessingImage class: gathering parameters, pre-processing, finding edges,
+        The image goes through several processing steps from the Image class, which in turn utilizes methods from
+        several classes: gathering parameters, pre-processing, finding edges, post-processing, multi-taper processing
         and calculating metrics. If an error occurs during processing, an error message is displayed.
 
         Args:

@@ -267,10 +267,27 @@ class EdgeDetector:
 
 
 class PostProcessor:
+    """
+    Class for calculating post processed consolidated edges, the operation aim at noise reduction.
+    This class is optional by checkbox "Edge distortion correction"
+    """
+
     def __init__(self, image):
         self.image = image
 
     def post_processing(self, use_post_processing=False):
+        """
+        Perform post-processing on the image.
+
+        This method either restores the post-processed edges from the cache if available,
+        or computes and stores them in the cache. It restores base attributes if post-processing
+        is not applied.
+
+        Args:
+            use_post_processing (bool): Flag to determine if post-processing should be applied.
+                                        Defaults to False.
+        """
+
         if use_post_processing:
             if self.image.post_processing_cache:
                 self.restore_cache()
@@ -286,16 +303,29 @@ class PostProcessor:
         # TODO: function to post process consolidated edges and save them in image container
 
     def calculate_new_post_processed_zero_mean_edges(self):
+        """
+        Calculate new post-processed zero-mean edges, based on post-processed consolidated edges.
+        """
+
         self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(self.image.consolidated_leading_edges)
         self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.image.consolidated_trailing_edges)
 
     def restore_base_attributes(self):
+        """
+        This method restores the leading and trailing edge profiles to their basic, pre-processed state.
+        """
+
         self.image.consolidated_leading_edges = self.image.basic_consolidated_leading_edges
         self.image.consolidated_trailing_edges = self.image.basic_consolidated_trailing_edges
         self.image.zero_mean_leading_edge_profiles = self.image.basic_zero_mean_leading_edge_profiles
         self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
 
     def store_cache(self):
+        """
+        This method saves the current post-processed leading and trailing edge profiles
+        to the image's post-processing cache.
+        """
+
         self.image.post_processing_cache = (
             copy(self.image.consolidated_leading_edges),
             copy(self.image.consolidated_trailing_edges),
@@ -304,6 +334,11 @@ class PostProcessor:
         )
 
     def restore_cache(self):
+        """
+        This method restores the post-processed leading and trailing edge profiles
+        from the image's post-processing cache.
+        """
+
         (self.image.consolidated_leading_edges,
          self.image.consolidated_trailing_edges,
          self.image.zero_mean_leading_edge_profiles,
@@ -315,6 +350,18 @@ class MultiTaper:
         self.image = image
 
     def multi_taper(self, use_multi_taper=False):
+        """
+        Apply multi-taper processing to the image.
+
+        This method either restores the multi-taper processed edges from the cache if available,
+        or computes and stores them in the cache. It restores base attributes if multi-taper processing
+        is not applied.
+
+        Args:
+            use_multi_taper (bool): Flag to determine if multi-taper processing should be applied.
+                                    Defaults to False.
+        """
+
         if use_multi_taper:
             if self.image.multi_taper_cache:
                 self.restore_cache()
@@ -329,16 +376,29 @@ class MultiTaper:
         pass  # TODO: Implement the function to apply multi-taper and save the results in the image container
 
     def calculate_new_multi_taper_zero_mean_edges(self):
+        """
+        Calculate new zero-mean edges after multi-taper process, based on consolidated edges after multi-taper processing.
+        """
+
         self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(self.image.consolidated_leading_edges)
         self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.image.consolidated_trailing_edges)
 
     def restore_base_attributes(self):
+        """
+        This method restores the leading and trailing edge profiles to their basic, state without multi-taper processing.
+        """
+
         self.image.consolidated_leading_edges = self.image.basic_consolidated_leading_edges
         self.image.consolidated_trailing_edges = self.image.basic_consolidated_trailing_edges
         self.image.zero_mean_leading_edge_profiles = self.image.basic_zero_mean_leading_edge_profiles
         self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
 
     def store_cache(self):
+        """
+        This method saves the current multi-taper processed leading and trailing edge profiles
+        to the image's multi-taper processing cache.
+        """
+
         self.image.multi_taper_cache = (
             copy(self.image.consolidated_leading_edges),
             copy(self.image.consolidated_trailing_edges),
@@ -347,6 +407,11 @@ class MultiTaper:
         )
 
     def restore_cache(self):
+        """
+        This method restores the multi-taper processed leading and trailing edge profiles
+        from the image's multi-taper processing cache.
+        """
+
         (self.image.consolidated_leading_edges,
          self.image.consolidated_trailing_edges,
          self.image.zero_mean_leading_edge_profiles,
