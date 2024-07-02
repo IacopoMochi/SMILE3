@@ -316,10 +316,10 @@ class MultiTaper:
         self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.image.consolidated_trailing_edges)
 
     def restore_base_attributes(self):
-        self.image.consolidated_leading_edges = self.image.post_processed_consolidated_leading_edges
-        self.image.consolidated_trailing_edges = self.image.post_processed_consolidated_trailing_edges
-        self.image.zero_mean_leading_edge_profiles = self.image.post_processed_zero_mean_leading_edge_profiles
-        self.image.zero_mean_trailing_edge_profiles = self.image.post_processed_zero_mean_trailing_edge_profiles
+        self.image.consolidated_leading_edges = self.image.basic_consolidated_leading_edges
+        self.image.consolidated_trailing_edges = self.image.basic_consolidated_trailing_edges
+        self.image.zero_mean_leading_edge_profiles = self.image.basic_zero_mean_leading_edge_profiles
+        self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
 
 
 class MetricCalculator:
