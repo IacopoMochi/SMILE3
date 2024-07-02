@@ -272,11 +272,12 @@ class PostProcessor:
 
     def post_processing(self, use_post_processing=False):
         if use_post_processing:
-
-            self.calculate_new_post_processed_consolidated_edges()
-
-            self.calculate_new_post_processed_zero_mean_edges()
-
+            if self.image.post_processing_cache:
+                self.restore_cache()
+            else:
+                self.calculate_new_post_processed_consolidated_edges()
+                self.calculate_new_post_processed_zero_mean_edges()
+                self.store_cache()
         else:
             self.restore_base_attributes()
 
@@ -285,16 +286,28 @@ class PostProcessor:
         # TODO: function to post process consolidated edges and save them in image container
 
     def calculate_new_post_processed_zero_mean_edges(self):
-        self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(
-            self.image.consolidated_leading_edges)
-        self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(
-            self.image.consolidated_trailing_edges)
+        self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(self.image.consolidated_leading_edges)
+        self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(self.image.consolidated_trailing_edges)
 
     def restore_base_attributes(self):
         self.image.consolidated_leading_edges = self.image.basic_consolidated_leading_edges
         self.image.consolidated_trailing_edges = self.image.basic_consolidated_trailing_edges
         self.image.zero_mean_leading_edge_profiles = self.image.basic_zero_mean_leading_edge_profiles
         self.image.zero_mean_trailing_edge_profiles = self.image.basic_zero_mean_trailing_edge_profiles
+
+    def store_cache(self):
+        self.image.post_processing_cache = (
+            copy(self.image.consolidated_leading_edges),
+            copy(self.image.consolidated_trailing_edges),
+            copy(self.image.zero_mean_leading_edge_profiles),
+            copy(self.image.zero_mean_trailing_edge_profiles),
+        )
+
+    def restore_cache(self):
+        (self.image.consolidated_leading_edges,
+         self.image.consolidated_trailing_edges,
+         self.image.zero_mean_leading_edge_profiles,
+         self.image.zero_mean_trailing_edge_profiles) = self.image.post_processing_cache
 
 
 class MultiTaper:

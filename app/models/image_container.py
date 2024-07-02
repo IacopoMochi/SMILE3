@@ -69,10 +69,15 @@ class Image:
         self.processed = False
         self.image = None
 
+        # store original values to restore after additional operations on consolidated edges
         self.basic_consolidated_leading_edges = None
         self.basic_consolidated_trailing_edges = None
         self.basic_zero_mean_leading_edge_profiles = None
         self.basic_zero_mean_trailing_edge_profiles = None
+
+        # caches
+        self.post_processing_cache = None
+        self.multi_taper_cache = None
 
     def load_image(self) -> None:
         """
