@@ -27,18 +27,9 @@ class ImageDisplayManager(QtWidgets.QWidget):
     def display_image_on_parameters_tab(self, image: Image) -> None:
         """
         Displays the image on the parameters tab.
-
-        Args:
-            image (Image): The image object to display.
         """
-        try:
-            self.widget_parameters_tab.clear()
-            if image is not None:
-                image_item = pg.ImageItem(np.array(image.image))
-                self.widget_parameters_tab.addItem(image_item)
 
-        except Exception as e:
-            self.error_signal.emit(f"Error occurred while displaying the image: {str(e)}")
+        self._display_image(image, self.widget_parameters_tab)
 
     def set_roi(self, x1_widget, x2_widget, y1_widget, y2_widget):
         self.roi = pg.RectROI((0, 0), (100, 100))
@@ -64,16 +55,30 @@ class ImageDisplayManager(QtWidgets.QWidget):
     def display_image_on_lines_tab(self, image: Image) -> None:
         """
         Displays the image on the lines tab.
-
-        Args:
-            image (Image): The image object to display.
         """
+
+        self._display_image(image, self.widget_lines_tab)
+
+    def _display_image(self, image: Image, widget: PlotWidget):
+        """
+           Display an image on a PlotWidget.
+
+           Clears the widget and adds either the processed image or the original image from the given Image object.
+
+           Args:
+               image (Image): The Image object containing the image data.
+               widget (PlotWidget): The PlotWidget where the image will be displayed.
+
+           Raises:
+               Exception: If an error occurs during image display, an error message is emitted via self.error_signal.
+           """
+
         try:
-            self.widget_lines_tab.clear()
+            widget.clear()
             if image.processed_image is not None:
                 image_item = pg.ImageItem(np.array(image.processed_image))
             else:
                 image_item = pg.ImageItem(np.array(image.image))
-            self.widget_lines_tab.addItem(image_item)
+            widget.addItem(image_item)
         except Exception as e:
             self.error_signal.emit(f"Error occurred while displaying the image: {str(e)}")
