@@ -436,7 +436,10 @@ class MetricCalculator:
         Fs = 1 / self.image.pixel_size
         s = np.shape(self.image.consolidated_leading_edges)
         profiles_length = s[1]
-        self.image.frequency = 1000 * np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
+        num_freq_bins = profiles_length // 2 + 1
+        self.image.frequency = 1000 * np.linspace(0, Fs / 2, num_freq_bins)
+
+        # self.image.frequency = 1000 * np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
 
     def select_psd_model(self) -> tuple[Union[Callable, None], Union[Callable, None], Union[Callable, None]]:
         """
