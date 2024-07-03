@@ -1,12 +1,8 @@
 import unittest
-from copy import copy
 import numpy as np
-from unittest.mock import patch, MagicMock
-
-from app.models.image_container import Image
-from app.utils.processors_service import edge_consolidation, edge_mean_subtraction
+from unittest.mock import patch
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
-from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator, PostProcessor
+from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator, PostProcessor, MultiTaper
 
 
 class MockImagePreProcessor:
@@ -221,6 +217,49 @@ class TestPostProcessor(unittest.TestCase):
         with patch.object(self.processor, 'restore_base_attributes',
                           wraps=self.processor.restore_base_attributes) as mock_restore_base:
             self.processor.post_processing(False)
+
+            mock_restore_base.assert_called_once()
+
+
+class TestMultiTaper(unittest.TestCase):
+    def setUp(self):
+        self.image = MockImagePostProcessorAndMultiTaper()
+        self.multitaper = MultiTaper(self.image)
+
+    def test_multi_taper_with_cache(self):
+        self.image.multi_taper_cache = (
+            np.array([[1, 2], [3, 4]]),
+            np.array([[5, 6], [7, 8]]),
+            np.array([[9, 10], [11, 12]]),
+            np.array([[13, 14], [15, 16]])
+        )
+
+        with patch.object(self.multitaper, 'restore_cache', wraps=self.multitaper.restore_cache) as mock_restore_cache:
+            self.multitaper.multi_taper(True)
+
+            mock_restore_cache.assert_called_once()
+
+            np.testing.assert_array_equal(self.image.consolidated_leading_edges, np.array([[1, 2], [3, 4]]))
+            np.testing.assert_array_equal(self.image.consolidated_trailing_edges, np.array([[5, 6], [7, 8]]))
+            np.testing.assert_array_equal(self.image.zero_mean_leading_edge_profiles, np.array([[9, 10], [11, 12]]))
+            np.testing.assert_array_equal(self.image.zero_mean_trailing_edge_profiles, np.array([[13, 14], [15, 16]]))
+
+    def test_multi_taper_without_cache(self):
+        with patch.object(self.multitaper,
+                          'calculate_new_multi_taper_consolidated_edges') as mock_calculate_consolidated, \
+                patch.object(self.multitaper, 'calculate_new_multi_taper_zero_mean_edges',
+                             wraps=self.multitaper.calculate_new_multi_taper_zero_mean_edges) as mock_calculate_zero_mean, \
+                patch.object(self.multitaper, 'store_cache', wraps=self.multitaper.store_cache) as mock_store_cache:
+            self.multitaper.multi_taper(True)
+
+            mock_calculate_consolidated.assert_called_once()
+            mock_calculate_zero_mean.assert_called_once()
+            mock_store_cache.assert_called_once()
+
+    def test_multi_taper_without_use_multi_taper(self):
+        with patch.object(self.multitaper, 'restore_base_attributes',
+                          wraps=self.multitaper.restore_base_attributes) as mock_restore_base:
+            self.multitaper.multi_taper(False)
 
             mock_restore_base.assert_called_once()
 
