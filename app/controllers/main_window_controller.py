@@ -85,6 +85,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.image_display_manager.display_image_on_lines_tab(image)
         self.table_controller.update_with_image(self.images_list)
 
+    # TODO: connect to button recalculate and add if statement to process_image (recalculate or process)
+
     def process_image(self) -> None:
         """
         Processes selected images and updates the UI with results.
@@ -157,6 +159,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_lines_tab.clear()
         self.widget_parameters_tab.clear()
         self.widget_metric_tab.clear()
+        self.processing_controller.update_progress_bar(0)
 
 
 
