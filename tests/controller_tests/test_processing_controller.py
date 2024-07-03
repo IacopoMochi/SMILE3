@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QProgressBar, QLabel
 from app.models.image_container import Image
@@ -43,7 +43,19 @@ class TestProcessingController(unittest.TestCase):
     @patch.object(Image, 'pre_processing')
     @patch.object(Image, 'find_edges')
     @patch.object(Image, 'calculate_metrics')
-    def test_process_image(self, mock_calculate_metrics, mock_find_edges, mock_pre_processing, mock_gather_parameters):
+    @patch.object(Image, 'post_processing')
+    @patch.object(Image, 'multi_taper')
+    def test_process_image(self, mock_multi_taper, mock_post_processing, mock_calculate_metrics, mock_find_edges,
+                           mock_pre_processing, mock_gather_parameters):
+
+        mock_checkBox = MagicMock()
+        mock_radioButton = MagicMock()
+        mock_checkBox.isChecked.return_value = True
+        mock_radioButton.isChecked.return_value = True
+
+        self.main_window.checkBox_9 = mock_checkBox
+        self.main_window.radioButton_26 = mock_radioButton
+
         image = self.images_list.images_list[0]
         self.table.item(image.id, 0).setCheckState(Qt.CheckState.Checked)
 
@@ -52,6 +64,8 @@ class TestProcessingController(unittest.TestCase):
         mock_gather_parameters.assert_called_once_with(self.main_window, image)
         mock_pre_processing.assert_called_once()
         mock_find_edges.assert_called_once()
+        mock_post_processing.assert_called_once_with(True)
+        mock_multi_taper.assert_called_once_with(True)
         mock_calculate_metrics.assert_called_once()
         self.assertTrue(image.processed)
 
