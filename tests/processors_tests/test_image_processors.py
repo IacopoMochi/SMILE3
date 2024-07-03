@@ -1,8 +1,12 @@
 import unittest
+from copy import copy
 import numpy as np
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+
+from app.models.image_container import Image
+from app.utils.processors_service import edge_consolidation, edge_mean_subtraction
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
-from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator
+from app.processors.image_processors import PreProcessor, EdgeDetector, MetricCalculator, PostProcessor
 
 
 class MockImagePreProcessor:
@@ -89,7 +93,6 @@ class MockImageEdgeDetector:
 class TestEdgeDetector(unittest.TestCase):
 
     def setUp(self):
-
         self.image = MockImageEdgeDetector()
         self.edge_detector = EdgeDetector(self.image)
 
@@ -161,6 +164,67 @@ class TestEdgeDetector(unittest.TestCase):
         self.assertEqual(self.image.pitch_estimate, 1.2)
 
 
+class MockImagePostProcessorAndMultiTaper:
+    def __init__(self):
+        self.processed_image = np.array([[21, 22, 23, 24], [25, 26, 27, 28], [29, 30, 31, 32], [33, 34, 35, 36]])
+
+        self.consolidated_leading_edges = np.array([[5, 6], [7, 8]])
+        self.consolidated_trailing_edges = np.array([[9, 10], [11, 12]])
+        self.zero_mean_leading_edge_profiles = np.array([[13, 14], [15, 16]])
+        self.zero_mean_trailing_edge_profiles = np.array([[17, 18], [19, 20]])
+
+        self.basic_consolidated_leading_edges = np.array([[5, 6], [7, 8]])
+        self.basic_consolidated_trailing_edges = np.array([[9, 10], [11, 12]])
+        self.basic_zero_mean_leading_edge_profiles = np.array([[13, 14], [15, 16]])
+        self.basic_zero_mean_trailing_edge_profiles = np.array([[17, 18], [19, 20]])
+
+        self.post_processing_cache = None
+        self.multi_taper_cache = None
+
+
+class TestPostProcessor(unittest.TestCase):
+    def setUp(self):
+        self.image = MockImagePostProcessorAndMultiTaper()
+        self.processor = PostProcessor(self.image)
+
+    def test_post_processing_with_cache(self):
+        self.image.post_processing_cache = (
+            np.array([[1, 2], [3, 4]]),
+            np.array([[5, 6], [7, 8]]),
+            np.array([[9, 10], [11, 12]]),
+            np.array([[13, 14], [15, 16]])
+        )
+
+        with patch.object(self.processor, 'restore_cache', wraps=self.processor.restore_cache) as mock_restore_cache:
+            self.processor.post_processing(True)
+
+            mock_restore_cache.assert_called_once()
+
+            np.testing.assert_array_equal(self.image.consolidated_leading_edges, np.array([[1, 2], [3, 4]]))
+            np.testing.assert_array_equal(self.image.consolidated_trailing_edges, np.array([[5, 6], [7, 8]]))
+            np.testing.assert_array_equal(self.image.zero_mean_leading_edge_profiles, np.array([[9, 10], [11, 12]]))
+            np.testing.assert_array_equal(self.image.zero_mean_trailing_edge_profiles, np.array([[13, 14], [15, 16]]))
+
+    def test_post_processing_without_cache(self):
+        with patch.object(self.processor,
+                          'calculate_new_post_processed_consolidated_edges') as mock_calculate_consolidated, \
+                patch.object(self.processor, 'calculate_new_post_processed_zero_mean_edges',
+                             wraps=self.processor.calculate_new_post_processed_zero_mean_edges) as mock_calculate_zero_mean, \
+                patch.object(self.processor, 'store_cache', wraps=self.processor.store_cache) as mock_store_cache:
+            self.processor.post_processing(True)
+
+            mock_calculate_consolidated.assert_called_once()
+            mock_calculate_zero_mean.assert_called_once()
+            mock_store_cache.assert_called_once()
+
+    def test_post_processing_without_use_post_processing(self):
+        with patch.object(self.processor, 'restore_base_attributes',
+                          wraps=self.processor.restore_base_attributes) as mock_restore_base:
+            self.processor.post_processing(False)
+
+            mock_restore_base.assert_called_once()
+
+
 class MockImageMetricCalculator:
     def __init__(self):
         self.parameters = {
@@ -225,7 +289,8 @@ class TestMetricCalculator(unittest.TestCase):
 
         self.image.frequency = np.linspace(0.1, 10, 4).astype(np.float32)
 
-        PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased = self.metric_calculator.calculate_and_fit_psd(input_data)
+        PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased = self.metric_calculator.calculate_and_fit_psd(
+            input_data)
 
         self.assertEqual(PSD_fit_parameters.shape, (4,))
         self.assertEqual(PSD_fit.shape, (4,))
