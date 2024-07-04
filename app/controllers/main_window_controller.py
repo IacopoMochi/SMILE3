@@ -68,6 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_image_folder.pressed.connect(self.prepare_image)
         self.push_button_process_images.pressed.connect(self.process_image)
         self.table.cellClicked.connect(self.display_corresponding_images)
+        self.table.itemChanged.connect(self.check_selection)
 
         self.table_controller.error_signal.connect(self.show_error_message)
         self.image_display_manager.error_signal.connect(self.show_error_message)
@@ -137,6 +138,17 @@ class MainWindow(QtWidgets.QMainWindow):
             self.widget_parameters_tab.clear()
             self.widget_lines_tab.clear()
             self.result_images_manager.display_plot_on_metric_tab(average_image.image)
+
+    def check_selection(self):
+        """
+        Check if any image is selected. If not, disable the process button.
+        """
+        any_selected = False
+        for image in self.images_list.images_list:
+            if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
+                any_selected = True
+                break
+        self.push_button_process_images.setEnabled(any_selected)
 
     def show_error_message(self, message: str) -> None:
         """
