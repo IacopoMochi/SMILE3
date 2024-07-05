@@ -127,15 +127,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if row <= len(self.images_list.images_list) - 1:
             image = self.images_list.images_list[row]
-            if self.table.item(row, 0).checkState() == Qt.CheckState.Checked:
+
+            if image.processed:
+
+                if self.table.item(row, 0).checkState() == Qt.CheckState.Checked:
+                    self.image_display_manager.display_image_on_lines_tab(image)
+                    self.image_display_manager.display_image_on_parameters_tab(image)
+                    self.result_images_manager.display_profiles_on_lines_tab(image)
+                    self.result_images_manager.display_plot_on_metric_tab(image)
+                else:
+                    self.widget_parameters_tab.clear()
+                    self.widget_lines_tab.clear()
+                    self.widget_metric_tab.clear()
+
+            else:
                 self.image_display_manager.display_image_on_lines_tab(image)
                 self.image_display_manager.display_image_on_parameters_tab(image)
-                self.result_images_manager.display_profiles_on_lines_tab(image)
-                self.result_images_manager.display_plot_on_metric_tab(image)
-            else:
-                self.widget_parameters_tab.clear()
-                self.widget_lines_tab.clear()
-                self.widget_metric_tab.clear()
+
         else:
             average_image = AverageImage(self.images_list)
             average_image.prepare_average_image()
@@ -147,6 +155,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Check if any image is selected. If not, disable the process button.
         """
+
         any_selected = False
         for image in self.images_list.images_list:
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
