@@ -15,9 +15,19 @@ class AverageImage:
         images_list (ImagesList): The list of images to average.
     """
     def __init__(self, images_list: ImagesList) -> None:
-        self.image: Image = copy.deepcopy(images_list.images_list[0])
-        self.image.id = len(images_list.images_list)
         self.images_list = images_list
+        self.copy_first_selected_image()
+
+    def copy_first_selected_image(self):
+        """
+        Copy the first selected image from the images_list.
+        """
+
+        for img in self.images_list.images_list:
+            if img.processed:
+                self.image: Image = copy.deepcopy(img)
+                self.image.id = len(self.images_list.images_list)
+                break
 
     def gather_edges(self) -> None:
         """
