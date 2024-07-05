@@ -48,6 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.push_button_image_folder = self.findChild(QtWidgets.QPushButton, "pushButton_ImageFolder")
         self.push_button_process_images = self.findChild(QtWidgets.QPushButton, "process_lines_button")
+        self.push_button_process_images.setEnabled(False)
         self.table = self.findChild(QtWidgets.QTableWidget, "linesTable")
         self.widget_parameters_tab = self.findChild(PlotWidget, "line_image_view_parameters")
         self.widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
@@ -85,6 +86,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.image_display_manager.set_roi(self.x1_widget, self.x2_widget, self.y1_widget, self.y2_widget)
             self.image_display_manager.display_image_on_lines_tab(image)
         self.table_controller.update_with_image(self.images_list)
+
+        if self.images_list.images_list:
+            self.push_button_process_images.setEnabled(True)
 
     # TODO: connect to button recalculate and add if statement to process_image (recalculate or process)
 
