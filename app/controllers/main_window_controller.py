@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 from pyqtgraph import PlotWidget
@@ -48,6 +50,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.push_button_image_folder = self.findChild(QtWidgets.QPushButton, "pushButton_ImageFolder")
         self.push_button_process_images = self.findChild(QtWidgets.QPushButton, "process_lines_button")
+        self.push_button_recalculate_metrics = self.findChild(QtWidgets.QPushButton, "recalculate_metrics_button")
         self.push_button_process_images.setEnabled(False)
         self.table = self.findChild(QtWidgets.QTableWidget, "linesTable")
         self.widget_parameters_tab = self.findChild(PlotWidget, "line_image_view_parameters")
@@ -67,7 +70,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         self.push_button_image_folder.pressed.connect(self.prepare_image)
-        self.push_button_process_images.pressed.connect(self.process_image)
+        self.push_button_process_images.pressed.connect(partial(self.process_image, recalculate_metrics=False))
+        self.push_button_recalculate_metrics.pressed.connect(partial(self.process_image, recalculate_metrics=True))
         self.table.cellClicked.connect(self.display_corresponding_images)
         self.table.itemChanged.connect(self.check_selection)
 
@@ -90,9 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.images_list.images_list:
             self.push_button_process_images.setEnabled(True)
 
-    # TODO: connect to button recalculate and add if statement to process_image (recalculate or process)
-
-    def process_image(self) -> None:
+    def process_image(self, recalculate_metrics=False) -> None:
         """
         Processes selected images and updates the UI with results.
         """
@@ -104,7 +106,10 @@ class MainWindow(QtWidgets.QMainWindow):
         number_processed_images = 0
         for image in self.images_list.images_list:
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
-                self.processing_controller.process_image(image)
+                if recalculate_metrics:
+                    self.processing_controller.recalculate_metrics(image)
+                else:
+                    self.processing_controller.process_image(image)
                 self.table_controller.update_with_processed_image(image)
                 number_processed_images += 1
                 self.processing_controller.update_progress_bar(number_processed_images)
