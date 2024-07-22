@@ -207,6 +207,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_parameters_tab.clear()
         self.widget_metric_tab.clear()
         self.processing_controller.update_progress_bar(0)
+        self.push_button_recalculate_metrics.setEnabled(False)
+
 
 
 
