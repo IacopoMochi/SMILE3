@@ -115,6 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.processing_controller.update_progress_bar(number_processed_images)
                 self.table_controller.mark_image_as_processed(image.id)
                 self.result_images_manager.display_profiles_on_lines_tab(image)
+                self.result_images_manager.display_cropped_image_on_parameters_tab(image)
                 self.result_images_manager.display_plot_on_metric_tab(image)
                 QtWidgets.QApplication.processEvents()
 
@@ -139,6 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.image_display_manager.display_image_on_lines_tab(image)
                     self.image_display_manager.display_image_on_parameters_tab(image)
                     self.result_images_manager.display_profiles_on_lines_tab(image)
+                    self.result_images_manager.display_cropped_image_on_parameters_tab(image)
                     self.result_images_manager.display_plot_on_metric_tab(image)
                 else:
                     self.widget_parameters_tab.clear()
@@ -148,6 +150,7 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.image_display_manager.display_image_on_lines_tab(image)
                 self.image_display_manager.display_image_on_parameters_tab(image)
+                self.image_display_manager.set_roi(self.x1_widget, self.x2_widget, self.y1_widget, self.y2_widget)
                 self.widget_metric_tab.clear()
 
         else:

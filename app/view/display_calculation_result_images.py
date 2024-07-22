@@ -40,10 +40,19 @@ class ResultImagesManager(QtWidgets.QWidget):
         edge_color = pg.mkColor(0, 200, 0)
         edge_pen = pg.mkPen(edge_color, width=3)
 
-        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen)
-        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen)
+        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen, self.plot_widget_lines_tab)
+        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen, self.plot_widget_lines_tab)
 
-    def _display_edges(self, edges: np.ndarray, error_message: str, pen: str) -> None:
+    def display_cropped_image_on_parameters_tab(self, image: Image) -> None:
+
+        self.base_images.display_image_on_parameters_tab(image)
+        edge_color = pg.mkColor(0, 200, 0)
+        edge_pen = pg.mkPen(edge_color, width=3)
+
+        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen, self.plot_widget_parameters_tab)
+        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen, self.plot_widget_parameters_tab)
+
+    def _display_edges(self, edges: np.ndarray, error_message: str, pen: str, tab: PlotWidget) -> None:
         """
         Helper function to add edges on the image in lines tab.
 
@@ -57,7 +66,7 @@ class ResultImagesManager(QtWidgets.QWidget):
             profiles_length = np.shape(edges)[1]
             for edge in edges:
                 edge_plot = pg.PlotDataItem(edge, np.arange(0, profiles_length), pen=pen)
-                self.plot_widget_lines_tab.addItem(edge_plot)
+                tab.addItem(edge_plot)
         else:
             self.window.show_error_message(error_message)
 
