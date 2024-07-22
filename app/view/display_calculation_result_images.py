@@ -37,20 +37,18 @@ class ResultImagesManager(QtWidgets.QWidget):
         """
 
         self.base_images.display_image_on_lines_tab(image)
-        edge_color = pg.mkColor(0, 200, 0)
-        edge_pen = pg.mkPen(edge_color, width=3)
+        self._display_profiles(image, self.plot_widget_lines_tab)
 
-        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen, self.plot_widget_lines_tab)
-        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen, self.plot_widget_lines_tab)
-
-    def display_cropped_image_on_parameters_tab(self, image: Image) -> None:
+    def display_profiles_on_parameters_tab(self, image: Image) -> None:
 
         self.base_images.display_image_on_parameters_tab(image)
+        self._display_profiles(image, self.plot_widget_parameters_tab)
+
+    def _display_profiles(self, image, tab: PlotWidget) -> None:
         edge_color = pg.mkColor(0, 200, 0)
         edge_pen = pg.mkPen(edge_color, width=3)
-
-        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen, self.plot_widget_parameters_tab)
-        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen, self.plot_widget_parameters_tab)
+        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen, tab)
+        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen, tab)
 
     def _display_edges(self, edges: np.ndarray, error_message: str, pen: str, tab: PlotWidget) -> None:
         """
