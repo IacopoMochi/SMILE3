@@ -3,7 +3,7 @@ from functools import partial
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 from pyqtgraph import PlotWidget
-from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
 from app.models.images_list import ImagesList
 from app.controllers.table_controller import TableController
@@ -109,6 +109,10 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
                 if recalculate_metrics:
                     self.processing_controller.recalculate_metrics(image)
+                    for row in range(len(self.images_list.images_list) - 1):
+                        if self.table.item(row, 0).checkState() != Qt.CheckState.Checked:
+                            [self.table.setItem(row, column, QTableWidgetItem("")) for column in range(3, self.table.columnCount())]
+                            self.table.setItem(row, 2, QTableWidgetItem("No"))
                 else:
                     self.processing_controller.process_image(image)
                 self.table_controller.update_with_processed_image(image)
