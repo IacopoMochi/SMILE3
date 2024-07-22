@@ -58,15 +58,12 @@ class ProcessingController:
                 self.window.show_error_message(f"Error has occurred while processing image: {e}")
 
     def recalculate_metrics(self, image: Image) -> None:
-
-        if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
-            try:
-                image.post_processing(True if self.window.checkBox_9.isChecked() else False)
-                image.multi_taper(True if self.window.radioButton_26.isChecked() else False)
-                image.calculate_metrics()
-            except Exception as e:
-                self.window.show_error_message(f"Error has occurred while recalculating image: {e}")
-
+        try:
+            image.post_processing(True if self.window.checkBox_9.isChecked() else False)
+            image.multi_taper(True if self.window.radioButton_26.isChecked() else False)
+            image.calculate_metrics()
+        except Exception as e:
+            self.window.show_error_message(f"Error has occurred while recalculating image: {e}")
 
     def update_progress_bar(self, number_processed_images: int) -> None:
         """

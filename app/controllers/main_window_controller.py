@@ -107,22 +107,29 @@ class MainWindow(QtWidgets.QMainWindow):
         number_processed_images = 0
         for image in self.images_list.images_list:
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
+
                 if recalculate_metrics:
-                    self.processing_controller.recalculate_metrics(image)
+                    if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
+                        if image.processed:
+                            self.processing_controller.recalculate_metrics(image)
+                        else:
+                            self.table.item(image.id, 0).setCheckState(Qt.CheckState.Unchecked)
                     for row in range(len(self.images_list.images_list) - 1):
                         if self.table.item(row, 0).checkState() != Qt.CheckState.Checked:
                             [self.table.setItem(row, column, QTableWidgetItem("")) for column in range(3, self.table.columnCount())]
-                            self.table.setItem(row, 2, QTableWidgetItem("No"))
+                            self.table.setItem(row, 1, QTableWidgetItem("No"))
+
                 else:
                     self.processing_controller.process_image(image)
-                self.table_controller.update_with_processed_image(image)
-                number_processed_images += 1
-                self.processing_controller.update_progress_bar(number_processed_images)
-                self.table_controller.mark_image_as_processed(image.id)
-                self.result_images_manager.display_profiles_on_lines_tab(image)
-                self.result_images_manager.display_profiles_on_parameters_tab(image)
-                self.result_images_manager.display_plot_on_metric_tab(image)
-                QtWidgets.QApplication.processEvents()
+                if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked and image.processed:
+                    self.table_controller.update_with_processed_image(image)
+                    number_processed_images += 1
+                    self.processing_controller.update_progress_bar(number_processed_images)
+                    self.table_controller.mark_image_as_processed(image.id)
+                    self.result_images_manager.display_profiles_on_lines_tab(image)
+                    self.result_images_manager.display_profiles_on_parameters_tab(image)
+                    self.result_images_manager.display_plot_on_metric_tab(image)
+                    QtWidgets.QApplication.processEvents()
 
         self.average_image = AverageImage(self.images_list)
         self.average_image.prepare_average_image()
