@@ -52,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_process_images = self.findChild(QtWidgets.QPushButton, "process_lines_button")
         self.push_button_recalculate_metrics = self.findChild(QtWidgets.QPushButton, "recalculate_metrics_button")
         self.push_button_process_images.setEnabled(False)
+        self.push_button_recalculate_metrics.setEnabled(False)
         self.table = self.findChild(QtWidgets.QTableWidget, "linesTable")
         self.widget_parameters_tab = self.findChild(PlotWidget, "line_image_view_parameters")
         self.widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
@@ -125,6 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.result_images_manager.display_plot_on_metric_tab(self.average_image.image)
         QtWidgets.QApplication.processEvents()
         self.push_button_process_images.setEnabled(True)
+        self.push_button_recalculate_metrics.setEnabled(True)
 
     def display_corresponding_images(self, row: int) -> None:
         """
