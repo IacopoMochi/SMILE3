@@ -148,6 +148,7 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 self.image_display_manager.display_image_on_lines_tab(image)
                 self.image_display_manager.display_image_on_parameters_tab(image)
+                self.widget_metric_tab.clear()
 
         else:
             average_image = AverageImage(self.images_list)
