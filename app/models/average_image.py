@@ -52,7 +52,7 @@ class AverageImage:
         frequency_set = set()
 
         for image in self.images_list.images_list:
-            if image.processed:
+            if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked and image.processed:
                 leading_edges.append(image.consolidated_leading_edges)
                 trailing_edges.append(image.consolidated_trailing_edges)
                 zero_mean_leading_edge_profiles.append(image.zero_mean_leading_edge_profiles)
