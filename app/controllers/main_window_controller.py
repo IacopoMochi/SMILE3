@@ -134,7 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.result_images_manager.display_plot_on_metric_tab(image)
                     QtWidgets.QApplication.processEvents()
 
-        self.average_image = AverageImage(self.images_list)
+        self.average_image = AverageImage(self.images_list, self.table)
         self.average_image.prepare_average_image()
         self.table_controller.add_average_image(self.average_image)
         self.result_images_manager.display_plot_on_metric_tab(self.average_image.image)
@@ -170,7 +170,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.widget_metric_tab.clear()
 
         else:
-            average_image = AverageImage(self.images_list)
+            average_image = AverageImage(self.images_list, self.table)
             average_image.prepare_average_image()
             self.widget_parameters_tab.clear()
             self.widget_lines_tab.clear()

@@ -1,6 +1,9 @@
 import numpy as np
 import copy
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QTableWidget
+
 from app.models.images_list import ImagesList
 from app.models.image_container import Image
 from app.processors.image_processors import MetricCalculator
@@ -14,8 +17,9 @@ class AverageImage:
         image (Image): A deep copy of the first image in the images list, used to fill missing data.
         images_list (ImagesList): The list of images to average.
     """
-    def __init__(self, images_list: ImagesList) -> None:
+    def __init__(self, images_list: ImagesList, table: QTableWidget) -> None:
         self.images_list = images_list
+        self.table = table
         self.copy_first_selected_image()
 
     def copy_first_selected_image(self):
@@ -24,7 +28,7 @@ class AverageImage:
         """
 
         for img in self.images_list.images_list:
-            if img.processed:
+            if self.table.item(img.id, 0).checkState() == Qt.CheckState.Checked and img.processed:
                 self.image: Image = copy.deepcopy(img)
                 self.image.id = len(self.images_list.images_list)
                 break
