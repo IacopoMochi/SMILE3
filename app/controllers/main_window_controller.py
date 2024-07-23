@@ -105,26 +105,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.processing_controller.set_up_progress_bar()
 
         number_processed_images = 0
+
+        for row in range(len(self.images_list.images_list) - 1):
+            if self.table.item(row, 0).checkState() != Qt.CheckState.Checked:
+                [self.table.setItem(row, column, QTableWidgetItem("")) for column in range(3, self.table.columnCount())]
+                self.table.setItem(row, 1, QTableWidgetItem("No"))
+
         for image in self.images_list.images_list:
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
 
                 if recalculate_metrics:
-                    if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
-                        if image.processed:
-                            self.processing_controller.recalculate_metrics(image)
-                        else:
-                            self.table.item(image.id, 0).setCheckState(Qt.CheckState.Unchecked)
-                            self.processing_controller.number_selected_images -= 1
-                            self.processing_controller.set_up_progress_bar()
+                    if image.processed:
+                        self.processing_controller.recalculate_metrics(image)
+                    else:
+                        self.table.item(image.id, 0).setCheckState(Qt.CheckState.Unchecked)
+                        self.processing_controller.number_selected_images -= 1
+                        self.processing_controller.set_up_progress_bar()
 
-                    for row in range(len(self.images_list.images_list) - 1):
-                        if self.table.item(row, 0).checkState() != Qt.CheckState.Checked:
-                            [self.table.setItem(row, column, QTableWidgetItem("")) for column in range(3, self.table.columnCount())]
-                            self.table.setItem(row, 1, QTableWidgetItem("No"))
                 else:
                     self.processing_controller.process_image(image)
 
-                if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked and image.processed:
+                if image.processed:
                     self.table_controller.update_with_processed_image(image)
                     number_processed_images += 1
                     self.processing_controller.update_progress_bar(number_processed_images)
