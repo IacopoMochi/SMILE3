@@ -58,6 +58,16 @@ class ProcessingController:
                 self.window.show_error_message(f"Error has occurred while processing image: {e}")
 
     def recalculate_metrics(self, image: Image) -> None:
+        """
+        Recalculates metrics for a given image by performing post-processing and multi-taper steps.
+
+        Args:
+            image (Image): The image whose metrics are to be recalculated.
+
+        Raises:
+            Exception: If an error occurs during the post-processing, multi-taper, or metrics calculation steps.
+        """
+
         try:
             image.post_processing(True if self.window.checkBox_9.isChecked() else False)
             image.multi_taper(True if self.window.radioButton_26.isChecked() else False)

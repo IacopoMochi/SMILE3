@@ -100,6 +100,20 @@ def Palasantzas_2b(freq: np.ndarray, beta: List[float]) -> np.ndarray:
 
 
 def Palasantzas_1_beta(image, PSD):
+    """
+    Calculates the beta parameters and their min and max ranges for the Palasantzas 1 model.
+
+    Args:
+        image: The image object containing the parameters required for the calculation.
+        PSD (np.ndarray): The power spectral density data used for estimating the parameters.
+
+    Returns:
+        Tuple[List[float], List[float], List[float]]: A tuple containing:
+            - A list of beta parameters estimated from the image and PSD data.
+            - A list of minimum values for each beta parameter.
+            - A list of maximum values for each beta parameter.
+    """
+
     beta = [0, 0, 0, 0, 0]
     parameters = image.parameters
     High_frequency_max = parameters["High_frequency_cut"]
@@ -125,6 +139,18 @@ def Palasantzas_1_beta(image, PSD):
 
 
 def Palasantzas_1_minimize(beta, freq, PSD):
+    """
+    Objective function for minimizing the difference between the observed PSD and the model's predicted PSD.
+
+    Args:
+        beta (List[float]): List of beta parameters for the Palasantzas 1 model.
+        freq (np.ndarray): Frequency data used to compute the model's predicted PSD.
+        PSD (np.ndarray): Observed power spectral density data.
+
+    Returns:
+        float: The minimized value, which is the mean absolute difference between the observed and predicted PSD.
+    """
+
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
@@ -157,6 +183,18 @@ def Palasantzas_1(freq: np.ndarray, *beta: float) -> np.ndarray:
 
 
 def Palasantzas_1b(freq, beta):
+    """
+        Calculates the beta parameters and their min and max ranges for the Palasantzas 1 model.
+
+        Args:
+            image: The image object containing the parameters.
+            PSD (np.ndarray): The power spectral density data.
+
+        Returns:
+            Tuple[List[float], List[float], List[float]]: A tuple containing the beta parameters,
+                                                          their minimum values, and their maximum values.
+        """
+
     sig2 = beta[0]
     Lc = 1 / beta[1]
     Nl = beta[2]
