@@ -137,7 +137,18 @@ class EdgeDetector:
                         edge_position = r[np.argmin(np.abs(r - (segment_start + segment_end) / 2))]
                         edges_profiles[cnt, row] = np.real(edge_position)
                 elif self.image.parameters["Edge_fit_function"] == "linear":
-                    print("Add code for linear edge finding")
+                    p = np.polyfit(x, segment, 1)
+                    p[-1] = p[-1] - np.double(self.image.parameters["Threshold"])
+                    r = np.roots(p)
+                    r = r[np.imag(r) == 0]
+                    if len(r) == 1:
+                        if r > segment_end:
+                            edge_position = segment_end
+                        elif r < segment_start:
+                            edge_position = segment_start
+                        else:
+                            edge_position = r
+                        edges_profiles[cnt, row] = np.real(edge_position)
                 elif self.image.parameters["Edge_fit_function"] == "threshold":
                     print("Add code for threshold edge finding")
                 elif self.image.parameters["Edge_fit_function"] == "bright_edge":
