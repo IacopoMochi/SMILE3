@@ -150,7 +150,10 @@ class EdgeDetector:
                             edge_position = r
                         edges_profiles[cnt, row] = np.real(edge_position)
                 elif self.image.parameters["Edge_fit_function"] == "threshold":
-                    print("Add code for threshold edge finding")
+                    # This needs to be improved
+                    a = np.argmin(np.abs(segment - np.double(self.image.parameters["Threshold"])))
+                    edge_position = x[a]
+                    edges_profiles[cnt, row] = np.real(edge_position)
                 elif self.image.parameters["Edge_fit_function"] == "bright_edge":
                     print("Add code for bright edge finding")
         return edges_profiles
