@@ -78,11 +78,18 @@ class TableController(QtWidgets.QWidget):
                 item_averageCDstd = QtWidgets.QTableWidgetItem(f"{image.critical_dimension_std_estimate:.5f}")
             if image.pitch_estimate is not None:
                 item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{image.pitch_estimate:.5f}")
+            if image.unbiased_LWR is not None:
+                item_UnbiasedLWR = QtWidgets.QTableWidgetItem(f"{image.unbiased_LWR:.5f}")
+            if image.unbiased_LWR_fit is not None:
+                item_UnbiasedLWRfit = QtWidgets.QTableWidgetItem(f"{image.unbiased_LWR_fit:.5f}")
 
             self.table_widget.setItem(image.id, 3, item_number_of_lines)
             self.table_widget.setItem(image.id, 4, item_pitchEstimate)
             self.table_widget.setItem(image.id, 5, item_averageCD)
             self.table_widget.setItem(image.id, 6, item_averageCDstd)
+            self.table_widget.setItem(image.id, 7, item_UnbiasedLWR)
+            self.table_widget.setItem(image.id, 8, item_UnbiasedLWRfit)
+
         except Exception as e:
             self.error_signal.emit(f"Error occurred while completing the table with processed image data: {str(e)}")
 
@@ -95,4 +102,3 @@ class TableController(QtWidgets.QWidget):
         """
 
         self.table_widget.setItem(average_image.image.id, 2, QTableWidgetItem('average'))
-

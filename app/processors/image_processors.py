@@ -487,6 +487,8 @@ class MetricCalculator:
                  and fitted unbiased PSD.
         """
 
+        # Calculate standard deviation to check
+        sigma = np.mean(np.nanstd(input_data, 0))
         model, model_beta, model_2 = self.select_psd_model()
         PSD = np.nanmean(np.abs(np.fft.rfft(input_data)) ** 2, 0)
         PSD /= len(PSD) ** 2
@@ -510,7 +512,13 @@ class MetricCalculator:
         beta[2] = 0
         PSD_fit_unbiased = model_2(self.image.frequency, beta)
 
-        return PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased
+        sigma_standard = 3 * sigma
+        biased_sigma = 3 * np.sqrt(np.sum(PSD))
+        unbiased_sigma = 3 * np.sqrt(np.sum(PSD_unbiased))
+        unbiased_sigma_fit = 3 * np.sqrt(np.sum(PSD_fit_unbiased))
+
+
+        return PSD, PSD_fit_parameters, PSD_fit, PSD_unbiased, PSD_fit_unbiased, unbiased_sigma, biased_sigma, sigma_standard, unbiased_sigma_fit
 
     def calculate_metrics(self) -> None:
         """
@@ -525,7 +533,11 @@ class MetricCalculator:
          self.image.LWR_PSD_fit_parameters,
          self.image.LWR_PSD_fit,
          self.image.LWR_PSD_unbiased,
-         self.image.LWR_PSD_fit_unbiased) = self.calculate_and_fit_psd(line_width)
+         self.image.LWR_PSD_fit_unbiased,
+         self.image.unbiased_LWR,
+         self.image.biased_LWR,
+         self.image.standard_LWR,
+         self.image.unbiased_LWR_fit) = self.calculate_and_fit_psd(line_width)
 
         # LER PSD
         all_edges = np.vstack((self.image.zero_mean_leading_edge_profiles * self.image.pixel_size,
@@ -535,7 +547,11 @@ class MetricCalculator:
          self.image.LER_PSD_fit_parameters,
          self.image.LER_PSD_fit,
          self.image.LER_PSD_unbiased,
-         self.image.LER_PSD_fit_unbiased) = self.calculate_and_fit_psd(all_edges)
+         self.image.LER_PSD_fit_unbiased,
+         self.image.unbiased_LER,
+         self.image.biased_LER,
+         self.image.standard_LER,
+         self.image.unbiased_LER_fit) = self.calculate_and_fit_psd(all_edges)
 
         # Leading edges LER
         input_data = self.image.zero_mean_leading_edge_profiles * self.image.pixel_size
@@ -544,7 +560,11 @@ class MetricCalculator:
          self.image.LER_Leading_PSD_fit_parameters,
          self.image.LER_Leading_PSD_fit,
          self.image.LER_Leading_PSD_unbiased,
-         self.image.LER_Leading_PSD_fit_unbiased) = self.calculate_and_fit_psd(input_data)
+         self.image.LER_Leading_PSD_fit_unbiased,
+         self.image.unbiased_LER_Leading,
+         self.image.biased_LER_Leading,
+         self.image.standard_LER_Leading,
+         self.image.unbiased_LER_Leading_fit) = self.calculate_and_fit_psd(input_data)
 
         # Trailing edges LER
         input_data = self.image.zero_mean_trailing_edge_profiles * self.image.pixel_size
@@ -553,4 +573,8 @@ class MetricCalculator:
          self.image.LER_Trailing_PSD_fit_parameters,
          self.image.LER_Trailing_PSD_fit,
          self.image.LER_Trailing_PSD_unbiased,
-         self.image.LER_Trailing_PSD_fit_unbiased) = self.calculate_and_fit_psd(input_data)
+         self.image.LER_Trailing_PSD_fit_unbiased,
+         self.image.unbiased_LER_Trailing,
+         self.image.biased_LER_Trailing,
+         self.image.standard_LER_Trailing,
+         self.image.unbiased_LER_Trailing_fit) = self.calculate_and_fit_psd(input_data)

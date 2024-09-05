@@ -73,7 +73,7 @@ class FolderImageLoader:
             folder_path = QtWidgets.QFileDialog.getExistingDirectory(self.window, 'Select images folder', parent_directory)
             return folder_path
         except Exception as e:
-            self.window.show_error_message(f"An error occured while selecting folder: {str(e)}")
+            self.window.show_error_message(f"An error occurred while selecting folder: {str(e)}")
 
     def save_last_used_directory(self, folder_path: str) -> None:
         """

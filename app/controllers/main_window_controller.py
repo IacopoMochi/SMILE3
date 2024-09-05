@@ -12,6 +12,8 @@ from app.view.display_image import ImageDisplayManager
 from app.controllers.folder_image_loader import FolderImageLoader
 from app.controllers.processing_controller import ProcessingController
 from app.models.average_image import AverageImage
+from app.controllers.data_export_controller import DataExporter
+
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -42,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                          self.widget_metric_tab, self)
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
         self.average_image = None
+        self.data_exporter = DataExporter(self.images_list, self)
 
     def init_ui(self) -> None:
         """
@@ -57,6 +60,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_parameters_tab = self.findChild(PlotWidget, "line_image_view_parameters")
         self.widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
         self.widget_metric_tab = self.findChild(PlotWidget, "metric_plot")
+        self.push_button_export_data = self.findChild(QtWidgets.QPushButton, "export_data")
 
     def init_ui_for_roi(self) -> None:
 
@@ -75,6 +79,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_recalculate_metrics.pressed.connect(partial(self.process_image, recalculate_metrics=True))
         self.table.cellClicked.connect(self.display_corresponding_images)
         self.table.itemChanged.connect(self.check_selection)
+        self.push_button_export_data.pressed.connect(self.data_exporter.export_data)
+
 
         self.table_controller.error_signal.connect(self.show_error_message)
         self.image_display_manager.error_signal.connect(self.show_error_message)

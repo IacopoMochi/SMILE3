@@ -29,18 +29,36 @@ class Image:
         self.LER_PSD_fit = None
         self.LER_PSD_fit_unbiased = None
         self.LER_PSD_unbiased = None
+        self.LER_3s = None
+        self.LER = None
+        self.LER_fit_parameters = None
+        self.LER_fit = None
+        self.LER_fit_unbiased = None
+        self.LER_unbiased = None
 
         self.LER_Leading_PSD = None
         self.LER_Leading_PSD_fit_parameters = None
         self.LER_Leading_PSD_fit = None
         self.LER_Leading_PSD_fit_unbiased = None
         self.LER_Leading_PSD_unbiased = None
+        self.LER_Leading_3s = None
+        self.LER_Leading = None
+        self.LER_Leading_fit_parameters = None
+        self.LER_Leading_fit = None
+        self.LER_Leading_fit_unbiased = None
+        self.LER_Leading_unbiased = None
 
         self.LER_Trailing_PSD = None
         self.LER_Trailing_PSD_fit_parameters = None
         self.LER_Trailing_PSD_fit = None
         self.LER_Trailing_PSD_fit_unbiased = None
         self.LER_Trailing_PSD_unbiased = None
+        self.LER_Trailing_3s = None
+        self.LER_Trailing = None
+        self.LER_Trailing_fit_parameters = None
+        self.LER_Trailing_fit = None
+        self.LER_Trailing_fit_unbiased = None
+        self.LER_Trailing_unbiased = None
 
         self.consolidated_leading_edges = None
         self.consolidated_trailing_edges = None

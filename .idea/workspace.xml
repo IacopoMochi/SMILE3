@@ -5,7 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
+      <change afterPath="$PROJECT_DIR$/app/controllers/data_export_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/SMILE3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SMILE3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/folder_image_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/folder_image_loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/main_window_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/main_window_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/table_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/table_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/image_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/image_container.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/processors/image_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/processors/image_processors.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -197,7 +203,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
+        <option value="bundled-python-sdk-8336bb23522e-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.19072.16" />
       </set>
     </attachedChunks>
   </component>
@@ -494,6 +500,16 @@
           <url>file://$PROJECT_DIR$/src/gui/main_window.py</url>
           <line>131</line>
           <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/controllers/data_export_controller.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/models/image_container.py</url>
+          <line>78</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
