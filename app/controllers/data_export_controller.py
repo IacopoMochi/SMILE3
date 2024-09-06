@@ -1,6 +1,6 @@
+import copy
 import os
 from PyQt6 import QtWidgets
-from app.models.image_container import Image
 from app.models.images_list import ImagesList
 from PyQt6.QtCore import QSettings
 import pandas as pd
@@ -19,8 +19,19 @@ class DataExporter:
         filename, filters = QtWidgets.QFileDialog.getSaveFileName()
         return filename
 
-    def gather_data_for_exporting(self):
+    def gather_parameter_for_exporting(self):
+        parameters_of_the_first_image = self.images_list.images_list[0].parameters
+        parameters = copy.copy(parameters_of_the_first_image)
+        for key in parameters_of_the_first_image:
+            parameters[key] = [parameters_of_the_first_image[key]]
+        for processed_image in self.images_list.images_list:
+            image_parameters = processed_image.parameters
+            for key in image_parameters:
+                if key in parameters:
+                    parameters[key].append(image_parameters[key])
+        return parameters
 
+    def gather_data_for_exporting(self):
         selected = []
         image_name = []
         processed = []
@@ -97,14 +108,17 @@ class DataExporter:
         }
 
         # load data into a DataFrame object:
-        line_metrics = pd.DataFrame(data)
-        return line_metrics
+        return data
 
     def export_data(self):
-        line_metrics = self.gather_data_for_exporting()
-        print(line_metrics)
+
+        line_metrics = pd.DataFrame(self.gather_data_for_exporting())
+        parameters = pd.DataFrame(self.gather_parameter_for_exporting())
+
         filename = self.select_target_file()
 
         with pd.ExcelWriter(filename) as writer:
             line_metrics.to_excel(writer, sheet_name='Line_Metrics')
-            line_metrics.to_excel(writer, sheet_name='Parameters')
+            parameters.to_excel(writer, sheet_name='Parameters')
+            for processed_image in self.images_list.images_list:
+                pd.DataFrame(np.transpose(processed_image.consolidated_leading_edges)).to_excel(writer, sheet_name=processed_image.file_name + ' - Leading edges')
