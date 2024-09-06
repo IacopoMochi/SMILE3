@@ -500,6 +500,11 @@
           <line>26</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/controllers/data_export_controller.py</url>
+          <line>132</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
