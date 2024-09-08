@@ -61,6 +61,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.widget_lines_tab = self.findChild(PlotWidget, "line_image_view")
         self.widget_metric_tab = self.findChild(PlotWidget, "metric_plot")
         self.push_button_export_data = self.findChild(QtWidgets.QPushButton, "export_data")
+        self.push_button_select_all = self.findChild(QtWidgets.QPushButton, "pushButton_selectAll")
+        self.push_button_select_none = self.findChild(QtWidgets.QPushButton, "pushButton_selectNone")
 
     def init_ui_for_roi(self) -> None:
 
@@ -78,9 +80,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_process_images.pressed.connect(partial(self.process_image, recalculate_metrics=False))
         self.push_button_recalculate_metrics.pressed.connect(partial(self.process_image, recalculate_metrics=True))
         self.table.cellClicked.connect(self.display_corresponding_images)
+        self.table.cellChanged.connect(self.display_corresponding_images)
         self.table.itemChanged.connect(self.check_selection)
         self.push_button_export_data.pressed.connect(self.data_exporter.export_data)
 
+        self.push_button_select_all.pressed.connect(self.select_all_images)
+        self.push_button_select_none.pressed.connect(self.unselect_all_images)
 
         self.table_controller.error_signal.connect(self.show_error_message)
         self.image_display_manager.error_signal.connect(self.show_error_message)
@@ -194,6 +199,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 any_selected = True
                 break
         self.push_button_process_images.setEnabled(any_selected)
+
+    def select_all_images(self):
+        for image in self.images_list.images_list:
+            if self.table.item(image.id, 0).checkState() == Qt.CheckState.Unchecked:
+                self.table.item(image.id, 0).setCheckState(Qt.CheckState.Checked)
+
+    def unselect_all_images(self):
+        for image in self.images_list.images_list:
+            if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
+                self.table.item(image.id, 0).setCheckState(Qt.CheckState.Unchecked)
 
     def show_error_message(self, message: str) -> None:
         """

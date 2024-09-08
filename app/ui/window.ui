@@ -302,14 +302,14 @@
                <number>10</number>
               </property>
               <item>
-               <widget class="QPushButton" name="pushButton_3">
+               <widget class="QPushButton" name="pushButton_selectAll">
                 <property name="text">
                  <string>Select all</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_4">
+               <widget class="QPushButton" name="pushButton_selectNone">
                 <property name="text">
                  <string>Unselect all</string>
                 </property>

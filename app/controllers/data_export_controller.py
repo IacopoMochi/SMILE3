@@ -119,7 +119,7 @@ class DataExporter:
 
         with pd.ExcelWriter(filename) as writer:
             line_metrics.to_excel(writer, sheet_name='Line_Metrics')
-            parameters.to_excel(writer, sheet_name='Parameters', engine="xlsxwriter")
+            parameters.to_excel(writer, sheet_name='Parameters')
             for processed_image in self.images_list.images_list:
                 leading_edges = np.transpose(processed_image.consolidated_leading_edges)
                 trailing_edges = np.transpose(processed_image.consolidated_leading_edges)
@@ -128,23 +128,3 @@ class DataExporter:
                 edges[:, 1::2] = trailing_edges
                 pd.DataFrame(edges).to_excel(writer, sheet_name=processed_image.file_name + ' - Edges', startrow=1, header=False)
 
-                # Get the xlsxwriter workbook and worksheet objects.
-                workbook = writer.book
-                worksheet = writer.sheets["Parameters"]
-                # # Add a header format.
-                # header_format = workbook.add_format(
-                #     {
-                #         "bold": True,
-                #         "text_wrap": True,
-                #         "valign": "top",
-                #         "fg_color": "#D7E4BC",
-                #         "border": 1,
-                #     }
-                # )
-
-                # Write the column headers with the defined format.
-                for col_num, value in enumerate(pd.DataFrame(edges).columns.values):
-                    worksheet.write(0, col_num + 1, value)
-
-                # Close the Pandas Excel writer and output the Excel file.
-                writer.close()
