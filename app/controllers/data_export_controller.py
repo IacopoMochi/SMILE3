@@ -2,16 +2,19 @@ import copy
 import os
 from PyQt6 import QtWidgets
 from app.models.images_list import ImagesList
+from app.models.average_image import AverageImage
 from PyQt6.QtCore import QSettings
 import pandas as pd
 import numpy as np
+import xlsxwriter
 
 class DataExporter:
     """
     A class to export the precessed data to a file in EXCEL or CSV format
     """
-    def __init__(self, images_list: ImagesList, window):
+    def __init__(self, images_list: ImagesList, average_image: AverageImage, window):
         self.images_list = images_list
+        self.average_image = average_image
         self.window = window
         self.settings = QSettings("PSI", "SMILE3")
 
@@ -54,6 +57,8 @@ class DataExporter:
         biased_LER_trailing = []
         unbiased_LER_trailing = []
         standard_LER_trailing = []
+
+        print(self.average_image)
         for processed_image in self.images_list.images_list:
             selected.append(processed_image.selected)
             processed.append(processed_image.processed)
@@ -78,7 +83,7 @@ class DataExporter:
             biased_LER_trailing.append(processed_image.biased_LER_Trailing)
             standard_LER_trailing.append(processed_image.standard_LER_Trailing)
 
-        data = {
+        metrics = {
             "Selected": selected,
             "Processed": processed,
             "Name": image_name,
@@ -108,7 +113,7 @@ class DataExporter:
         }
 
         # load data into a DataFrame object:
-        return data
+        return metrics
 
     def export_data(self):
 
@@ -117,14 +122,59 @@ class DataExporter:
 
         filename = self.select_target_file()
 
-        with pd.ExcelWriter(filename) as writer:
+        with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
             line_metrics.to_excel(writer, sheet_name='Line_Metrics')
             parameters.to_excel(writer, sheet_name='Parameters')
+
             for processed_image in self.images_list.images_list:
+
+                # Collect PSD data
+                power_spectral_density_data = {
+                    "Frequency": processed_image.frequency,
+                    "PSD LWR": processed_image.LWR_PSD,
+                    "PSD LWR unbiased": processed_image.LWR_PSD_unbiased,
+                    "PSD_LWR_fit": processed_image.LWR_PSD_fit,
+                    "PSD_LWR_fit_unbiased": processed_image.LWR_PSD_fit_unbiased,
+                    "PSD LER": processed_image.LER_PSD,
+                    "PSD LER unbiased": processed_image.LER_PSD_unbiased,
+                    "PSD_LER_fit": processed_image.LER_PSD_fit,
+                    "PSD_LER_fit_unbiased": processed_image.LER_PSD_fit_unbiased,
+                    "PSD LER Leading Edge": processed_image.LER_Leading_PSD,
+                    "PSD LER Leading Edge unbiased": processed_image.LER_Leading_PSD_unbiased,
+                    "PSD_LER_Leading Edge fit": processed_image.LER_Leading_PSD_fit,
+                    "PSD_LER_Leading Edge fit_unbiased": processed_image.LER_Leading_PSD_fit_unbiased,
+                    "PSD LER Trailing Edge": processed_image.LER_Trailing_PSD,
+                    "PSD LER Trailing Edge unbiased": processed_image.LER_Trailing_PSD_unbiased,
+                    "PSD_LER_Trailing Edge fit": processed_image.LER_Trailing_PSD_fit,
+                    "PSD_LER_Trailing Edge fit_unbiased": processed_image.LER_Trailing_PSD_fit_unbiased
+                }
+                pd.DataFrame(power_spectral_density_data).to_excel(writer,
+                                                                   sheet_name=processed_image.file_name + ' - PSD')
+
+                # Collect Edges Profiles
                 leading_edges = np.transpose(processed_image.consolidated_leading_edges)
-                trailing_edges = np.transpose(processed_image.consolidated_leading_edges)
+                trailing_edges = np.transpose(processed_image.consolidated_trailing_edges)
                 edges = np.empty((leading_edges.shape[0], leading_edges.shape[1] + trailing_edges.shape[1]), dtype=leading_edges.dtype)
                 edges[:, ::2] = leading_edges
                 edges[:, 1::2] = trailing_edges
-                pd.DataFrame(edges).to_excel(writer, sheet_name=processed_image.file_name + ' - Edges', startrow=1, header=False)
+                pd.DataFrame(edges).to_excel(writer, sheet_name=processed_image.file_name + ' - Edges', startrow=2, header=False)
+                workbook = writer.book
+                cell_line_format = workbook.add_format()
+                cell_line_format.set_align('center')
+                cell_line_format.set_bold()
+                sheet_name = processed_image.file_name + ' - Edges'
+                worksheet = writer.sheets[sheet_name]
+                number_of_edges = np.size(edges,1)
+                worksheet.write(0,0,'Line')
+                worksheet.write(1, 0, 'Edge')
+                for column in np.arange(number_of_edges):
+                    if np.mod(column,2) == 0:
+                        worksheet.write(1, 1+column, "Leading", cell_line_format)
+                        worksheet.merge_range(0, column+1, 0, column+2, column/2, cell_line_format)
+                    else:
+                        worksheet.write(1, 1 + column, "Trailing", cell_line_format)
+
+
+
+
 

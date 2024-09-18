@@ -37,6 +37,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         self.images_list = ImagesList()
+        self.average_image = AverageImage(self.images_list, self.table)
         self.image_loader = FolderImageLoader(self.images_list, self)
         self.table_controller = TableController(self.table)
         self.image_display_manager = ImageDisplayManager(self.widget_parameters_tab, self.widget_lines_tab)
@@ -44,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                          self.widget_metric_tab, self)
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
         self.average_image = None
-        self.data_exporter = DataExporter(self.images_list, self)
+        self.data_exporter = DataExporter(self.images_list, self.average_image, self)
 
     def init_ui(self) -> None:
         """
@@ -204,11 +205,13 @@ class MainWindow(QtWidgets.QMainWindow):
         for image in self.images_list.images_list:
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Unchecked:
                 self.table.item(image.id, 0).setCheckState(Qt.CheckState.Checked)
+                image.selected = True
 
     def unselect_all_images(self):
         for image in self.images_list.images_list:
             if self.table.item(image.id, 0).checkState() == Qt.CheckState.Checked:
                 self.table.item(image.id, 0).setCheckState(Qt.CheckState.Unchecked)
+                image.selected = False
 
     def show_error_message(self, message: str) -> None:
         """

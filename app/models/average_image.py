@@ -35,7 +35,7 @@ class AverageImage:
 
     def gather_edges(self) -> None:
         """
-        Gathers and concatenates edges and zero-mean edge profiles from all images in the list.
+        Gathers and concatenates edges and zero-mean edge profiles from the selected and processed images in the list.
         Ensures frequency consistency across all images.
 
         Raises:
