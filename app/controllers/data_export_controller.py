@@ -12,9 +12,10 @@ class DataExporter:
     """
     A class to export the precessed data to a file in EXCEL or CSV format
     """
-    def __init__(self, images_list: ImagesList, average_image: AverageImage, window):
+    #def __init__(self, images_list: ImagesList, average_image: AverageImage, window):
+    def __init__(self, images_list: ImagesList, window):
         self.images_list = images_list
-        self.average_image = average_image
+        #self.average_image = average_image
         self.window = window
         self.settings = QSettings("PSI", "SMILE3")
 
@@ -58,7 +59,6 @@ class DataExporter:
         unbiased_LER_trailing = []
         standard_LER_trailing = []
 
-        print(self.average_image)
         for processed_image in self.images_list.images_list:
             selected.append(processed_image.selected)
             processed.append(processed_image.processed)
@@ -82,7 +82,29 @@ class DataExporter:
             unbiased_LER_trailing.append(processed_image.unbiased_LER_Trailing)
             biased_LER_trailing.append(processed_image.biased_LER_Trailing)
             standard_LER_trailing.append(processed_image.standard_LER_Trailing)
-
+        # Add the metrics calculated on all the images at the same time (if the "average" image has been calculated)
+        selected.append("")
+        processed.append("")
+        number_of_lines.append(self.window.average_image.image.number_of_lines)
+        image_name.append("Average")
+        cd_average.append(self.window.average_image.image.critical_dimension_estimate)
+        cd_std.append(self.window.average_image.image.critical_dimension_std_estimate)
+        unbiased_LWR_fit.append(self.window.average_image.image.unbiased_LWR_fit)
+        unbiased_LWR.append(self.window.average_image.image.unbiased_LWR)
+        biased_LWR.append(self.window.average_image.image.biased_LWR)
+        standard_LWR.append(self.window.average_image.image.standard_LWR)
+        unbiased_LER_fit.append(self.window.average_image.image.unbiased_LER_fit)
+        unbiased_LER.append(self.window.average_image.image.unbiased_LER)
+        biased_LER.append(self.window.average_image.image.biased_LER)
+        standard_LER.append(self.window.average_image.image.standard_LER)
+        unbiased_LER_leading_fit.append(self.window.average_image.image.unbiased_LER_Leading_fit)
+        unbiased_LER_leading.append(self.window.average_image.image.unbiased_LER_Leading)
+        biased_LER_leading.append(self.window.average_image.image.biased_LER_Leading)
+        standard_LER_leading.append(self.window.average_image.image.standard_LER_Leading)
+        unbiased_LER_trailing_fit.append(self.window.average_image.image.unbiased_LER_Trailing_fit)
+        unbiased_LER_trailing.append(self.window.average_image.image.unbiased_LER_Trailing)
+        biased_LER_trailing.append(self.window.average_image.image.biased_LER_Trailing)
+        standard_LER_trailing.append(self.window.average_image.image.standard_LER_Trailing)
         metrics = {
             "Selected": selected,
             "Processed": processed,
@@ -125,7 +147,6 @@ class DataExporter:
         with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
             line_metrics.to_excel(writer, sheet_name='Line_Metrics')
             parameters.to_excel(writer, sheet_name='Parameters')
-
             for processed_image in self.images_list.images_list:
 
                 # Collect PSD data
@@ -148,31 +169,33 @@ class DataExporter:
                     "PSD_LER_Trailing Edge fit": processed_image.LER_Trailing_PSD_fit,
                     "PSD_LER_Trailing Edge fit_unbiased": processed_image.LER_Trailing_PSD_fit_unbiased
                 }
-                pd.DataFrame(power_spectral_density_data).to_excel(writer,
+                if self.window.export_PSD_CheckBox.isChecked():
+                    pd.DataFrame(power_spectral_density_data).to_excel(writer,
                                                                    sheet_name=processed_image.file_name + ' - PSD')
 
-                # Collect Edges Profiles
-                leading_edges = np.transpose(processed_image.consolidated_leading_edges)
-                trailing_edges = np.transpose(processed_image.consolidated_trailing_edges)
-                edges = np.empty((leading_edges.shape[0], leading_edges.shape[1] + trailing_edges.shape[1]), dtype=leading_edges.dtype)
-                edges[:, ::2] = leading_edges
-                edges[:, 1::2] = trailing_edges
-                pd.DataFrame(edges).to_excel(writer, sheet_name=processed_image.file_name + ' - Edges', startrow=2, header=False)
-                workbook = writer.book
-                cell_line_format = workbook.add_format()
-                cell_line_format.set_align('center')
-                cell_line_format.set_bold()
-                sheet_name = processed_image.file_name + ' - Edges'
-                worksheet = writer.sheets[sheet_name]
-                number_of_edges = np.size(edges,1)
-                worksheet.write(0,0,'Line')
-                worksheet.write(1, 0, 'Edge')
-                for column in np.arange(number_of_edges):
-                    if np.mod(column,2) == 0:
-                        worksheet.write(1, 1+column, "Leading", cell_line_format)
-                        worksheet.merge_range(0, column+1, 0, column+2, column/2, cell_line_format)
-                    else:
-                        worksheet.write(1, 1 + column, "Trailing", cell_line_format)
+                if self.window.export_edges_CheckBox.isChecked():
+                    # Collect Edges Profiles
+                    leading_edges = np.transpose(processed_image.consolidated_leading_edges)
+                    trailing_edges = np.transpose(processed_image.consolidated_trailing_edges)
+                    edges = np.empty((leading_edges.shape[0], leading_edges.shape[1] + trailing_edges.shape[1]), dtype=leading_edges.dtype)
+                    edges[:, ::2] = leading_edges
+                    edges[:, 1::2] = trailing_edges
+                    pd.DataFrame(edges).to_excel(writer, sheet_name=processed_image.file_name + ' - Edges', startrow=2, header=False)
+                    workbook = writer.book
+                    cell_line_format = workbook.add_format()
+                    cell_line_format.set_align('center')
+                    cell_line_format.set_bold()
+                    sheet_name = processed_image.file_name + ' - Edges'
+                    worksheet = writer.sheets[sheet_name]
+                    number_of_edges = np.size(edges,1)
+                    worksheet.write(0,0,'Line')
+                    worksheet.write(1, 0, 'Edge')
+                    for column in np.arange(number_of_edges):
+                        if np.mod(column,2) == 0:
+                            worksheet.write(1, 1+column, "Leading", cell_line_format)
+                            worksheet.merge_range(0, column+1, 0, column+2, column/2, cell_line_format)
+                        else:
+                            worksheet.write(1, 1 + column, "Trailing", cell_line_format)
 
 
 

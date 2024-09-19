@@ -63,6 +63,7 @@ class AverageImage:
         self.image.consolidated_trailing_edges = np.concatenate(trailing_edges)
         self.image.zero_mean_leading_edge_profiles = np.concatenate(zero_mean_leading_edge_profiles)
         self.image.zero_mean_trailing_edge_profiles = np.concatenate(zero_mean_trailing_edge_profiles)
+        self.image.number_of_lines = np.size(self.image.consolidated_leading_edges, 0)
         if len(frequency_set) == 1:
             self.image.average_frequency = frequency_set.pop()
         else:
@@ -82,4 +83,3 @@ class AverageImage:
 
         self.gather_edges()
         self.calculate_metrics()
-

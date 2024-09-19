@@ -387,21 +387,21 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_7">
+                 <widget class="QCheckBox" name="export_edges_CheckBox">
                   <property name="text">
                    <string>Export edges</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_6">
+                 <widget class="QCheckBox" name="export_PSD_CheckBox">
                   <property name="text">
                    <string>Export PSD</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_5">
+                 <widget class="QCheckBox" name="export_averagePSD_CheckBox">
                   <property name="text">
                    <string>Export average PSD</string>
                   </property>

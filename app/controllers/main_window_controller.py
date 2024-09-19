@@ -45,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                          self.widget_metric_tab, self)
         self.processing_controller = ProcessingController(self, self.images_list, self.table)
         self.average_image = None
-        self.data_exporter = DataExporter(self.images_list, self.average_image, self)
+        self.data_exporter = DataExporter(self.images_list, self)
 
     def init_ui(self) -> None:
         """
