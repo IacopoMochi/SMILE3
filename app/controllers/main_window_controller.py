@@ -65,12 +65,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_select_all = self.findChild(QtWidgets.QPushButton, "pushButton_selectAll")
         self.push_button_select_none = self.findChild(QtWidgets.QPushButton, "pushButton_selectNone")
 
+        self.LineEdgePSD = self.findChild(QtWidgets.QRadioButton, "LineEdgePSD")
+
     def init_ui_for_roi(self) -> None:
 
         self.x1_widget = self.findChild(QtWidgets.QLineEdit, "X1")
         self.x2_widget = self.findChild(QtWidgets.QLineEdit, "X2")
         self.y1_widget = self.findChild(QtWidgets.QLineEdit, "Y1")
         self.y2_widget = self.findChild(QtWidgets.QLineEdit, "Y2")
+
+    def printme(self):
+        print("eccomi qui")
 
     def setup_connections(self) -> None:
         """
@@ -80,9 +85,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_image_folder.pressed.connect(self.prepare_image)
         self.push_button_process_images.pressed.connect(partial(self.process_image, recalculate_metrics=False))
         self.push_button_recalculate_metrics.pressed.connect(partial(self.process_image, recalculate_metrics=True))
-        self.table.cellClicked.connect(self.display_corresponding_images)
-        self.table.cellChanged.connect(self.display_corresponding_images)
+
+        #self.table.cell.connect(self.display_corresponding_images)
+        self.table.itemSelectionChanged.connect(self.display_corresponding_images)
+        self.LineEdgePSD.clicked.connect(self.display_corresponding_images)
+
         self.table.itemChanged.connect(self.check_selection)
+
         self.push_button_export_data.pressed.connect(self.data_exporter.export_data)
 
         self.push_button_select_all.pressed.connect(self.select_all_images)
@@ -155,12 +164,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_process_images.setEnabled(True)
         self.push_button_recalculate_metrics.setEnabled(True)
 
-    def display_corresponding_images(self, row: int) -> None:
+    def display_corresponding_images(self) -> None:
         """
         Displays images and metrics corresponding to the selected table row.
         """
-
-        if row <= len(self.images_list.images_list) - 1:
+        row = self.table.currentRow()
+        if row == -1:
+            print("nessuna linea selezionata")
+        elif row <= len(self.images_list.images_list) - 1:
             image = self.images_list.images_list[row]
 
             if image.processed:

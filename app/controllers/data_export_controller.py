@@ -147,6 +147,8 @@ class DataExporter:
         with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
             line_metrics.to_excel(writer, sheet_name='Line_Metrics')
             parameters.to_excel(writer, sheet_name='Parameters')
+            writer.sheets["Line_Metrics"].autofit()
+            writer.sheets["Parameters"].autofit()
             for processed_image in self.images_list.images_list:
 
                 # Collect PSD data
@@ -172,6 +174,7 @@ class DataExporter:
                 if self.window.export_PSD_CheckBox.isChecked():
                     pd.DataFrame(power_spectral_density_data).to_excel(writer,
                                                                    sheet_name=processed_image.file_name + ' - PSD')
+                    writer.sheets[processed_image.file_name + ' - PSD'].autofit()
 
                 if self.window.export_edges_CheckBox.isChecked():
                     # Collect Edges Profiles
@@ -196,6 +199,7 @@ class DataExporter:
                             worksheet.merge_range(0, column+1, 0, column+2, column/2, cell_line_format)
                         else:
                             worksheet.write(1, 1 + column, "Trailing", cell_line_format)
+                    worksheet.autofit()
 
 
 

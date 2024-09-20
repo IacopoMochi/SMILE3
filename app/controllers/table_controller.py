@@ -100,5 +100,26 @@ class TableController(QtWidgets.QWidget):
         Args:
             average_image (AverageImage): The average image to add to the table.
         """
+        try:
+            if average_image.image.critical_dimension_estimate is not None:
+                item_averageCD = QtWidgets.QTableWidgetItem(f"{average_image.image.critical_dimension_estimate:.5f}")
+            item_number_of_lines = QtWidgets.QTableWidgetItem(str(average_image.image.number_of_lines))
+            if average_image.image.critical_dimension_std_estimate is not None:
+                item_averageCDstd = QtWidgets.QTableWidgetItem(f"{average_image.image.critical_dimension_std_estimate:.5f}")
+            if average_image.image.pitch_estimate is not None:
+                item_pitchEstimate = QtWidgets.QTableWidgetItem(f"{average_image.image.pitch_estimate:.5f}")
+            if average_image.image.unbiased_LWR is not None:
+                item_UnbiasedLWR = QtWidgets.QTableWidgetItem(f"{average_image.image.unbiased_LWR:.5f}")
+            if average_image.image.unbiased_LWR_fit is not None:
+                item_UnbiasedLWRfit = QtWidgets.QTableWidgetItem(f"{average_image.image.unbiased_LWR_fit:.5f}")
+
+        except Exception as e:
+            self.error_signal.emit(f"Error occurred while completing the table with processed image data: {str(e)}")
 
         self.table_widget.setItem(average_image.image.id, 2, QTableWidgetItem('average'))
+        self.table_widget.setItem(average_image.image.id, 3, item_number_of_lines)
+        self.table_widget.setItem(average_image.image.id, 4, item_pitchEstimate)
+        self.table_widget.setItem(average_image.image.id, 5, item_averageCD)
+        self.table_widget.setItem(average_image.image.id, 6, item_averageCDstd)
+        self.table_widget.setItem(average_image.image.id, 7, item_UnbiasedLWR)
+        self.table_widget.setItem(average_image.image.id, 8, item_UnbiasedLWRfit)

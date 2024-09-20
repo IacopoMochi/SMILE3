@@ -260,13 +260,13 @@ class EdgeDetector:
 
         self.image.number_of_lines = lines_number
 
-        self.image.critical_dimension = self.image.trailing_edges - self.image.leading_edges
-        self.image.critical_dimension_std_estimate = np.std(np.nanmedian(self.image.critical_dimension, 1))
-        self.image.critical_dimension_estimate = np.mean(np.nanmedian(self.image.critical_dimension, 1))
-
-        self.image.pitch_estimate = (np.mean(
-            np.nanmedian(self.image.leading_edges[1:] - self.image.leading_edges[0:-1], 1)) + np.mean(
-            np.nanmedian(self.image.trailing_edges[1:] - self.image.trailing_edges[0:-1], 1))) / 2
+        # self.image.critical_dimension = self.image.trailing_edges - self.image.leading_edges
+        # self.image.critical_dimension_std_estimate = np.std(np.nanmedian(self.image.critical_dimension, 1))
+        # self.image.critical_dimension_estimate = np.mean(np.nanmedian(self.image.critical_dimension, 1))
+        #
+        # self.image.pitch_estimate = (np.mean(
+        #     np.nanmedian(self.image.leading_edges[1:] - self.image.leading_edges[0:-1], 1)) + np.mean(
+        #     np.nanmedian(self.image.trailing_edges[1:] - self.image.trailing_edges[0:-1], 1))) / 2
 
         if len(self.image.leading_edges) > 1:
             pass
@@ -524,7 +524,14 @@ class MetricCalculator:
         """
         Calculates various metrics related to edge profiles and PSD (Power Spectral Density).
         """
+        # CD and pitch
+        self.image.critical_dimension = self.image.consolidated_trailing_edges - self.image.consolidated_leading_edges
+        self.image.critical_dimension_std_estimate = np.std(np.nanmedian(self.image.critical_dimension, 1))
+        self.image.critical_dimension_estimate = np.mean(np.nanmedian(self.image.critical_dimension, 1))
 
+        self.image.pitch_estimate = (np.mean(
+            np.nanmedian(self.image.leading_edges[1:] - self.image.leading_edges[0:-1], 1)) + np.mean(
+            np.nanmedian(self.image.trailing_edges[1:] - self.image.trailing_edges[0:-1], 1))) / 2
         # LWR PSD
         line_width = np.abs(
             self.image.consolidated_leading_edges - self.image.consolidated_trailing_edges) * self.image.pixel_size
