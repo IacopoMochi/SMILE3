@@ -109,7 +109,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
-                   <widget class="QRadioButton" name="lineWidthPSD">
+                   <widget class="QRadioButton" name="LineWidthPSD">
                     <property name="text">
                      <string>Line width PSD</string>
                     </property>
@@ -140,14 +140,14 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_7">
+                   <widget class="QRadioButton" name="LineWidthHHCF">
                     <property name="text">
                      <string>Line width HHCF</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_2">
+                   <widget class="QRadioButton" name="LineEdgeHHCF">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -160,7 +160,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_10">
+                   <widget class="QRadioButton" name="LeadingEdgeHHCF">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -173,7 +173,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_3">
+                   <widget class="QRadioButton" name="TrailingEdgeHHCF">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -193,7 +193,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_4">
+                   <widget class="QRadioButton" name="LinesCDdistribution">
                     <property name="text">
                      <string>Lines CD distribution</string>
                     </property>

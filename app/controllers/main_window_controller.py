@@ -66,6 +66,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_select_none = self.findChild(QtWidgets.QPushButton, "pushButton_selectNone")
 
         self.LineEdgePSD = self.findChild(QtWidgets.QRadioButton, "LineEdgePSD")
+        self.LineWidthPSD = self.findChild(QtWidgets.QRadioButton, "LineWidthPSD")
+        self.LeadingEdgePSD = self.findChild(QtWidgets.QRadioButton, "LeadingEdgePSD")
+        self.TrailingEdgePSD = self.findChild(QtWidgets.QRadioButton, "TrailingEdgePSD")
 
     def init_ui_for_roi(self) -> None:
 
@@ -89,6 +92,9 @@ class MainWindow(QtWidgets.QMainWindow):
         #self.table.cell.connect(self.display_corresponding_images)
         self.table.itemSelectionChanged.connect(self.display_corresponding_images)
         self.LineEdgePSD.clicked.connect(self.display_corresponding_images)
+        self.LineWidthPSD.clicked.connect(self.display_corresponding_images)
+        self.LeadingEdgePSD.clicked.connect(self.display_corresponding_images)
+        self.TrailingEdgePSD.clicked.connect(self.display_corresponding_images)
 
         self.table.itemChanged.connect(self.check_selection)
 
@@ -163,6 +169,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QApplication.processEvents()
         self.push_button_process_images.setEnabled(True)
         self.push_button_recalculate_metrics.setEnabled(True)
+        self.status_label.setText('Ready')
 
     def display_corresponding_images(self) -> None:
         """

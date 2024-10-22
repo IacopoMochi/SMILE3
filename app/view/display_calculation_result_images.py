@@ -79,7 +79,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         try:
             if self.window.histogram.isChecked():
                 self._display_histogram(image)
-            elif self.window.lineWidthPSD.isChecked():
+            elif self.window.LineWidthPSD.isChecked():
                 self._display_psd(image, "LWR_PSD")
             elif self.window.LineEdgePSD.isChecked():
                 self._display_psd(image, "LER_PSD")
