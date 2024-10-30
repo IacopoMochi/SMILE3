@@ -69,6 +69,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LineWidthPSD = self.findChild(QtWidgets.QRadioButton, "LineWidthPSD")
         self.LeadingEdgePSD = self.findChild(QtWidgets.QRadioButton, "LeadingEdgePSD")
         self.TrailingEdgePSD = self.findChild(QtWidgets.QRadioButton, "TrailingEdgePSD")
+        self.Histogram = self.findChild(QtWidgets.QRadioButton, "histogram")
 
     def init_ui_for_roi(self) -> None:
 
@@ -95,6 +96,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LineWidthPSD.clicked.connect(self.display_corresponding_images)
         self.LeadingEdgePSD.clicked.connect(self.display_corresponding_images)
         self.TrailingEdgePSD.clicked.connect(self.display_corresponding_images)
+        self.Histogram.clicked.connect(self.display_corresponding_images)
 
         self.table.itemChanged.connect(self.check_selection)
 

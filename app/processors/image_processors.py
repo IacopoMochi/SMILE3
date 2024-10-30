@@ -529,9 +529,10 @@ class MetricCalculator:
         self.image.critical_dimension_std_estimate = np.std(np.nanmedian(self.image.critical_dimension, 1))
         self.image.critical_dimension_estimate = np.mean(np.nanmedian(self.image.critical_dimension, 1))
 
-        self.image.pitch_estimate = (np.mean(
-            np.nanmedian(self.image.leading_edges[1:] - self.image.leading_edges[0:-1], 1)) + np.mean(
-            np.nanmedian(self.image.trailing_edges[1:] - self.image.trailing_edges[0:-1], 1))) / 2
+        self.image.pitch_estimate = np.median((
+            np.nanmedian(self.image.consolidated_leading_edges[1:] - self.image.consolidated_leading_edges[0:-1], 1),
+            np.nanmedian(self.image.consolidated_trailing_edges[1:] - self.image.consolidated_trailing_edges[0:-1],
+                         1)))
         # LWR PSD
         line_width = np.abs(
             self.image.consolidated_leading_edges - self.image.consolidated_trailing_edges) * self.image.pixel_size
