@@ -70,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LeadingEdgePSD = self.findChild(QtWidgets.QRadioButton, "LeadingEdgePSD")
         self.TrailingEdgePSD = self.findChild(QtWidgets.QRadioButton, "TrailingEdgePSD")
         self.Histogram = self.findChild(QtWidgets.QRadioButton, "histogram")
+        self.LineWidthHHCF = self.findChild(QtWidgets.QRadioButton, "LineWidthHHCF")
 
     def init_ui_for_roi(self) -> None:
 

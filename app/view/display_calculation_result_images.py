@@ -87,8 +87,17 @@ class ResultImagesManager(QtWidgets.QWidget):
                 self._display_psd(image, "leading_LER_PSD")
             elif self.window.TrailingEdgePSD.isChecked():
                 self._display_psd(image, "trailing_LER_PSD")
+            elif self.window.LineWidthHHCF.isChecked():
+                self._display_hhcf(image)
         except Exception as e:
             self.window.show_error_message(f"Plot can not be display. {str(e)}")
+
+    def _display_hhcf(self, image: Image) -> None:
+        hhcf_color = pg.mkColor(200, 200, 200)
+        hhcf_pen = pg.mkPen(hhcf_color, width=3)
+        hhcf_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF, pen=hhcf_pen)
+        self.widget_metric_tab.clear()
+        self.widget_metric_tab.addItem(hhcf_plot)
 
     def _display_histogram(self, image: Image) -> None:
         """

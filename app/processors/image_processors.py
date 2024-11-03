@@ -9,6 +9,8 @@ from copy import deepcopy, copy
 
 from app.utils.poly import _poly11, poly11, binary_image_histogram_model, gaussian_profile
 from app.utils.psd import Palasantzas_2_minimize, Palasantzas_2_beta, Palasantzas_2b
+from app.utils.hhcf import hhcf_, hhcf_minimize
+
 from app.utils.processors_service import edge_consolidation, edge_mean_subtraction
 
 
@@ -441,6 +443,38 @@ class MetricCalculator:
     def __init__(self, image):
         self.image = image
 
+    def calculate_and_fit_hhcf(self, input_data: np.ndarray) -> tuple[np.ndarray]:
+        """
+                Calculates and fits the Height-Height Correlation Function (HHCF) of input data.
+
+                Args:
+                - input_data (np.ndarray): The lines edges.
+
+                Returns:
+                - tuple: A tuple containing the HHCF, the HHCF fit parameters and the fitted HHCF.
+                """
+        hhcf_length = int(np.size(input_data,1)/2)
+        hhcf = np.zeros((np.size(input_data, 0), hhcf_length))
+        for n in range(0, np.size(input_data, 0)):
+            profile = input_data[n, :]
+            for m in range(1, hhcf_length):
+                hhcf[n, m] = np.mean((profile[0:-m]-profile[m:])**2)
+        height_height_correlation_function = np.mean(hhcf,0)
+
+        beta0 = np.array([1, 20, 0.5])
+        beta_min = [0, 2, 0.1]
+        beta_max = [20, 500, 2]
+        bounds = Bounds(lb=beta_min, ub=beta_max)
+        optimized_parameters = minimize(
+            hhcf_,
+            beta0,
+            method='Nelder-Mead',
+            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
+            args=(height_height_correlation_function, np.arange(0, np.size(height_height_correlation_function))),
+            bounds=bounds)
+
+        return height_height_correlation_function
+
     def setup_frequency(self) -> None:
         """
         Sets up the frequency domain parameters based on image pixel size and profile length.
@@ -586,3 +620,7 @@ class MetricCalculator:
          self.image.biased_LER_Trailing,
          self.image.standard_LER_Trailing,
          self.image.unbiased_LER_Trailing_fit) = self.calculate_and_fit_psd(input_data)
+
+        # Line width HHCF
+
+        (self.image.LW_HHCF) = self.calculate_and_fit_hhcf(line_width)

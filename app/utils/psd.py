@@ -241,5 +241,5 @@ def NoWhiteNoise(freq: np.ndarray, *beta: float) -> np.ndarray:
     y = Lc * sig2 / (1 + (freq * Lc) ** 2) ** (0.5 + alpha)
     return y
 
-    y = (Lc * sig2 / (1 + a * (freq * Lc) ** 2) ** (1 + alpha)) + np.abs(Nl)
-    return y
+    # y = (Lc * sig2 / (1 + a * (freq * Lc) ** 2) ** (1 + alpha)) + np.abs(Nl)
+    # return y
