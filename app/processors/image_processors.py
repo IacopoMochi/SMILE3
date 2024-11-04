@@ -461,19 +461,21 @@ class MetricCalculator:
                 hhcf[n, m] = np.mean((profile[0:-m]-profile[m:])**2)
         height_height_correlation_function = np.mean(hhcf,0)
 
+        x = np.arange(0,np.size(height_height_correlation_function))
         beta0 = np.array([1, 20, 0.5])
         beta_min = [0, 2, 0.1]
         beta_max = [20, 500, 2]
-        bounds = Bounds(lb=beta_min, ub=beta_max)
-        optimized_parameters = minimize(
+        beta, _ = curve_fit(
             hhcf_,
-            beta0,
-            method='Nelder-Mead',
-            options={'maxiter': 10000, 'xatol': 1e-10, 'fatol': 1e-10},
-            args=(height_height_correlation_function, np.arange(0, np.size(height_height_correlation_function))),
-            bounds=bounds)
+            x,
+            height_height_correlation_function,
+            p0=beta0,
+            bounds=(beta_min, beta_max),
+            maxfev=100000,
+        )
+        fitted_hhcf = hhcf_(x, *beta)
 
-        return height_height_correlation_function
+        return fitted_hhcf
 
     def setup_frequency(self) -> None:
         """
