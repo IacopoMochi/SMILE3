@@ -443,7 +443,7 @@ class MetricCalculator:
     def __init__(self, image):
         self.image = image
 
-    def calculate_and_fit_hhcf(self, input_data: np.ndarray) -> tuple[np.ndarray]:
+    def calculate_and_fit_hhcf(self, input_data: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
                 Calculates and fits the Height-Height Correlation Function (HHCF) of input data.
 
@@ -462,9 +462,9 @@ class MetricCalculator:
         height_height_correlation_function = np.mean(hhcf,0)
 
         x = np.arange(0,np.size(height_height_correlation_function))
-        beta0 = np.array([1, 20, 0.5])
-        beta_min = [0, 2, 0.1]
-        beta_max = [20, 500, 2]
+        beta0 = np.array([1, 20, 0.5, 1.6])
+        beta_min = [0, 2, 0.1, 1.59]
+        beta_max = [20, 500, 2, 1.61]
         beta, _ = curve_fit(
             hhcf_,
             x,
@@ -475,7 +475,7 @@ class MetricCalculator:
         )
         fitted_hhcf = hhcf_(x, *beta)
 
-        return fitted_hhcf
+        return fitted_hhcf, height_height_correlation_function, beta
 
     def setup_frequency(self) -> None:
         """
@@ -625,4 +625,7 @@ class MetricCalculator:
 
         # Line width HHCF
 
-        (self.image.LW_HHCF) = self.calculate_and_fit_hhcf(line_width)
+        (self.image.LW_HHCF_fit,
+         self.image.LW_HHCF,
+         self.image.LW_HHCF_parameters) = self.calculate_and_fit_hhcf(line_width)
+        print(self.image.LW_HHCF_parameters)

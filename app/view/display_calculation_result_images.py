@@ -95,9 +95,13 @@ class ResultImagesManager(QtWidgets.QWidget):
     def _display_hhcf(self, image: Image) -> None:
         hhcf_color = pg.mkColor(200, 200, 200)
         hhcf_pen = pg.mkPen(hhcf_color, width=3)
+        hhcf_fit_color = pg.mkColor(200, 0, 0)
+        hhcf_fit_pen = pg.mkPen(hhcf_fit_color, width=3)
         hhcf_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF, pen=hhcf_pen)
+        hhcf_fit_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF_fit, pen=hhcf_fit_pen)
         self.widget_metric_tab.clear()
         self.widget_metric_tab.addItem(hhcf_plot)
+        self.widget_metric_tab.addItem(hhcf_fit_plot)
 
     def _display_histogram(self, image: Image) -> None:
         """
