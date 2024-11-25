@@ -149,7 +149,7 @@
                   <item>
                    <widget class="QRadioButton" name="LineEdgeHHCF">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="text">
                      <string>Line edge HHCF</string>
@@ -162,7 +162,7 @@
                   <item>
                    <widget class="QRadioButton" name="LeadingEdgeHHCF">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="text">
                      <string>Leading edge HHCF</string>
@@ -175,7 +175,7 @@
                   <item>
                    <widget class="QRadioButton" name="TrailingEdgeHHCF">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="text">
                      <string>Trailing edge HHCF</string>

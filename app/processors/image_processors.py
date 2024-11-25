@@ -461,17 +461,20 @@ class MetricCalculator:
                 hhcf[n, m] = np.mean((profile[0:-m]-profile[m:])**2)
         height_height_correlation_function = np.mean(hhcf,0)
 
-        x = np.arange(0,np.size(height_height_correlation_function))
-        beta0 = np.array([1, 20, 0.5, 1.6])
-        beta_min = [0, 2, 0.1, 1.59]
-        beta_max = [20, 500, 2, 1.61]
+        background = np.mean(height_height_correlation_function[0:2])
+        sigma2 = np.mean(height_height_correlation_function[-100:])-background
+        x = np.arange(0, np.size(height_height_correlation_function))
+        beta0 = np.array([sigma2, 3, 0.5, background])
+        beta_min = [sigma2/2, 2, 0.1, 0]
+        beta_max = [2*sigma2, 500, 2, 2*background]
         beta, _ = curve_fit(
             hhcf_,
-            x,
-            height_height_correlation_function,
+            x[0:30],
+            height_height_correlation_function[0:30],
             p0=beta0,
             bounds=(beta_min, beta_max),
             maxfev=100000,
+            #method="dogbox"
         )
         fitted_hhcf = hhcf_(x, *beta)
 
@@ -624,8 +627,13 @@ class MetricCalculator:
          self.image.unbiased_LER_Trailing_fit) = self.calculate_and_fit_psd(input_data)
 
         # Line width HHCF
-
         (self.image.LW_HHCF_fit,
          self.image.LW_HHCF,
          self.image.LW_HHCF_parameters) = self.calculate_and_fit_hhcf(line_width)
+
+        # Line edge HHCF
+        (self.image.Lines_HHCF_fit,
+         self.image.Lines_HHCF,
+         self.image.Lines_HHCF_parameters) = self.calculate_and_fit_hhcf(all_edges)
+
         print(self.image.LW_HHCF_parameters)

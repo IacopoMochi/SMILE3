@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/main_window_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/main_window_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/image_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/image_container.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/processors/image_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/processors/image_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/hhcf.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/hhcf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui/window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/window.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/view/display_calculation_result_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/view/display_calculation_result_images.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -503,13 +506,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/processors/image_processors.py</url>
-          <line>627</line>
-          <option name="timeStamp" value="51" />
+          <line>478</line>
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/processors/image_processors.py</url>
-          <line>475</line>
-          <option name="timeStamp" value="52" />
+          <url>file://$PROJECT_DIR$/app/view/display_image.py</url>
+          <line>52</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/controllers/main_window_controller.py</url>
+          <line>108</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/controllers/main_window_controller.py</url>
+          <line>110</line>
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

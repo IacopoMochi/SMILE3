@@ -88,20 +88,63 @@ class ResultImagesManager(QtWidgets.QWidget):
             elif self.window.TrailingEdgePSD.isChecked():
                 self._display_psd(image, "trailing_LER_PSD")
             elif self.window.LineWidthHHCF.isChecked():
+                self._display_hhcf(image, "trailing_LER_PSD")
+            elif self.window.LineEdgeHHCF.isChecked():
                 self._display_hhcf(image)
         except Exception as e:
             self.window.show_error_message(f"Plot can not be display. {str(e)}")
 
     def _display_hhcf(self, image: Image) -> None:
+
+        self.widget_metric_tab.addItem(hhcf_plot)
+        self.widget_metric_tab.addItem(hhcf_fit_plot)
+
+        """
+                Helper method to display the PSD plot on the metric tab.
+
+                Args:
+                    image (Image): The image object containing the PSD data.
+                    plot_type (str): The type of PSD plot to display.
+                """
         hhcf_color = pg.mkColor(200, 200, 200)
         hhcf_pen = pg.mkPen(hhcf_color, width=3)
         hhcf_fit_color = pg.mkColor(200, 0, 0)
         hhcf_fit_pen = pg.mkPen(hhcf_fit_color, width=3)
-        hhcf_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF, pen=hhcf_pen)
-        hhcf_fit_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF_fit, pen=hhcf_fit_pen)
-        self.widget_metric_tab.clear()
-        self.widget_metric_tab.addItem(hhcf_plot)
-        self.widget_metric_tab.addItem(hhcf_fit_plot)
+        hhcf_lw_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF, pen=hhcf_pen)
+        hhcf_lw_fit_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF_fit, pen=hhcf_fit_pen)
+
+        hhcf_plots = {
+            "LW_HHCF": (image.LWR_PSD, image.LWR_PSD_fit, image.LWR_PSD_unbiased, image.LWR_PSD_fit_unbiased),
+            "LE_PSD": (image.LER_PSD, image.LER_PSD_fit, image.LER_PSD_unbiased, image.LER_PSD_fit_unbiased),
+            "leading_LE_HHCF": (image.LER_Leading_PSD, image.LER_Leading_PSD_fit, image.LER_Leading_PSD_unbiased,
+                                image.LER_Leading_PSD_fit_unbiased),
+            "trailing_LE_HHCF": (
+                image.LER_Trailing_PSD, image.LER_Trailing_PSD_fit, image.LER_Trailing_PSD_unbiased,
+                image.LER_Trailing_PSD_fit_unbiased)
+        }
+
+        plots = hhcf_plots.get(plot_type)
+        if plots:
+            PSD_plot, PSD_fit_plot, PSD_unbiased_plot, PSD_fit_unbiased_plot = plots
+
+            self.widget_metric_tab.clear()
+            if self.window.metric_original_data.isChecked():
+                self.widget_metric_tab.addItem(
+                    pg.PlotDataItem(image.frequency, PSD_plot[0:len(image.frequency)], pen=PSD_pen))
+            if self.window.metric_model_fit.isChecked():
+                self.widget_metric_tab.addItem(
+                    pg.PlotDataItem(image.frequency, PSD_fit_plot[0:len(image.frequency)], pen=PSD_fit_pen))
+            if self.window.metric_data_unbiased.isChecked():
+                self.widget_metric_tab.addItem(
+                    pg.PlotDataItem(image.frequency, PSD_unbiased_plot[0:len(image.frequency)],
+                                    pen=PSD_unbiased_pen))
+            if self.window.metric_model_fit_unbiased.isChecked():
+                self.widget_metric_tab.addItem(
+                    pg.PlotDataItem(image.frequency, PSD_fit_unbiased_plot[0:len(image.frequency)],
+                                    pen=PSD_fit_unbiased_pen))
+
+            self.widget_metric_tab.setLogMode(True, True)
+            self.widget_metric_tab.setAutoVisible(y=True)
 
     def _display_histogram(self, image: Image) -> None:
         """
