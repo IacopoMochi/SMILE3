@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
+      <change beforePath="$PROJECT_DIR$/.idea/SMILE3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SMILE3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/main_window_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/main_window_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/image_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/image_container.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/processors/image_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/processors/image_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui/window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui/window.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/view/display_calculation_result_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/view/display_calculation_result_images.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +198,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
+        <option value="bundled-python-sdk-fb887030ada0-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.21565.199" />
       </set>
     </attachedChunks>
   </component>
