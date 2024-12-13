@@ -94,10 +94,10 @@ class ResultImagesManager(QtWidgets.QWidget):
         except Exception as e:
             self.window.show_error_message(f"Plot can not be display. {str(e)}")
 
-    def _display_hhcf(self, image: Image) -> None:
+    def _display_hhcf(self, image: Image, plot_type: str) -> None:
 
-        self.widget_metric_tab.addItem(hhcf_plot)
-        self.widget_metric_tab.addItem(hhcf_fit_plot)
+        #self.widget_metric_tab.addItem(hhcf_plot)
+        #self.widget_metric_tab.addItem(hhcf_fit_plot)
 
         """
                 Helper method to display the PSD plot on the metric tab.
@@ -114,13 +114,10 @@ class ResultImagesManager(QtWidgets.QWidget):
         hhcf_lw_fit_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF_fit, pen=hhcf_fit_pen)
 
         hhcf_plots = {
-            "LW_HHCF": (image.LWR_PSD, image.LWR_PSD_fit, image.LWR_PSD_unbiased, image.LWR_PSD_fit_unbiased),
-            "LE_PSD": (image.LER_PSD, image.LER_PSD_fit, image.LER_PSD_unbiased, image.LER_PSD_fit_unbiased),
-            "leading_LE_HHCF": (image.LER_Leading_PSD, image.LER_Leading_PSD_fit, image.LER_Leading_PSD_unbiased,
-                                image.LER_Leading_PSD_fit_unbiased),
-            "trailing_LE_HHCF": (
-                image.LER_Trailing_PSD, image.LER_Trailing_PSD_fit, image.LER_Trailing_PSD_unbiased,
-                image.LER_Trailing_PSD_fit_unbiased)
+            "LW_HHCF": (image.LW_HHCF, image.LW_HHCF_fit),
+            "LE_HHCF": (image.Lines_edge_HHCF, image.Lines_edge_HHCF_fit),
+            "leading_LE_HHCF": (image.Leading_edge_HHCF, image.Leading_edge_HHCF),
+            "trailing_LE_HHCF": (image.Trailing_edge_HHCF, image.Trailing_edge_HHCF)
         }
 
         plots = hhcf_plots.get(plot_type)
@@ -210,7 +207,7 @@ class ResultImagesManager(QtWidgets.QWidget):
 
         plots = psd_plots.get(plot_type)
         if plots:
-            PSD_plot, PSD_fit_plot, PSD_unbiased_plot, PSD_fit_unbiased_plot = plots
+            HHCF_plot, HHCD_fit_plot = plots
 
             self.widget_metric_tab.clear()
             if self.window.metric_original_data.isChecked():

@@ -1,4 +1,6 @@
-from typing import Callable, Union
+from typing import Callable, Union, Tuple, Any, Iterable
+
+from numpy import ndarray
 from scipy.optimize import minimize, Bounds
 from scipy.signal import medfilt2d, filtfilt, butter, find_peaks
 import numpy as np
@@ -443,7 +445,8 @@ class MetricCalculator:
     def __init__(self, image):
         self.image = image
 
-    def calculate_and_fit_hhcf(self, input_data: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def calculate_and_fit_hhcf(self, input_data: np.ndarray) -> tuple[
+        ndarray, Any, tuple[ndarray | Iterable | int | float, Any, Any, Any, Any]]:
         """
                 Calculates and fits the Height-Height Correlation Function (HHCF) of input data.
 
@@ -467,7 +470,7 @@ class MetricCalculator:
         beta0 = np.array([sigma2, 3, 0.5, background])
         beta_min = [sigma2/2, 2, 0.1, 0]
         beta_max = [2*sigma2, 500, 2, 2*background]
-        beta, _ = curve_fit(
+        beta = curve_fit(
             hhcf_,
             x[0:30],
             height_height_correlation_function[0:30],

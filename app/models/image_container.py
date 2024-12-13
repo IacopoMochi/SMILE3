@@ -66,7 +66,11 @@ class Image:
         self.Lines_edge_HHCF_fit = None
         self.Lines_edge_HHCF_parameters = None
         self.Leading_edge_HHCF = None
+        self.Leading_edge_HHCF_fit = None
+        self.Leading_edge_HHCF_parameters = None
         self.Trailing_edge_HHCF = None
+        self.Trailing_edge_HHCF_fit = None
+        self.Trailing_edge_HHCF_parameters = None
 
         self.consolidated_leading_edges = None
         self.consolidated_trailing_edges = None
