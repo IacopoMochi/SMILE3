@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
 from app.models.images_list import ImagesList
 from app.controllers.table_controller import TableController
-from app.view.display_calculation_result_images import ResultImagesManager
+from app.utils.display_calculation_result_images import ResultImagesManager
 from app.view.display_image import ImageDisplayManager
 from app.controllers.folder_image_loader import FolderImageLoader
 from app.controllers.processing_controller import ProcessingController

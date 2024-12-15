@@ -122,23 +122,15 @@ class ResultImagesManager(QtWidgets.QWidget):
 
         plots = hhcf_plots.get(plot_type)
         if plots:
-            PSD_plot, PSD_fit_plot, PSD_unbiased_plot, PSD_fit_unbiased_plot = plots
+            hhcf_lw_plot, hhcf_lw_fit_plot, PSD_unbiased_plot, PSD_fit_unbiased_plot = plots
 
             self.widget_metric_tab.clear()
             if self.window.metric_original_data.isChecked():
                 self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_plot[0:len(image.frequency)], pen=PSD_pen))
+                    pg.PlotDataItem(image.frequency, hhcf_lw_plot[0:len(image.frequency)], pen=hhcf_pen))
             if self.window.metric_model_fit.isChecked():
                 self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_fit_plot[0:len(image.frequency)], pen=PSD_fit_pen))
-            if self.window.metric_data_unbiased.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_unbiased_plot[0:len(image.frequency)],
-                                    pen=PSD_unbiased_pen))
-            if self.window.metric_model_fit_unbiased.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_fit_unbiased_plot[0:len(image.frequency)],
-                                    pen=PSD_fit_unbiased_pen))
+                    pg.PlotDataItem(image.frequency, hhcf_lw_fit_plot[0:len(image.frequency)], pen=hhcf_fit_pen))
 
             self.widget_metric_tab.setLogMode(True, True)
             self.widget_metric_tab.setAutoVisible(y=True)

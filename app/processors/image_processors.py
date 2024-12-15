@@ -446,7 +446,7 @@ class MetricCalculator:
         self.image = image
 
     def calculate_and_fit_hhcf(self, input_data: np.ndarray) -> tuple[
-        ndarray, Any, tuple[ndarray | Iterable | int | float, Any, Any, Any, Any]]:
+        ndarray, Any, np.ndarray]:
         """
                 Calculates and fits the Height-Height Correlation Function (HHCF) of input data.
 
@@ -470,7 +470,7 @@ class MetricCalculator:
         beta0 = np.array([sigma2, 3, 0.5, background])
         beta_min = [sigma2/2, 2, 0.1, 0]
         beta_max = [2*sigma2, 500, 2, 2*background]
-        beta = curve_fit(
+        beta, _ = curve_fit(
             hhcf_,
             x[0:30],
             height_height_correlation_function[0:30],

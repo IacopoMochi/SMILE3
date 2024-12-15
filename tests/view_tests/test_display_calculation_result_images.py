@@ -1,11 +1,11 @@
 import unittest
 import numpy as np
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication
 from pyqtgraph import PlotWidget
 from unittest.mock import MagicMock
 
 from app.models.image_container import Image
-from app.view.display_calculation_result_images import ResultImagesManager
+from app.utils.display_calculation_result_images import ResultImagesManager
 
 
 class TestResultImagesManager(unittest.TestCase):
