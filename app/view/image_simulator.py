@@ -52,6 +52,8 @@ image = image+np.abs(np.random.randn(s[0], s[1]))
 # fig, axs = plt.subplots(3)
 # axs[0].loglog(frequency[0:1+int(profile_length/2)], y0)
 # axs[1].plot(profile_position, filtered_profile0)
+
+
 plt.imshow(image)
 
 plt.show()
