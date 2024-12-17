@@ -12,9 +12,6 @@ def contact_image(CD: float, pitch: float, arrangement: float, pixel_size: float
 
     origin = 0
     edge = CD
-    inner_edge = edge*inner
-    outer_edge = edge*outer
-    taper = outer+(1-outer)*taper
     end = 1
 
     origin_value = spline_values[0]
@@ -30,6 +27,10 @@ def contact_image(CD: float, pitch: float, arrangement: float, pixel_size: float
             for cy in np.arange(-image_height * pixel_size / 2, image_height * pixel_size / 2, pitch):
 
                 radius = edge+np.random.random(1)*radius_error
+                inner_edge = radius[0] * inner
+                outer_edge = radius[0]* outer
+                taper = outer_edge + (1 - outer_edge) * taper
+
                 radii.append(radius)
                 xs = np.array([origin, inner_edge, radius, outer_edge, taper, end])
                 ys = np.array([origin_value, inner_edge_value, edge_value, outer_edge_value, taper_value, end_value])
@@ -53,8 +54,12 @@ def contact_image(CD: float, pitch: float, arrangement: float, pixel_size: float
             for cy in np.arange(-image_height * pixel_size / 2, image_height * pixel_size / 2, pitch):
 
                 radius = edge + np.random.random(1) * radius_error
+                xinner_edge = radius[0] * inner
+                xouter_edge = radius[0] * outer
+                xtaper = xouter_edge + (1 - xouter_edge) * taper
                 radii.append(radius)
-                xs = np.array([0, inner_edge, radius, outer_edge, taper, 1])
+                xs = np.array([0, xinner_edge, radius[0], xouter_edge, xtaper, 1])
+                print(xs)
                 ys = np.array([origin_value, inner_edge_value, edge_value, outer_edge_value, taper_value, end_value])
                 spline = interpolate.PchipInterpolator(xs, ys)
 
@@ -76,6 +81,6 @@ def contact_image(CD: float, pitch: float, arrangement: float, pixel_size: float
 
     return image, centers, radii
 
-image, centers, radii = contact_image(16, 32, 'triangular', 0.2, 2000, 1200, 5, 0.2, 0.2, 0.1, np.array([0.7,0.9,1.0,0.9,0.1,1.0]), 4)
+image, centers, radii = contact_image(16, 32, 'triangular', 0.2, 2000, 1200, 5, 0.2, 0.2, 0.1, np.array([0.7,0.9,1.0,0.9,0.1,1.0]), 1)
 plt.imshow(image)
 plt.show()
