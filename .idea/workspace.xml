@@ -5,7 +5,110 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
-      <change beforePath="$PROJECT_DIR$/app/view/contacts_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/view/contacts_simulator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/Network.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_000.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_001.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_002.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_003.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_004.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_005.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_006.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_007.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_008.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_009.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_010.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_011.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_012.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_013.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_014.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_015.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_016.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_017.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_018.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_019.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_020.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_021.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_022.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_023.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_024.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_025.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_026.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_027.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_028.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_029.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_030.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_031.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_032.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_033.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_034.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_035.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_036.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_037.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_038.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_039.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_040.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_041.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_042.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_043.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_044.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_045.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_046.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_047.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_048.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_049.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_050.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_051.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_052.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_053.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_054.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_055.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_056.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_057.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_058.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_059.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_060.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_061.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_062.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_063.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_064.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_065.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_066.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_067.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_068.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_069.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_070.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_071.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_072.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_073.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_074.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_075.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_076.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_077.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_078.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_079.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_080.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_081.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_082.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_083.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_084.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_085.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_086.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_087.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_088.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_089.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_090.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_091.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_092.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_093.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_094.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_095.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_096.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_097.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_098.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/DNN/synt_circles_099.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/view/contacts_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/DNN/contacts_simulator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,11 +179,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/DNN" />
       <recent name="$PROJECT_DIR$/app/utils" />
       <recent name="C:\Users\burdak_e\SMILE3\src\psd" />
       <recent name="C:\Users\burdak_e\SMILE3\src\gui" />
       <recent name="C:\Users\burdak_e\SMILE3\src\utils" />
-      <recent name="C:\Users\burdak_e\SMILE3\src\view" />
     </key>
   </component>
   <component name="RunManager">
