@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
-      <change beforePath="$PROJECT_DIR$/app/DNN/Network.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/DNN/Network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/DNN/contacts_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/DNN/contacts_simulator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-    </list>
+    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,6 +32,9 @@
     &quot;accountId&quot;: &quot;481bd879-2046-4e51-834a-4d5413ef4051&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -53,10 +52,13 @@
     "Python tests.Python tests in controller_tests.executor": "Run",
     "Python tests.Python tests in test_table_controller.py.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
+    "Python.InferenceTest.executor": "Run",
     "Python.LS_image_simulation.executor": "Run",
     "Python.Network.executor": "Run",
     "Python.Robinson.executor": "Run",
+    "Python.Thresholding_hugh_test.executor": "Debug",
     "Python.contacts_simulator.executor": "Run",
+    "Python.hugh_transform.executor": "Run",
     "Python.image_simulator.executor": "Run",
     "Python.main (1).executor": "Run",
     "Python.main.executor": "Run",
@@ -67,7 +69,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/iacopomochi/Documents/GitHub/SMILE3",
+    "last_opened_file_path": "/Users/iacopomochi/Documents/GitHub/SMILE3/app/Hugh",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -78,6 +80,10 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/Hugh" />
+      <recent name="$PROJECT_DIR$/app/DNN" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/DNN" />
       <recent name="$PROJECT_DIR$/app/utils" />
@@ -86,7 +92,7 @@
       <recent name="C:\Users\burdak_e\SMILE3\src\utils" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main (1)">
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SMILE3" />
       <option name="ENV_FILES" value="" />
@@ -201,7 +207,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-337b0a7a993a-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.19416.19" />
+        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
       </set>
     </attachedChunks>
   </component>
@@ -505,54 +511,39 @@
           <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/processors/image_processors.py</url>
-          <line>487</line>
-          <option name="timeStamp" value="52" />
+          <url>file://$PROJECT_DIR$/app/DNN/InferenceTest.py</url>
+          <line>36</line>
+          <option name="timeStamp" value="69" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/processors/image_processors.py</url>
-          <line>483</line>
-          <option name="timeStamp" value="59" />
+          <url>file://$PROJECT_DIR$/app/Hugh/Thresholding_hugh_test.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/processors/image_processors.py</url>
-          <line>481</line>
-          <option name="timeStamp" value="60" />
+          <url>file://$PROJECT_DIR$/app/Hugh/Thresholding_hugh_test.py</url>
+          <line>24</line>
+          <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/contacts_simulator.py</url>
-          <line>155</line>
-          <option name="timeStamp" value="61" />
+          <url>file://$PROJECT_DIR$/app/Hugh/Thresholding_hugh_test.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/Network.py</url>
-          <line>77</line>
-          <option name="timeStamp" value="63" />
+          <url>file://$PROJECT_DIR$/app/Hugh/Thresholding_hugh_test.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/Network.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="64" />
+          <url>file://$PROJECT_DIR$/app/Hugh/Thresholding_hugh_test.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/Network.py</url>
-          <line>78</line>
-          <option name="timeStamp" value="65" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/Network.py</url>
-          <line>88</line>
-          <option name="timeStamp" value="66" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/Network.py</url>
-          <line>82</line>
-          <option name="timeStamp" value="67" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/DNN/Network.py</url>
-          <line>85</line>
-          <option name="timeStamp" value="68" />
+          <url>file://$PROJECT_DIR$/app/Hugh/Thresholding_hugh_test.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="78" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

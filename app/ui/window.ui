@@ -506,14 +506,9 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="contacts_tab">
-       <attribute name="title">
-        <string>Contacts </string>
-       </attribute>
-      </widget>
       <widget class="QWidget" name="parameters_Tab">
        <attribute name="title">
-        <string>Parameters</string>
+        <string>Lines and Spaces parameters </string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
@@ -1418,9 +1413,416 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_4">
+      <widget class="QWidget" name="contacts_tab">
        <attribute name="title">
-        <string>Advanced settings</string>
+        <string>Contacts </string>
+       </attribute>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>880</x>
+          <y>10</y>
+          <width>811</width>
+          <height>781</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_16">
+         <property name="leftMargin">
+          <number>10</number>
+         </property>
+         <property name="rightMargin">
+          <number>10</number>
+         </property>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <property name="leftMargin">
+            <number>10</number>
+           </property>
+           <property name="topMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>10</number>
+           </property>
+           <property name="bottomMargin">
+            <number>10</number>
+           </property>
+           <item row="4" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="pushButton_10">
+               <property name="text">
+                <string>Pause</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_11">
+               <property name="text">
+                <string>Resume</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_12">
+               <property name="text">
+                <string>Stop</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="6" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <property name="leftMargin">
+              <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>10</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="pushButton_selectAll_2">
+               <property name="text">
+                <string>Select all</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_selectNone_2">
+               <property name="text">
+                <string>Unselect all</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="checkBox_5">
+             <property name="text">
+              <string>Batch mode</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="status_label_2">
+             <property name="text">
+              <string>Ready</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pushButton_ImageFolder_contacts">
+             <property name="text">
+              <string>Select image folder</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" colspan="2">
+            <widget class="QProgressBar" name="image_progressBar_2">
+             <property name="value">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2" rowspan="3">
+            <widget class="QGroupBox" name="groupBox_10">
+             <property name="minimumSize">
+              <size>
+               <width>160</width>
+               <height>130</height>
+              </size>
+             </property>
+             <property name="title">
+              <string>Export data</string>
+             </property>
+             <widget class="QWidget" name="verticalLayoutWidget_6">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>20</y>
+                <width>150</width>
+                <height>97</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_17">
+               <item>
+                <widget class="QPushButton" name="export_data_2">
+                 <property name="text">
+                  <string>Export data</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="export_edges_CheckBox_2">
+                 <property name="text">
+                  <string>Export edges</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="export_PSD_CheckBox_2">
+                 <property name="text">
+                  <string>Export PSD</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="export_averagePSD_CheckBox_2">
+                 <property name="text">
+                  <string>Export average PSD</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_20">
+             <item>
+              <widget class="QPushButton" name="process_lines_button_2">
+               <property name="text">
+                <string>Start processing</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="recalculate_metrics_button_2">
+               <property name="text">
+                <string>Recalculate</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="linesTable_2">
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="rowCount">
+            <number>0</number>
+           </property>
+           <property name="columnCount">
+            <number>19</number>
+           </property>
+           <column>
+            <property name="text">
+             <string>Selected</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Processed</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>N of lines</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Average pitch</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Average CD</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>CD std</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Unbiased LWR </string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Unbiased LWR fit</string>
+            </property>
+           </column>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+           <column/>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>861</width>
+          <height>781</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_18">
+         <item>
+          <widget class="PlotWidget" name="line_image_view_2">
+           <property name="minimumSize">
+            <size>
+             <width>760</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_21" stretch="0">
+             <property name="spacing">
+              <number>-1</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="metric_selection_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>170</width>
+                 <height>310</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>Metric</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+               <widget class="QWidget" name="verticalLayoutWidget_4">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>30</y>
+                  <width>153</width>
+                  <height>161</height>
+                 </rect>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_22">
+                 <item>
+                  <widget class="QRadioButton" name="LineWidthPSD_2">
+                   <property name="text">
+                    <string>Line width PSD</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="LineEdgePSD_2">
+                   <property name="text">
+                    <string>Line edge PSD</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="LeadingEdgePSD_2">
+                   <property name="text">
+                    <string>Leading edge PSD</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="TrailingEdgePSD_2">
+                   <property name="text">
+                    <string>Trailing edge PSD</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="LineWidthHHCF_2">
+                   <property name="text">
+                    <string>Line width HHCF</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QCheckBox" name="metric_original_data_2">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>200</y>
+                  <width>391</width>
+                  <height>20</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Original data</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="contacts_parameters_tab">
+       <attribute name="title">
+        <string>Contacts parameters</string>
        </attribute>
       </widget>
      </widget>

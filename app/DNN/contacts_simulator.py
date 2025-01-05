@@ -100,8 +100,8 @@ for img_idx in range(0, 100):
         arrangement = "orthogonal"
     else:
         arrangement = "triangular"
-    image_height = random.randint(600,1000)
-    image_width = random.randint(800, 2000)
+    image_height = 800 #random.randint(600,1000)
+    image_width = 1900 #random.randint(800, 2000)
     noise_idx = random.randint(0,99)
     noise = np.round(np.linspace(100,15000, 100))
     noise_value = noise[noise_idx]
@@ -132,17 +132,35 @@ for img_idx in range(0, 100):
     im.save(s)
     image_list.append(s)  # Paths to your images
 
+    # fig, ax = plt.subplots(1, 1)
+    # cs = ax.imshow(image)
+    #
+    # t = np.linspace(0, 2 * np.pi, 100)
+    # for npl in range(0, np.size(radii)):
+    #     cpl = centers[npl]
+    #     rpl = radii[npl]
+    #     ax.plot(cpl[0] / 0.8 + image_width / 2, cpl[1] / 0.8 + image_height / 2, 'ro')
+    #     ax.plot(cpl[0] / 0.8 + image_width / 2 + rpl * np.cos(t), cpl[1] / 0.8 + image_height / 2 + rpl * np.sin(t),
+    #             '-b')
+
     boxes = []
     labels = []
     for contact in range(0,np.size(radii)):
         center_box = centers[contact]
-        xmin = center_box[0] - radii[contact]
-        xmax = center_box[0] + radii[contact]
-        ymin = center_box[1] - radii[contact]
-        ymax = center_box[1] + radii[contact]
+        xmin = (center_box[0] - radii[contact]) / 0.8 + image_width / 2
+        xmax = (center_box[0] + radii[contact]) / 0.8 + image_width / 2
+        ymin = (center_box[1] - radii[contact]) / 0.8 + image_height / 2
+        ymax = (center_box[1] + radii[contact]) / 0.8 + image_height / 2
 
-        boxes.append([xmin,ymin,xmax,ymax])
-        annotations.append({"boxes": boxes, "labels": np.ones((1,np.size(radii)))})
+        #ax.plot([xmin, xmax, xmax, xmin, xmin],[ymin, ymin, ymax, ymax, ymin],'-y')
+        if xmin>=0 and ymin >=0 and xmax<=image_width and ymax<=image_height :
+            boxes.append([xmin,ymin,xmax,ymax])
+            labels.append(1)
+        annotations.append({"boxes": boxes, "labels": labels})
+    # plt.show()
+
+
+
 
 with open('annotations.pkl', 'wb+') as f:
     pickle.dump(annotations, f)

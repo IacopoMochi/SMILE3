@@ -76,29 +76,25 @@ class ResultImagesManager(QtWidgets.QWidget):
             image (Image): The image object containing the data to plot.
         """
 
-        try:
-            if self.window.histogram.isChecked():
-                self._display_histogram(image)
-            elif self.window.LineWidthPSD.isChecked():
-                self._display_psd(image, "LWR_PSD")
-            elif self.window.LineEdgePSD.isChecked():
-                self._display_psd(image, "LER_PSD")
-            elif self.window.LeadingEdgePSD.isChecked():
-                self._display_psd(image, "leading_LER_PSD")
-            elif self.window.TrailingEdgePSD.isChecked():
-                self._display_psd(image, "trailing_LER_PSD")
-            elif self.window.LineWidthHHCF.isChecked():
-                self._display_hhcf(image, "trailing_LER_PSD")
-            elif self.window.LineEdgeHHCF.isChecked():
-                self._display_hhcf(image)
-        except Exception as e:
-            self.window.show_error_message(f"Plot can not be display. {str(e)}")
+        #try:
+        if self.window.histogram.isChecked():
+            self._display_histogram(image)
+        elif self.window.LineWidthPSD.isChecked():
+            self._display_psd(image)
+        elif self.window.LineEdgePSD.isChecked():
+            self._display_psd(image)
+        elif self.window.LeadingEdgePSD.isChecked():
+            self._display_psd(image)
+        elif self.window.TrailingEdgePSD.isChecked():
+            self._display_psd(image)
+        elif self.window.LineWidthHHCF.isChecked():
+            self._display_hhcf(image)
+        elif self.window.LineEdgeHHCF.isChecked():
+            self._display_hhcf(image)
+        # except Exception as e:
+        #     self.window.show_error_message(f"Plot can not be display. {str(e)}")
 
-    def _display_hhcf(self, image: Image, plot_type: str) -> None:
-
-        #self.widget_metric_tab.addItem(hhcf_plot)
-        #self.widget_metric_tab.addItem(hhcf_fit_plot)
-
+    def _display_hhcf(self, image: Image) -> None:
         """
                 Helper method to display the PSD plot on the metric tab.
 
@@ -110,30 +106,17 @@ class ResultImagesManager(QtWidgets.QWidget):
         hhcf_pen = pg.mkPen(hhcf_color, width=3)
         hhcf_fit_color = pg.mkColor(200, 0, 0)
         hhcf_fit_pen = pg.mkPen(hhcf_fit_color, width=3)
-        hhcf_lw_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF, pen=hhcf_pen)
-        hhcf_lw_fit_plot = pg.PlotDataItem(np.linspace(0, 1, np.size(image.LW_HHCF)), image.LW_HHCF_fit, pen=hhcf_fit_pen)
 
-        hhcf_plots = {
-            "LW_HHCF": (image.LW_HHCF, image.LW_HHCF_fit),
-            "LE_HHCF": (image.Lines_edge_HHCF, image.Lines_edge_HHCF_fit),
-            "leading_LE_HHCF": (image.Leading_edge_HHCF, image.Leading_edge_HHCF),
-            "trailing_LE_HHCF": (image.Trailing_edge_HHCF, image.Trailing_edge_HHCF)
-        }
+        self.widget_metric_tab.clear()
+        if self.window.metric_original_data.isChecked():
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, hhcf_lw_plot[0:len(image.frequency)], pen=hhcf_pen))
+        if self.window.metric_model_fit.isChecked():
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, hhcf_lw_fit_plot[0:len(image.frequency)], pen=hhcf_fit_pen))
 
-        plots = hhcf_plots.get(plot_type)
-        if plots:
-            hhcf_lw_plot, hhcf_lw_fit_plot, PSD_unbiased_plot, PSD_fit_unbiased_plot = plots
-
-            self.widget_metric_tab.clear()
-            if self.window.metric_original_data.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, hhcf_lw_plot[0:len(image.frequency)], pen=hhcf_pen))
-            if self.window.metric_model_fit.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, hhcf_lw_fit_plot[0:len(image.frequency)], pen=hhcf_fit_pen))
-
-            self.widget_metric_tab.setLogMode(True, True)
-            self.widget_metric_tab.setAutoVisible(y=True)
+        self.widget_metric_tab.setLogMode(True, True)
+        self.widget_metric_tab.setAutoVisible(y=True)
 
     def _display_histogram(self, image: Image) -> None:
         """
@@ -169,13 +152,49 @@ class ResultImagesManager(QtWidgets.QWidget):
         self.widget_metric_tab.addItem(histogram_plot_fit)
         self.widget_metric_tab.setLogMode(False, False)
 
-    def _display_psd(self, image: Image, plot_type: str) -> None:
+    def _display_metric(self, image: Image) -> None:
+
+        if self.window.LineWidthPSD.isChecked:
+            data = image.LWR_PSD
+            fit = image.LWR_PSD_fit
+            data_unbiased = image.LWR_PSD_unbiased
+            fit_unbiased = image.LWR_fit_unbiased
+        elif self.window.LineEdgePSD.isChecked:
+            data = image.LER_PSD
+            fit = image.LER_PSD_fit
+            data_unbiased = image.LER_unbiased
+            fit_unbiased = image.LER_fit_unbiased
+        elif self.window.LeadingEdgePSD.isChecked:
+            data = image.LER_Leading_PSD
+            fit = image.LER_Leading_fit
+            data_unbiased = image.LER_Leading_PSD_unbiased
+            fit_unbiased = image.LER_Leading_PSD_fit_unbiased
+        elif self.window.TrailingEdgePSD:
+            data = image.LER_Trailing
+            fit = image.LER_Trailing_PSD_fit
+            data_unbiased = image.LER_Trailing_unbiased
+            fit_unbiased = image.LER_Trailing_PSD_fit_unbiased
+        elif self.window.LineWidthHHCF.isChecked:
+            data = image.LW_HHCF
+            fit = image.LW_HHCF_fit
+        elif self.window.LineEdgeHHCF.isChecked:
+            data = image.Lines_edge_HHCF
+            fit = image.Lines_edge_HHCF_fit
+
+        if self.window.metric_original_data.isChecked:
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, image.LWR_PSD[0:len(image.frequency)], pen=PSD_pen))
+
+        self.widget_metric_tab.setLogMode(True, True)
+        self.widget_metric_tab.setAutoVisible(y=True)
+
+
+    def _display_psd(self, image: Image) -> None:
         """
         Helper method to display the PSD plot on the metric tab.
 
         Args:
             image (Image): The image object containing the PSD data.
-            plot_type (str): The type of PSD plot to display.
         """
 
         PSD_color = pg.mkColor(200, 200, 200)
@@ -187,35 +206,28 @@ class ResultImagesManager(QtWidgets.QWidget):
         PSD_unbiased_pen = pg.mkPen(PSD_unbiased_color, width=3)
         PSD_fit_unbiased_pen = pg.mkPen(PSD_fit_unbiased_color, width=3)
 
-        psd_plots = {
-            "LWR_PSD": (image.LWR_PSD, image.LWR_PSD_fit, image.LWR_PSD_unbiased, image.LWR_PSD_fit_unbiased),
-            "LER_PSD": (image.LER_PSD, image.LER_PSD_fit, image.LER_PSD_unbiased, image.LER_PSD_fit_unbiased),
-            "leading_LER_PSD": (image.LER_Leading_PSD, image.LER_Leading_PSD_fit, image.LER_Leading_PSD_unbiased,
-                                image.LER_Leading_PSD_fit_unbiased),
-            "trailing_LER_PSD": (
-                image.LER_Trailing_PSD, image.LER_Trailing_PSD_fit, image.LER_Trailing_PSD_unbiased,
-                image.LER_Trailing_PSD_fit_unbiased)
-        }
+        self.widget_metric_tab.clear()
 
-        plots = psd_plots.get(plot_type)
-        if plots:
-            HHCF_plot, HHCD_fit_plot = plots
+        plot_LWR_PSD_data = pg.PlotDataItem(image.frequency, image.LWR_PSD[0:len(image.frequency)], pen=PSD_pen)
+        plot_LWR_PSD_fit = pg.PlotDataItem(image.frequency, image.LWR_PSD_fit[0:len(image.frequency)], pen=PSD_pen)
+        plot_LWR_PSD_unbiased = pg.PlotDataItem(image.frequency, image.LWR_PSD_unbiased[0:len(image.frequency)], pen=PSD_pen)
+        plot_LWR_PSD_fit_unbiased = pg.PlotDataItem(image.frequency, image.LWR_PSD_fit_unbiased[0:len(image.frequency)],
+                                                pen=PSD_pen)
 
-            self.widget_metric_tab.clear()
-            if self.window.metric_original_data.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_plot[0:len(image.frequency)], pen=PSD_pen))
-            if self.window.metric_model_fit.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_fit_plot[0:len(image.frequency)], pen=PSD_fit_pen))
-            if self.window.metric_data_unbiased.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_unbiased_plot[0:len(image.frequency)],
-                                    pen=PSD_unbiased_pen))
-            if self.window.metric_model_fit_unbiased.isChecked():
-                self.widget_metric_tab.addItem(
-                    pg.PlotDataItem(image.frequency, PSD_fit_unbiased_plot[0:len(image.frequency)],
-                                    pen=PSD_fit_unbiased_pen))
+        if self.window.metric_original_data.isChecked():
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, image.LWR_PSD[0:len(image.frequency)], pen=PSD_pen))
+        if self.window.metric_model_fit.isChecked():
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, image.LWR_PSD_fit[0:len(image.frequency)], pen=PSD_fit_pen))
+        if self.window.metric_data_unbiased.isChecked():
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, image.LWR_PSD_unbiased [0:len(image.frequency)],
+                                pen=PSD_unbiased_pen))
+        if self.window.metric_model_fit_unbiased.isChecked():
+            self.widget_metric_tab.addItem(
+                pg.PlotDataItem(image.frequency, image.LWR_PSD_fit_unbiased[0:len(image.frequency)],
+                                pen=PSD_fit_unbiased_pen))
 
-            self.widget_metric_tab.setLogMode(True, True)
-            self.widget_metric_tab.setAutoVisible(y=True)
+        self.widget_metric_tab.setLogMode(True, True)
+        self.widget_metric_tab.setAutoVisible(y=True)

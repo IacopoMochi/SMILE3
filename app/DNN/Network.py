@@ -87,3 +87,6 @@ if __name__ == "__main__":
 
     # Train the model
     train_model(model, dataloader, optimizer, num_epochs=10, device="cpu")
+
+    torch.save(model.state_dict(), "faster_rcnn_contacts.pth")
+

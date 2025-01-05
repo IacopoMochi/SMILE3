@@ -639,4 +639,4 @@ class MetricCalculator:
          self.image.Lines_HHCF,
          self.image.Lines_HHCF_parameters) = self.calculate_and_fit_hhcf(all_edges)
 
-        print(self.image.LW_HHCF_parameters)
+        #print(self.image.LW_HHCF_parameters)
