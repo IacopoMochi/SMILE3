@@ -467,19 +467,20 @@ class MetricCalculator:
         background = np.mean(height_height_correlation_function[0:2])
         sigma2 = np.mean(height_height_correlation_function[-100:])-background
         x = np.arange(0, np.size(height_height_correlation_function))
-        beta0 = np.array([sigma2, 3, 0.5, background])
+        beta0 = np.array([2, 20, 1, 3])
         beta_min = [sigma2/2, 2, 0.1, 0]
-        beta_max = [2*sigma2, 500, 2, 2*background]
+        beta_max = [2*sigma2, 500, 2, 4]
         beta, _ = curve_fit(
             hhcf_,
             x[0:30],
             height_height_correlation_function[0:30],
             p0=beta0,
-            bounds=(beta_min, beta_max),
+            #bounds=(beta_min, beta_max),
             maxfev=100000,
             #method="dogbox"
         )
         fitted_hhcf = hhcf_(x, *beta)
+        #fitted_hhcf = hhcf_(x, *beta0)
 
         return fitted_hhcf, height_height_correlation_function, beta
 
@@ -604,7 +605,7 @@ class MetricCalculator:
          self.image.unbiased_LER_fit) = self.calculate_and_fit_psd(all_edges)
 
         # Leading edges LER
-        input_data = self.image.zero_mean_leading_edge_profiles * self.image.pixel_size
+        leading_edges = self.image.zero_mean_leading_edge_profiles * self.image.pixel_size
 
         (self.image.LER_Leading_PSD,
          self.image.LER_Leading_PSD_fit_parameters,
@@ -614,10 +615,10 @@ class MetricCalculator:
          self.image.unbiased_LER_Leading,
          self.image.biased_LER_Leading,
          self.image.standard_LER_Leading,
-         self.image.unbiased_LER_Leading_fit) = self.calculate_and_fit_psd(input_data)
+         self.image.unbiased_LER_Leading_fit) = self.calculate_and_fit_psd(leading_edges)
 
         # Trailing edges LER
-        input_data = self.image.zero_mean_trailing_edge_profiles * self.image.pixel_size
+        trailing_edges = self.image.zero_mean_trailing_edge_profiles * self.image.pixel_size
 
         (self.image.LER_Trailing_PSD,
          self.image.LER_Trailing_PSD_fit_parameters,
@@ -627,7 +628,7 @@ class MetricCalculator:
          self.image.unbiased_LER_Trailing,
          self.image.biased_LER_Trailing,
          self.image.standard_LER_Trailing,
-         self.image.unbiased_LER_Trailing_fit) = self.calculate_and_fit_psd(input_data)
+         self.image.unbiased_LER_Trailing_fit) = self.calculate_and_fit_psd(trailing_edges)
 
         # Line width HHCF
         (self.image.LW_HHCF_fit,
@@ -638,5 +639,15 @@ class MetricCalculator:
         (self.image.Lines_HHCF_fit,
          self.image.Lines_HHCF,
          self.image.Lines_HHCF_parameters) = self.calculate_and_fit_hhcf(all_edges)
+
+        # Line leading edge HHCF
+        (self.image.Lines_leading_edges_HHCF_fit,
+         self.image.Lines_leading_edges_HHCF,
+         self.image.Lines_leading_edges_HHCF_parameters) = self.calculate_and_fit_hhcf(leading_edges)
+
+        # Line trailing edge HHCF
+        (self.image.Lines_trailing_edges_HHCF_fit,
+         self.image.Lines_trailing_edges_HHCF,
+         self.image.Lines_trailing_edges_HHCF_parameters) = self.calculate_and_fit_hhcf(trailing_edges)
 
         #print(self.image.LW_HHCF_parameters)

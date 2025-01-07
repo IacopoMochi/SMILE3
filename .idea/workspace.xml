@@ -7,7 +7,7 @@
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
       <change beforePath="$PROJECT_DIR$/.idea/SMILE3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SMILE3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/display_calculation_result_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/display_calculation_result_images.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/processors/image_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/processors/image_processors.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,39 +50,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Python tests.Python tests in controller_tests.executor": "Run",
-    "Python tests.Python tests in test_table_controller.py.executor": "Run",
-    "Python tests.Python tests in tests.executor": "Run",
-    "Python.InferenceTest.executor": "Run",
-    "Python.LS_image_simulation.executor": "Run",
-    "Python.Network.executor": "Run",
-    "Python.Robinson.executor": "Run",
-    "Python.Thresholding_hugh_test.executor": "Debug",
-    "Python.contacts_simulator.executor": "Run",
-    "Python.hugh_transform.executor": "Run",
-    "Python.image_simulator.executor": "Run",
-    "Python.main (1).executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.main_controller.executor": "Run",
-    "Python.smile_image_list_class.executor": "Run",
-    "Python.smile_lines_image_class.executor": "Run",
-    "Python.tes.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/iacopomochi/Documents/GitHub/SMILE3/app/Hugh",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.customizations",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in controller_tests.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_table_controller.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
+    &quot;Python.InferenceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LS_image_simulation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Network.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Robinson.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Thresholding_hugh_test.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.contacts_simulator.executor&quot;: &quot;Run&quot;,
+    &quot;Python.hugh_transform.executor&quot;: &quot;Run&quot;,
+    &quot;Python.image_simulator.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main_controller.executor&quot;: &quot;Run&quot;,
+    &quot;Python.smile_image_list_class.executor&quot;: &quot;Run&quot;,
+    &quot;Python.smile_lines_image_class.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tes.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/iacopomochi/Documents/GitHub/SMILE3/app/Hugh&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/Hugh" />
@@ -211,7 +211,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-337b0a7a993a-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.19416.19" />
+        <option value="bundled-python-sdk-48aec45f0201-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.17011.127" />
       </set>
     </attachedChunks>
   </component>
@@ -551,52 +551,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>192</line>
+          <line>134</line>
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>193</line>
-          <option name="timeStamp" value="84" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>194</line>
-          <option name="timeStamp" value="85" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>195</line>
-          <option name="timeStamp" value="86" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>196</line>
-          <option name="timeStamp" value="87" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>197</line>
-          <option name="timeStamp" value="88" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>198</line>
-          <option name="timeStamp" value="89" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>199</line>
-          <option name="timeStamp" value="90" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>200</line>
+          <line>135</line>
           <option name="timeStamp" value="91" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
-          <line>201</line>
+          <line>136</line>
           <option name="timeStamp" value="92" />
         </line-breakpoint>
       </breakpoints>
