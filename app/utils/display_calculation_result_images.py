@@ -101,6 +101,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         Args:
             image (Image): The image object containing the histogram data.
         """
+        self.widget_metric_tab.clear()
 
         histogram_color = pg.mkColor(200, 200, 200)
         histogram_pen = pg.mkPen(histogram_color, width=3)
@@ -127,7 +128,8 @@ class ResultImagesManager(QtWidgets.QWidget):
         self.widget_metric_tab.addItem(histogram_plot_high)
         self.widget_metric_tab.addItem(histogram_plot_fit)
         self.widget_metric_tab.setLogMode(False, False)
-
+        self.widget_metric_tab.setLabel('bottom', "Intensity", units='Counts')
+        self.widget_metric_tab.setLabel('left', "Occurences")
     def _display_metric(self, image: Image) -> None:
 
         self.widget_metric_tab.clear()
@@ -147,16 +149,16 @@ class ResultImagesManager(QtWidgets.QWidget):
             fit = pg.PlotDataItem(image.frequency, image.LWR_PSD_fit[0:len(image.frequency)], pen=PSD_fit_pen)
             data_unbiased = pg.PlotDataItem(image.frequency, image.LWR_PSD_unbiased[0:len(image.frequency)], pen=PSD_unbiased_pen)
             fit_unbiased = pg.PlotDataItem(image.frequency, image.LWR_PSD_fit_unbiased[0:len(image.frequency)], pen=PSD_fit_unbiased_pen)
-            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm^-1')
-            self.widget_metric_tab.setLabel('left', "Power spectral density", units='nm^3')
+            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm<sup>-1</sup>')
+            self.widget_metric_tab.setLabel('left', "Power spectral density (nm<sup>3</sup>)")
 
         elif self.window.LineEdgePSD.isChecked():
             data = pg.PlotDataItem(image.frequency, image.LER_PSD[0:len(image.frequency)], pen=PSD_pen)
             fit = pg.PlotDataItem(image.frequency, image.LER_PSD_fit[0:len(image.frequency)], pen=PSD_fit_pen)
             data_unbiased = pg.PlotDataItem(image.frequency, image.LER_PSD_unbiased[0:len(image.frequency)], pen=PSD_unbiased_pen)
             fit_unbiased = pg.PlotDataItem(image.frequency, image.LER_PSD_fit_unbiased[0:len(image.frequency)], pen=PSD_fit_unbiased_pen)
-            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm^-1')
-            self.widget_metric_tab.setLabel('left', "Power spectral density", units='nm^3')
+            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm<sup>-1</sup>')
+            self.widget_metric_tab.setLabel('left', "Power spectral density (nm<sup>3</sup>)")
 
         elif self.window.LeadingEdgePSD.isChecked():
             data = pg.PlotDataItem(image.frequency, image.LER_Leading_PSD[0:len(image.frequency)], pen=PSD_pen)
@@ -165,8 +167,8 @@ class ResultImagesManager(QtWidgets.QWidget):
                                             pen=PSD_unbiased_pen)
             fit_unbiased = pg.PlotDataItem(image.frequency, image.LER_Leading_PSD_fit_unbiased[0:len(image.frequency)],
                                            pen=PSD_fit_unbiased_pen)
-            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm^-1')
-            self.widget_metric_tab.setLabel('left', "Power spectral density", units='nm^3')
+            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm<sup>-1</sup>')
+            self.widget_metric_tab.setLabel('left', "Power spectral density (nm<sup>3</sup>)")
 
         elif self.window.TrailingEdgePSD.isChecked():
             data = pg.PlotDataItem(image.frequency, image.LER_Trailing_PSD[0:len(image.frequency)], pen=PSD_pen)
@@ -175,23 +177,24 @@ class ResultImagesManager(QtWidgets.QWidget):
                                             pen=PSD_unbiased_pen)
             fit_unbiased = pg.PlotDataItem(image.frequency, image.LER_Trailing_PSD_fit_unbiased[0:len(image.frequency)],
                                            pen=PSD_fit_unbiased_pen)
-            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm^-1')
-            self.widget_metric_tab.setLabel('left', "Power spectral density", units='nm^3')
+            self.widget_metric_tab.setLabel('bottom', "Frequency", units='nm<sup>-1</sup>')
+            self.widget_metric_tab.setLabel('left', "Power spectral density (nm<sup>3</sup>)")
 
         elif self.window.LineWidthHHCF.isChecked():
             profile_length = np.arange(0,len(image.LW_HHCF)) * image.pixel_size
             data = pg.PlotDataItem(profile_length, image.LW_HHCF, pen=PSD_pen)
             fit = pg.PlotDataItem(profile_length, image.LW_HHCF_fit, pen=PSD_fit_pen)
             self.widget_metric_tab.setLabel('bottom', "Distance", units='nm')
-            self.widget_metric_tab.setLabel('left', "Correlation", units='nm^2')
+            self.widget_metric_tab.setLabel('left', "Correlation", units='nm<sup>2</sup>')
 
         elif self.window.LineEdgeHHCF.isChecked():
             profile_length = np.arange(0, len(image.Lines_edge_HHCF)) * image.pixel_size
             data = pg.PlotDataItem(profile_length, image.Lines_edge_HHCF, pen=PSD_pen)
             fit = pg.PlotDataItem(profile_length, image.Lines_edge_HHCF_fit, pen=PSD_fit_pen)
             self.widget_metric_tab.setLabel('bottom', "Distance", units='nm')
-            self.widget_metric_tab.setLabel('left', "Correlation", units='nm^2')
-            
+            self.widget_metric_tab.setLabel('left', "Correlation", units='nm<sup>2</sup>')
+
+
         if self.window.metric_original_data.isChecked():
             self.widget_metric_tab.addItem(data)
         if self.window.metric_model_fit.isChecked():
@@ -205,7 +208,9 @@ class ResultImagesManager(QtWidgets.QWidget):
 
         self.widget_metric_tab.setLogMode(True, True)
         self.widget_metric_tab.setAutoVisible(y=True)
-
+        self.widget_metric_tab.getAxis('bottom').showLabel(True)
+        self.widget_metric_tab.getAxis('left').showLabel(True)
+        self.widget_metric_tab.getAxis('bottom').setStyle(autoExpandTextSpace=True)
 
     # def _display_psd(self, image: Image) -> None:
     #     """

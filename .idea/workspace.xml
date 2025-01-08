@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image">
       <change beforePath="$PROJECT_DIR$/.idea/SMILE3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SMILE3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/processors/image_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/processors/image_processors.py" afterDir="false" />
     </list>
+=======
+    <list default="true" id="36f2b649-eb3a-4808-a688-dd549f40d43b" name="Changes" comment="fix: fix average image display on metric tab&#10;&#10;-previously displayed first image instead of average image" />
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -551,17 +555,64 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+<<<<<<< Updated upstream
           <line>134</line>
+=======
+          <line>194</line>
+>>>>>>> Stashed changes
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+<<<<<<< Updated upstream
           <line>135</line>
+=======
+          <line>195</line>
+          <option name="timeStamp" value="84" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>196</line>
+          <option name="timeStamp" value="85" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>197</line>
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>198</line>
+          <option name="timeStamp" value="87" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>199</line>
+          <option name="timeStamp" value="88" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>200</line>
+          <option name="timeStamp" value="89" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>201</line>
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+          <line>202</line>
+>>>>>>> Stashed changes
           <option name="timeStamp" value="91" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/utils/display_calculation_result_images.py</url>
+<<<<<<< Updated upstream
           <line>136</line>
+=======
+          <line>203</line>
+>>>>>>> Stashed changes
           <option name="timeStamp" value="92" />
         </line-breakpoint>
       </breakpoints>

@@ -467,20 +467,21 @@ class MetricCalculator:
         background = np.mean(height_height_correlation_function[0:2])
         sigma2 = np.mean(height_height_correlation_function[-100:])-background
         x = np.arange(0, np.size(height_height_correlation_function))
-        beta0 = np.array([2, 20, 1, 3])
-        beta_min = [sigma2/2, 2, 0.1, 0]
-        beta_max = [2*sigma2, 500, 2, 4]
+        beta0 = np.array([sigma2, 20, 1, background])
+        beta_min = [sigma2/2, 2, 0.5, 0]
+        beta_max = [2*sigma2, 500, 2, background*2]
         beta, _ = curve_fit(
             hhcf_,
-            x[0:30],
-            height_height_correlation_function[0:30],
+            x[0:6],
+            height_height_correlation_function[0:6],
+            #sigma=(1+np.arange(0,len(x))),
             p0=beta0,
-            #bounds=(beta_min, beta_max),
+            bounds=(beta_min, beta_max),
             maxfev=100000,
             #method="dogbox"
         )
         fitted_hhcf = hhcf_(x, *beta)
-        #fitted_hhcf = hhcf_(x, *beta0)
+        #fitted_hhcf = hhcf_(x, *beta)
 
         return fitted_hhcf, height_height_correlation_function, beta
 
