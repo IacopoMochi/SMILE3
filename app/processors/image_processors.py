@@ -472,13 +472,13 @@ class MetricCalculator:
         beta_max = [2*sigma2, 500, 2, background*2]
         beta, _ = curve_fit(
             hhcf_,
-            x[0:6],
-            height_height_correlation_function[0:6],
+            x[6:150],
+            height_height_correlation_function[6:150],
             #sigma=(1+np.arange(0,len(x))),
             p0=beta0,
-            bounds=(beta_min, beta_max),
+            #bounds=(beta_min, beta_max),
             maxfev=100000,
-            #method="dogbox"
+            method="lm"
         )
         fitted_hhcf = hhcf_(x, *beta)
         #fitted_hhcf = hhcf_(x, *beta)
@@ -487,7 +487,9 @@ class MetricCalculator:
 
     def setup_frequency(self) -> None:
         """
-        Sets up the frequency domain parameters based on image pixel size and profile length.
+        Sets up the frequency domain parameters based on image pixel size and profile length. It also stores the profile
+        length coordinate in the property called distance.
+
         """
 
         self.image.pixel_size = self.image.parameters["PixelSize"]
@@ -496,6 +498,7 @@ class MetricCalculator:
         profiles_length = s[1]
         num_freq_bins = profiles_length // 2 + 1
         self.image.frequency = 1000 * np.linspace(0, Fs / 2, num_freq_bins)
+        self.image.distance = self.image.pixel_size * np.arange(0, profiles_length)
 
         # self.image.frequency = 1000 * np.arange(0, Fs / 2 + Fs / profiles_length, Fs / profiles_length)
 

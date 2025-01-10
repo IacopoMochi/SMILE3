@@ -58,6 +58,7 @@ class DataExporter:
         biased_LER_trailing = []
         unbiased_LER_trailing = []
         standard_LER_trailing = []
+        line_width_HHCF = []
 
         for processed_image in self.images_list.images_list:
             selected.append(processed_image.selected)
@@ -82,6 +83,7 @@ class DataExporter:
             unbiased_LER_trailing.append(processed_image.unbiased_LER_Trailing)
             biased_LER_trailing.append(processed_image.biased_LER_Trailing)
             standard_LER_trailing.append(processed_image.standard_LER_Trailing)
+            line_width_HHCF.append(processed_image.LW_HHCF)
         # Add the metrics calculated on all the images at the same time (if the "average" image has been calculated)
         selected.append("")
         processed.append("")
@@ -105,6 +107,7 @@ class DataExporter:
         unbiased_LER_trailing.append(self.window.average_image.image.unbiased_LER_Trailing)
         biased_LER_trailing.append(self.window.average_image.image.biased_LER_Trailing)
         standard_LER_trailing.append(self.window.average_image.image.standard_LER_Trailing)
+        line_width_HHCF.append(self.window.average_image.image.LW_HHCF)
         metrics = {
             "Selected": selected,
             "Processed": processed,
@@ -130,8 +133,9 @@ class DataExporter:
             "Standard trailing-edge LER": standard_LER_trailing,
             "Unbiased trailing-edge LER fit": unbiased_LER_trailing_fit,
             "Unbiased trailing-edge LER": biased_LER_trailing,
-            "Biased trailing-edge LER": biased_LER_trailing
+            "Biased trailing-edge LER": biased_LER_trailing,
 
+            "Line width HHCF": line_width_HHCF
         }
 
         # load data into a DataFrame object:
@@ -151,6 +155,11 @@ class DataExporter:
             writer.sheets["Parameters"].autofit()
             for processed_image in self.images_list.images_list:
 
+                # Collect HHCF data
+                height_height_correlation_function_data = {
+                    "Distance": processed_image.distance[0:len(processed_image.LW_HHCF)],
+                    "Line width HHCF": processed_image.LW_HHCF
+                }
                 # Collect PSD data
                 power_spectral_density_data = {
                     "Frequency": processed_image.frequency,
@@ -173,8 +182,11 @@ class DataExporter:
                 }
                 if self.window.export_PSD_CheckBox.isChecked():
                     pd.DataFrame(power_spectral_density_data).to_excel(writer,
-                                                                   sheet_name=processed_image.file_name + ' - PSD')
+                                                                       sheet_name=processed_image.file_name + ' - PSD')
                     writer.sheets[processed_image.file_name + ' - PSD'].autofit()
+                    pd.DataFrame(height_height_correlation_function_data).to_excel(writer,
+                                                                       sheet_name=processed_image.file_name + ' - HHCF')
+                    writer.sheets[processed_image.file_name + ' - HHCF'].autofit()
 
                 if self.window.export_edges_CheckBox.isChecked():
                     # Collect Edges Profiles

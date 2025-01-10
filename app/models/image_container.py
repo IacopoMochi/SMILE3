@@ -94,6 +94,7 @@ class Image:
         self.file_name = file_name
         self.folder = path
         self.frequency = None
+        self.distance = None
         self.id = id
         self.selected = True
         self.processed = False
