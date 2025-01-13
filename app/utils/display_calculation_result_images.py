@@ -184,6 +184,10 @@ class ResultImagesManager(QtWidgets.QWidget):
             profile_length = np.arange(0,len(image.LW_HHCF)) * image.pixel_size
             data = pg.PlotDataItem(profile_length, image.LW_HHCF, pen=PSD_pen)
             fit = pg.PlotDataItem(profile_length, image.LW_HHCF_fit, pen=PSD_fit_pen)
+            correlation_length = image.LW_HHCF_parameters[1]
+            minimum = min(image.LW_HHCF_fit)
+            maximum = max(image.LW_HHCF_fit)
+            correlation_length_plot = pg.PlotDataItem([correlation_length, correlation_length], [minimum, maximum])
             self.widget_metric_tab.setLabel('bottom', "Distance", units='nm')
             self.widget_metric_tab.setLabel('left', "Correlation", units='nm<sup>2</sup>')
 
@@ -205,7 +209,8 @@ class ResultImagesManager(QtWidgets.QWidget):
         if self.window.metric_data_unbiased.isChecked():
             if 'data_unbiased' in locals():
                 self.widget_metric_tab.addItem(data_unbiased)
-
+        if 'correlation_length_plot' in locals():
+            self.widget_metric_tab.addItem(correlation_length_plot)
         self.widget_metric_tab.setLogMode(True, True)
         self.widget_metric_tab.setAutoVisible(y=True)
         self.widget_metric_tab.getAxis('bottom').showLabel(True)

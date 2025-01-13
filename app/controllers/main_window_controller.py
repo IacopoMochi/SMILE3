@@ -74,6 +74,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LineEdgeHHCF = self.findChild(QtWidgets.QRadioButton, "LineEdgeHHCF")
         self.LeadingEdgeHHCF = self.findChild(QtWidgets.QRadioButton, "LeadingEdgeHHCF")
         self.TrailingEdgeHHCF = self.findChild(QtWidgets.QRadioButton, "TrailingEdgeHHCF")
+        self.DisplayData = self.findChild(QtWidgets.QCheckBox,"metric_original_data")
+        self.DisplayFit = self.findChild(QtWidgets.QCheckBox, "metric_model_fit")
+        self.DisplayDataUnbiased = self.findChild(QtWidgets.QCheckBox,"metric_data_unbiased")
+        self.DisplayFitUnbiased = self.findChild(QtWidgets.QCheckBox,"metric_model_fit_unbiased")
 
     def init_ui_for_roi(self) -> None:
 
