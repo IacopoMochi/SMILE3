@@ -26,6 +26,8 @@ def gather_parameters(window, image: Image) -> None:
                   'Edge_fit_function': edge_fit_function,
                   'CDFraction': np.double(window.CDFraction.text()),
                   'EdgeRange': np.double(window.EdgeRange.text()),
+                  'EdgeSearchMethodRange': window.edge_search_range.isChecked(),
+                  'EdgeSearchMethodCDFraction': window.edge_search_CD_fraction.isChecked(),
                   'High_frequency_cut': int(window.high_freq_cut.text()),
                   'Low_frequency_cut': int(window.low_freq_cut.text()),
                   'Low_frequency_average': int(window.low_freq_average.text()),

@@ -64,6 +64,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_export_data = self.findChild(QtWidgets.QPushButton, "export_data")
         self.push_button_select_all = self.findChild(QtWidgets.QPushButton, "pushButton_selectAll")
         self.push_button_select_none = self.findChild(QtWidgets.QPushButton, "pushButton_selectNone")
+        self.edge_search_range = self.findChild(QtWidgets.QRadioButton, "EdgeRange_button")
+        self.edge_search_CD_fraction = self.findChild(QtWidgets.QRadioButton, "CDfraction_button")
 
         self.LineEdgePSD = self.findChild(QtWidgets.QRadioButton, "LineEdgePSD")
         self.LineWidthPSD = self.findChild(QtWidgets.QRadioButton, "LineWidthPSD")
@@ -109,6 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.LineEdgeHHCF.clicked.connect(self.display_corresponding_images)
         self.LeadingEdgeHHCF.clicked.connect(self.display_corresponding_images)
         self.TrailingEdgeHHCF.clicked.connect(self.display_corresponding_images)
+        self.edge_search_CD_fraction.clicked.connect(self.switch_edge_search_method_range2CD)
+        self.edge_search_range.clicked.connect(self.switch_edge_search_method_CD2range)
 
         self.table.itemChanged.connect(self.check_selection)
 
@@ -119,6 +123,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.table_controller.error_signal.connect(self.show_error_message)
         self.image_display_manager.error_signal.connect(self.show_error_message)
+
+    def switch_edge_search_method_CD2range(self):
+        """
+        Sets the edge search method to "range"
+        """
+        self.edge_search_CD_fraction.setChecked(False)
+        self.edge_search_range.setChecked(True)
+
+    def switch_edge_search_method_range2CD(self):
+        """
+        Sets the edge search method to "CD fraction"
+        """
+        self.edge_search_CD_fraction.setChecked(True)
+        self.edge_search_range.setChecked(False)
+
 
     def prepare_image(self) -> None:
         """

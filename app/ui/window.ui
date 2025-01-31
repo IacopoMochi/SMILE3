@@ -613,13 +613,13 @@
               </layout>
              </item>
              <item>
-              <widget class="QGroupBox" name="groupBox_7">
+              <widget class="QGroupBox" name="gradientCorrection">
                <property name="title">
                 <string>Gradient correction</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_9">
                 <item>
-                 <widget class="QRadioButton" name="radioButton_14">
+                 <widget class="QRadioButton" name="gradient_correction_None">
                   <property name="text">
                    <string>None</string>
                   </property>
@@ -629,21 +629,21 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="radioButton_11">
+                 <widget class="QRadioButton" name="gradient_correction_Linear">
                   <property name="text">
                    <string>Linear</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="radioButton_13">
+                 <widget class="QRadioButton" name="gradient_correction_Quadratic">
                   <property name="text">
                    <string>Quadratic</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="radioButton_12">
+                 <widget class="QRadioButton" name="gradient_correction_Cubic">
                   <property name="text">
                    <string>Cubic</string>
                   </property>

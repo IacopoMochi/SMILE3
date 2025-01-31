@@ -15,6 +15,7 @@ from app.utils.hhcf import hhcf_, hhcf_minimize
 
 from app.utils.processors_service import edge_consolidation, edge_mean_subtraction
 
+from matplotlib import pyplot as plt
 
 class PreProcessor:
     """
@@ -53,13 +54,13 @@ class PreProcessor:
         Removes the brightness gradient from the image.
         """
         image = self.crop_and_rotate_image()
-        brightness_map = image > np.mean(image)
+        brightness_map = image > np.median(image)
         x, y = np.meshgrid(
             np.linspace(-1, 1, image.shape[1]), np.linspace(-1, 1, image.shape[0])
         )
         image_array = image[brightness_map]
         xdata = (x[brightness_map], y[brightness_map])
-        parameters_initial_guess = [0, 0, np.mean(image_array)]
+        parameters_initial_guess = [0, 0, np.median(image_array)]
 
         optimized_parameters, _ = curve_fit(
             _poly11, xdata, image_array, parameters_initial_guess
@@ -67,6 +68,7 @@ class PreProcessor:
 
         brightness = poly11((x, y), optimized_parameters)
         image_flattened = image - brightness
+        image_flattened[image_flattened < 0] = 0
 
         return image_flattened
 
@@ -74,10 +76,18 @@ class PreProcessor:
         """
         Normalizes the image.
         """
-        image = self.remove_brightness_gradient()
-        image_max = np.max(image)
-        image_min = np.min(image)
+        #image = self.remove_brightness_gradient()
+        image = self.crop_and_rotate_image()
+        filtered_image = medfilt2d(image, [5, 5])
+        image_max = np.max(filtered_image)
+        image_min = np.min(filtered_image)
         image_normalized = (image - image_min) / (image_max - image_min)
+        # f, (ax1, ax2, ax3) = plt.subplots(1, 3, sharey=True)
+        # ax1.imshow(image)
+        # ax3.plot(histogram(filtered_image,image_min,image_max,100))
+        # ax2.imshow(filtered_image)
+        #
+        # plt.show()
         self.image.processed_image = image_normalized
 
     def calculate_histogram_parameters(self) -> None:
@@ -124,7 +134,15 @@ class EdgeDetector:
 
         cnt = -1
         image_size = self.image.processed_image.shape
-        edge_range = self.image.parameters["EdgeRange"]
+        print(self.image.parameters["EdgeSearchMethodRange"])
+        print(self.image.parameters["EdgeSearchMethodCDFraction"])
+        if self.image.parameters["EdgeSearchMethodRange"]:
+            edge_range = self.image.parameters["EdgeRange"]
+        elif self.image.parameters["EdgeSearchMethodCDFraction"]:
+            edge_range = np.round(self.image.parameters["CDFraction"] * self.image.pitch_estimate/2)
+
+        print(edge_range)
+
         for edge in new_edges:
             cnt = cnt + 1
             for row in range(0, image_size[1]):
