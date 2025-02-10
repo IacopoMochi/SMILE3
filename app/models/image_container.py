@@ -116,7 +116,7 @@ class Image:
         """
 
         image_loader = ImageLoader(self.folder, self.file_name)
-        self.image = image_loader.load_image()
+        self.image, self.pixel_size = image_loader.load_image()
 
     def pre_processing(self) -> None:
         """
