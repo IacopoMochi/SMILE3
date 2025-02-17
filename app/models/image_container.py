@@ -87,6 +87,7 @@ class Image:
         self.processed_image = None
         self.selected_image = True
         self.intensity_histogram = None
+        self.intensity_values = None
         self.intensity_histogram_low = None
         self.intensity_histogram_high = None
         self.intensity_histogram_medium = None

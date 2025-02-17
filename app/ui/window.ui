@@ -797,7 +797,7 @@
                <item>
                 <layout class="QGridLayout" name="gridLayout_3">
                  <item row="2" column="2">
-                  <widget class="QLineEdit" name="MaxSpie">
+                  <widget class="QLineEdit" name="MaxSpike">
                    <property name="text">
                     <string>10</string>
                    </property>
@@ -1174,7 +1174,7 @@
             <property name="title">
              <string>Post processing</string>
             </property>
-            <widget class="QCheckBox" name="checkBox_9">
+            <widget class="QCheckBox" name="edge_distortion_correction">
              <property name="geometry">
               <rect>
                <x>20</x>

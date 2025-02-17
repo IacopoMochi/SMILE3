@@ -50,7 +50,7 @@ class ProcessingController:
                 gather_parameters(self.window, image)
                 image.pre_processing()
                 image.find_edges()
-                image.post_processing(True if self.window.checkBox_9.isChecked() else False)
+                image.post_processing(True if self.window.edge_distortion_correction.isChecked() else False)
                 image.multi_taper(True if self.window.radioButton_26.isChecked() else False)
                 image.calculate_metrics()
                 image.processed = True

@@ -94,8 +94,14 @@ class PreProcessor:
         """
         Calculates histogram parameters of the normalized image.
         """
-        self.image.intensity_histogram = histogram(self.image.processed_image, 0, 1, 256)
+
+        histogram_values = histogram(self.image.processed_image, 0, 1, 256)
+        nonzero_histogram_values = histogram_values[histogram_values > 0]
         intensity = np.linspace(0, 1, 256)
+        nonzero_intensity = intensity[histogram_values > 0]
+        self.image.intensity_histogram = nonzero_histogram_values
+        self.image.intensity_values = nonzero_intensity
+
         max_index = np.argmax(self.image.intensity_histogram)
         max_value = self.image.intensity_histogram[max_index]
         low_bounds = [max_value / 4, 0, 0.01, max_value / 4, 0.1, 0.01, 0, 0, 0.01]
@@ -103,7 +109,7 @@ class PreProcessor:
         beta0 = (max_value, 0.25, 0.1, max_value, 0.75, 0.1, 1, 0.5, 0.1)
         beta, _ = curve_fit(
             binary_image_histogram_model,
-            intensity,
+            self.image.intensity_values,
             self.image.intensity_histogram,
             p0=beta0,
             bounds=(low_bounds, high_bounds),
@@ -134,14 +140,14 @@ class EdgeDetector:
 
         cnt = -1
         image_size = self.image.processed_image.shape
-        print(self.image.parameters["EdgeSearchMethodRange"])
-        print(self.image.parameters["EdgeSearchMethodCDFraction"])
+        #print(self.image.parameters["EdgeSearchMethodRange"])
+        #print(self.image.parameters["EdgeSearchMethodCDFraction"])
         if self.image.parameters["EdgeSearchMethodRange"]:
             edge_range = self.image.parameters["EdgeRange"]
         elif self.image.parameters["EdgeSearchMethodCDFraction"]:
             edge_range = np.round(self.image.parameters["CDFraction"] * self.image.pitch_estimate/2)
 
-        print(edge_range)
+        #print(edge_range)
 
         for edge in new_edges:
             cnt = cnt + 1
@@ -335,8 +341,30 @@ class PostProcessor:
             self.restore_base_attributes()
 
     def calculate_new_post_processed_consolidated_edges(self):
+        new_post_processed_consolidated_edges = []
+        leading_edges = self.image.consolidated_leading_edges
+        trailing_edges = self.image.consolidated_trailing_edges
+        spike_threshold = self.image.parameters["Spike_Threshold"]
+        print("I am post processing "+self.image.file_name)
+
+        for edge in leading_edges:
+            edge_length = len(edge)
+            plt.plot(range(0, edge_length), edge)
+            for edge_index in range(1,edge_length-1):
+                if edge_index == 0:
+                    pass
+                elif edge_index == edge_length:
+                    pass
+                else:
+                    if abs(edge[edge_index]-edge[edge_index-1]) < spike_threshold and abs(edge[edge_index]-edge[edge_index+1]) < spike_threshold:
+                            edge[edge_index] = 0.5*(edge[edge_index-1] + edge[edge_index+1])
+
+            plt.plot(range(0,edge_length), edge)
+            plt.show()
+
         pass
         # TODO: function to post process consolidated edges and save them in image container
+
 
     def calculate_new_post_processed_zero_mean_edges(self):
         """

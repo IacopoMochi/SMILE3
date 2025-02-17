@@ -4,6 +4,7 @@ from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
 from pyqtgraph import PlotWidget
 from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt6.QtGui import QIntValidator, QDoubleValidator
 
 from app.models.images_list import ImagesList
 from app.controllers.table_controller import TableController
@@ -66,6 +67,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.push_button_select_none = self.findChild(QtWidgets.QPushButton, "pushButton_selectNone")
         self.edge_search_range = self.findChild(QtWidgets.QRadioButton, "EdgeRange_button")
         self.edge_search_CD_fraction = self.findChild(QtWidgets.QRadioButton, "CDfraction_button")
+        self.pixel_size = self.findChild(QtWidgets.QLineEdit, "pixelSize_line_edit")
+        self.pixel_size.setValidator(QDoubleValidator())
 
         self.LineEdgePSD = self.findChild(QtWidgets.QRadioButton, "LineEdgePSD")
         self.LineWidthPSD = self.findChild(QtWidgets.QRadioButton, "LineWidthPSD")
@@ -80,6 +83,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DisplayFit = self.findChild(QtWidgets.QCheckBox, "metric_model_fit")
         self.DisplayDataUnbiased = self.findChild(QtWidgets.QCheckBox,"metric_data_unbiased")
         self.DisplayFitUnbiased = self.findChild(QtWidgets.QCheckBox,"metric_model_fit_unbiased")
+        self.MaxEdgeSpike = self.findChild(QtWidgets.QLineEdit,"MaxSpike")
 
     def init_ui_for_roi(self) -> None:
 
@@ -89,6 +93,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.y2_widget = self.findChild(QtWidgets.QLineEdit, "Y2")
 
     def printme(self):
+        print("eccomi qui")
+
+    def store_pixel_size(self):
         print("eccomi qui")
 
     def setup_connections(self) -> None:
@@ -113,6 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.TrailingEdgeHHCF.clicked.connect(self.display_corresponding_images)
         self.edge_search_CD_fraction.clicked.connect(self.switch_edge_search_method_range2CD)
         self.edge_search_range.clicked.connect(self.switch_edge_search_method_CD2range)
+        self.pixel_size.textEdited.connect(self.store_pixel_size)
 
         self.table.itemChanged.connect(self.check_selection)
 
@@ -210,9 +218,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         row = self.table.currentRow()
         if row == -1:
-            print("nessuna linea selezionata")
+            print("No image selected")
         elif row <= len(self.images_list.images_list) - 1:
             image = self.images_list.images_list[row]
+            self.pixel_size.setText = f"{image.pixel_size}"
 
             if image.processed:
 

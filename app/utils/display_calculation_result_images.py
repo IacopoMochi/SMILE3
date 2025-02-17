@@ -110,7 +110,7 @@ class ResultImagesManager(QtWidgets.QWidget):
         histogram_fit_color = pg.mkColor(0, 20, 200)
         histogram_fit_pen = pg.mkPen(histogram_fit_color, width=3)
 
-        histogram_plot = pg.PlotDataItem(np.linspace(0, 255, 256), image.intensity_histogram, pen=histogram_pen)
+        histogram_plot = pg.PlotDataItem(255*image.intensity_values, image.intensity_histogram, pen=histogram_pen)
         histogram_plot_low = pg.PlotDataItem(np.linspace(0, 255, 256), image.intensity_histogram_low,
                                              pen=histogram_curves_pen)
         histogram_plot_medium = pg.PlotDataItem(np.linspace(0, 255, 256), image.intensity_histogram_medium,

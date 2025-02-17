@@ -44,9 +44,7 @@ class FolderImageLoader:
                         gather_parameters(self.window, image_object)
                         self.images_list.add_image_to_list(image_object)
                         self.window.pixelSize_line_edit.setText(f"{image_object.pixel_size}")
-                        print(image_object.pixel_size)
-                        print(self.window.pixelSize_line_edit.text)
-
+                        
                         image_id += 1
                     except PermissionError as e:
                         self.window.show_error_message(f"PermissionError: {str(e)}")
