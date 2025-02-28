@@ -15,8 +15,6 @@ from app.utils.hhcf import hhcf_, hhcf_minimize
 
 from app.utils.processors_service import edge_consolidation, edge_mean_subtraction
 
-from matplotlib import pyplot as plt
-
 class PreProcessor:
     """
     Class for preprocessing images, including cropping, rotating, and normalizing.
@@ -104,9 +102,9 @@ class PreProcessor:
 
         max_index = np.argmax(self.image.intensity_histogram)
         max_value = self.image.intensity_histogram[max_index]
-        low_bounds = [max_value / 4, 0, 0.01, max_value / 4, 0.1, 0.01, 0, 0, 0.01]
-        high_bounds = [max_value, 1, 0.5, max_value, 1, 0.5, max_value / 4, 1, 2]
-        beta0 = (max_value, 0.25, 0.1, max_value, 0.75, 0.1, 1, 0.5, 0.1)
+        low_bounds = [0, 0, 0.01, 0, 0.01, 0.01, 0, 0, 0.01]
+        high_bounds = [max_value, 1, 1, max_value, 1, 1, max_value, 1, 2]
+        beta0 = (max_value, 0.5, 0.1, max_value, 0.50, 0.1, 1, 0.5, 0.1)
         beta, _ = curve_fit(
             binary_image_histogram_model,
             self.image.intensity_values,
@@ -274,8 +272,17 @@ class EdgeDetector:
 
         self.image.leading_edges, self.image.trailing_edges = self.determine_edge_profiles()
 
-        self.image.consolidated_leading_edges = edge_consolidation(self.image.leading_edges)
-        self.image.consolidated_trailing_edges = edge_consolidation(self.image.trailing_edges)
+        method = "interpolation"
+
+        leading_edges_consolidation = edge_consolidation(self.image.leading_edges, method)
+
+
+        self.image.consolidated_leading_edges = leading_edges_consolidation[0]
+        self.image.leading_edges_consolidation = leading_edges_consolidation[1]
+        trailing_edges_consolidation = edge_consolidation(self.image.trailing_edges, method)
+        self.image.consolidated_trailing_edges = trailing_edges_consolidation[0]
+        self.image.trailing_edges_consolidation = trailing_edges_consolidation[1]
+
         self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(
             self.image.consolidated_leading_edges)
         self.image.zero_mean_trailing_edge_profiles = edge_mean_subtraction(
@@ -334,36 +341,90 @@ class PostProcessor:
             if self.image.post_processing_cache:
                 self.restore_cache()
             else:
-                self.calculate_new_post_processed_consolidated_edges()
+                self.remove_spikes()
                 self.calculate_new_post_processed_zero_mean_edges()
                 self.store_cache()
         else:
             self.restore_base_attributes()
 
-    def calculate_new_post_processed_consolidated_edges(self):
-        new_post_processed_consolidated_edges = []
+    def remove_spikes(self):
+        """
+                Remove the spikes from the consolidated edges and create a spike map
+
+        """
+
         leading_edges = self.image.consolidated_leading_edges
         trailing_edges = self.image.consolidated_trailing_edges
         spike_threshold = self.image.parameters["Spike_Threshold"]
-        print("I am post processing "+self.image.file_name)
 
+        spike_filtered_leading_edges = np.zeros(np.shape(leading_edges))
+        spike_filtered_trailing_edges = np.zeros(np.shape(leading_edges))
+        leading_edges_spikes = np.zeros(np.shape(leading_edges)) * np.nan
+        trailing_edges_spikes = np.zeros(np.shape(leading_edges)) * np.nan
+
+        print("I am removing the spikes from "+ self.image.file_name)
+        print(f"spike threshold set to {spike_threshold}")
+
+        # Leading edges
+        edge_number = -1
         for edge in leading_edges:
             edge_length = len(edge)
-            plt.plot(range(0, edge_length), edge)
-            for edge_index in range(1,edge_length-1):
+            new_edge = deepcopy(edge)
+            spike_map = np.zeros(np.shape(edge)) * np.nan
+            edge_number += 1
+            for edge_index in range(0, edge_length):
+                edge_gradient = np.gradient(new_edge)
                 if edge_index == 0:
-                    pass
-                elif edge_index == edge_length:
-                    pass
+                    if abs(edge_gradient[edge_index] - edge_gradient[edge_index + 2]) > spike_threshold:
+                        new_edge[edge_index] = 0.5 * (edge[edge_index + 1] + edge[edge_index + 2])
+                        spike_map[edge_index] = 0.5 * (edge[edge_index + 1] + edge[edge_index + 2])
+                elif edge_index == edge_length-1:
+                    if abs(edge_gradient[edge_index] - edge_gradient[edge_index - 2]) > spike_threshold:
+                        new_edge[edge_index] = 0.5 * (edge[edge_index - 1] + edge[edge_index - 2])
+                        spike_map[edge_index] = 0.5 * (edge[edge_index - 1] + edge[edge_index - 2])
                 else:
-                    if abs(edge[edge_index]-edge[edge_index-1]) < spike_threshold and abs(edge[edge_index]-edge[edge_index+1]) < spike_threshold:
-                            edge[edge_index] = 0.5*(edge[edge_index-1] + edge[edge_index+1])
+                    if abs(edge_gradient[edge_index+1]-edge_gradient[edge_index-1]) > spike_threshold:
+                        new_edge[edge_index] = 0.5*(edge[edge_index-1] + edge[edge_index+1])
 
-            plt.plot(range(0,edge_length), edge)
-            plt.show()
+                        spike_map[edge_index-1] = edge[edge_index-1]
+                        spike_map[edge_index] = 0.5 * (edge[edge_index - 1] + edge[edge_index + 1])
+                        spike_map[edge_index+1] = edge[edge_index+1]
+                spike_filtered_leading_edges[edge_number, :] = new_edge
+                leading_edges_spikes[edge_number, :] = spike_map
 
-        pass
-        # TODO: function to post process consolidated edges and save them in image container
+        # Trailing edges
+        edge_number = -1
+        for edge in trailing_edges:
+            edge_length = len(edge)
+            new_edge = deepcopy(edge)
+            spike_map = np.zeros(np.shape(edge)) * np.nan
+            edge_number += 1
+            for edge_index in range(0, edge_length):
+                edge_gradient = np.gradient(new_edge)
+                if edge_index == 0:
+                    if abs(edge_gradient[edge_index] - edge_gradient[edge_index + 2]) > spike_threshold:
+                        new_edge[edge_index] = 0.5 * (edge[edge_index + 1] + edge[edge_index + 2])
+                        spike_map[edge_index] = 0.5 * (edge[edge_index + 1] + edge[edge_index + 2])
+                elif edge_index == edge_length-1:
+                    if abs(edge_gradient[edge_index] - edge_gradient[edge_index - 2]) > spike_threshold:
+                        new_edge[edge_index] = 0.5 * (edge[edge_index - 1] + edge[edge_index - 2])
+                        spike_map[edge_index] = 0.5 * (edge[edge_index - 1] + edge[edge_index - 2])
+                else:
+                    if abs(edge_gradient[edge_index+1]-edge_gradient[edge_index-1]) > spike_threshold:
+                        new_edge[edge_index] = 0.5*(edge[edge_index-1] + edge[edge_index+1])
+
+                        spike_map[edge_index - 1] = edge[edge_index - 1]
+                        spike_map[edge_index] = 0.5 * (edge[edge_index - 1] + edge[edge_index + 1])
+                        spike_map[edge_index + 1] = edge[edge_index + 1]
+
+                spike_filtered_trailing_edges[edge_number, :] = new_edge
+                trailing_edges_spikes[edge_number, :] = spike_map
+
+        self.image.consolidated_leading_edges = spike_filtered_leading_edges
+        self.image.leading_edges_spikes = leading_edges_spikes
+
+        self.image.consolidated_trailing_edges = spike_filtered_trailing_edges
+        self.image.trailing_edges_spikes = trailing_edges_spikes
 
 
     def calculate_new_post_processed_zero_mean_edges(self):
@@ -507,27 +568,28 @@ class MetricCalculator:
         for n in range(0, np.size(input_data, 0)):
             profile = input_data[n, :]
             for m in range(1, hhcf_length):
-                hhcf[n, m] = np.mean((profile[0:-m]-profile[m:])**2)
+                hhcf[n, m] = np.mean(abs(profile[0:-m]-profile[m:]))
+                #hhcf[n, m] = np.mean((profile[0:-m] - profile[m:]) ** 2)
         height_height_correlation_function = np.mean(hhcf,0)
 
-        background = np.mean(height_height_correlation_function[0:2])
-        sigma2 = np.mean(height_height_correlation_function[-100:])-background
+        background = 2*np.mean(height_height_correlation_function[0:10])
+        sigma2 = np.abs(np.mean(height_height_correlation_function[-100:])-background)
         x = np.arange(0, np.size(height_height_correlation_function))
-        beta0 = np.array([sigma2, 20, 1, background])
-        beta_min = [sigma2/2, 2, 0.5, 0]
-        beta_max = [2*sigma2, 500, 2, background*2]
+        beta0 = np.array([1, 20, 1, 0.645])
+        beta_min = [0.1, 2, 0.5, 0]
+        beta_max = [7, 500, 2, 5]
         beta, _ = curve_fit(
             hhcf_,
-            x[6:150],
-            height_height_correlation_function[6:150],
+            x,
+            height_height_correlation_function,
             #sigma=(1+np.arange(0,len(x))),
             p0=beta0,
-            #bounds=(beta_min, beta_max),
+            bounds=(beta_min, beta_max),
             maxfev=100000,
-            method="lm"
+            method="dogbox"
         )
-        fitted_hhcf = hhcf_(x, *beta)
         #fitted_hhcf = hhcf_(x, *beta)
+        fitted_hhcf = hhcf_(x, *beta0)
 
         return fitted_hhcf, height_height_correlation_function, beta
 
@@ -686,9 +748,9 @@ class MetricCalculator:
          self.image.LW_HHCF_parameters) = self.calculate_and_fit_hhcf(line_width)
 
         # Line edge HHCF
-        (self.image.Lines_HHCF_fit,
-         self.image.Lines_HHCF,
-         self.image.Lines_HHCF_parameters) = self.calculate_and_fit_hhcf(all_edges)
+        (self.image.Lines_edge_HHCF_fit,
+         self.image.Lines_edge_HHCF,
+         self.image.Lines_edge_HHCF_parameters) = self.calculate_and_fit_hhcf(all_edges)
 
         # Line leading edge HHCF
         (self.image.Lines_leading_edges_HHCF_fit,

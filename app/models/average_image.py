@@ -42,7 +42,7 @@ class AverageImage:
             ValueError: If frequencies are not consistent across all images.
         """
 
-        if not self.image:
+        if not hasattr(self, "image"):
             return None
 
         leading_edges = []
@@ -67,14 +67,21 @@ class AverageImage:
         if len(frequency_set) == 1:
             self.image.average_frequency = frequency_set.pop()
         else:
-            raise ValueError('Frequency not consistent')
+            # raise ValueError('Frequency not consistent')
+            print('Frequency not consistent')
+            self.image.consolidated_leading_edges = leading_edges[0]
+            self.image.consolidated_trailing_edges = trailing_edges[0]
+            self.image.zero_mean_leading_edge_profiles = zero_mean_leading_edge_profiles[0]
+            self.image.zero_mean_trailing_edge_profiles = zero_mean_trailing_edge_profiles[0]
+            self.image.number_of_lines = np.size(self.image.consolidated_leading_edges, 0)
+            self.image.average_frequency = frequency_set.pop()
 
     def calculate_metrics(self) -> None:
         """
         Calculates metrics for the average image using the MetricCalculator class.
         """
-
-        MetricCalculator(self.image).calculate_metrics()
+        if hasattr(self,'image'):
+            MetricCalculator(self.image).calculate_metrics()
 
     def prepare_average_image(self) -> None:
         """

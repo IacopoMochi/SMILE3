@@ -1186,6 +1186,9 @@
              <property name="text">
               <string>Edge distortion correction</string>
              </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </widget>
           </item>

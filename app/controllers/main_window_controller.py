@@ -92,11 +92,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.y1_widget = self.findChild(QtWidgets.QLineEdit, "Y1")
         self.y2_widget = self.findChild(QtWidgets.QLineEdit, "Y2")
 
-    def printme(self):
-        print("eccomi qui")
-
-    def store_pixel_size(self):
-        print("eccomi qui")
 
     def setup_connections(self) -> None:
         """
@@ -131,6 +126,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.table_controller.error_signal.connect(self.show_error_message)
         self.image_display_manager.error_signal.connect(self.show_error_message)
+
+    def store_pixel_size(self) -> None:
+        print('Update the current image Pixel size')
+        # print("f{self.pixel_size.text + 10}")
+        # self.images_list.images_list[self.images_list.active_image].pixel_size = self.pixel_size.text()
 
     def switch_edge_search_method_CD2range(self):
         """
@@ -221,7 +221,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print("No image selected")
         elif row <= len(self.images_list.images_list) - 1:
             image = self.images_list.images_list[row]
-            self.pixel_size.setText = f"{image.pixel_size}"
+            self.pixel_size.setText(f"{image.pixel_size}")
 
             if image.processed:
 
@@ -247,7 +247,8 @@ class MainWindow(QtWidgets.QMainWindow):
             average_image.prepare_average_image()
             self.widget_parameters_tab.clear()
             self.widget_lines_tab.clear()
-            self.result_images_manager.display_plot_on_metric_tab(average_image.image)
+            if hasattr(average_image,"image"):
+                self.result_images_manager.display_plot_on_metric_tab(average_image.image)
 
     def check_selection(self):
         """

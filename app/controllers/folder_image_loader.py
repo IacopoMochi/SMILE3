@@ -39,12 +39,12 @@ class FolderImageLoader:
             for file_name in files:
                 if file_name.lower().endswith(('.jpg', '.tiff', '.png', '.tif', '.jpeg')):
                     image_object = Image(image_id, root, file_name)
+                    print(image_id)
                     try:
                         image_object.load_image()
                         gather_parameters(self.window, image_object)
                         self.images_list.add_image_to_list(image_object)
-                        self.window.pixelSize_line_edit.setText(f"{image_object.pixel_size}")
-                        
+                        self.window.pixel_size.setText(f"{image_object.pixel_size}")
                         image_id += 1
                     except PermissionError as e:
                         self.window.show_error_message(f"PermissionError: {str(e)}")

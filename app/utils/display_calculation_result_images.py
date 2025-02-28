@@ -46,9 +46,21 @@ class ResultImagesManager(QtWidgets.QWidget):
 
     def _display_profiles(self, image, tab: PlotWidget) -> None:
         edge_color = pg.mkColor(0, 200, 0)
+        trailing_edge_color = pg.mkColor(200, 200, 200)
+        spikes_color = pg.mkColor(200, 0, 0)
+        trailing_spikes_color = pg.mkColor(200, 200, 300)
+        consolidation_color = pg.mkColor(200, 0, 200)
         edge_pen = pg.mkPen(edge_color, width=3)
-        self._display_edges(image.leading_edges, "Leading edges were not found", edge_pen, tab)
-        self._display_edges(image.trailing_edges, "Trailing edges were not found", edge_pen, tab)
+        trailing_edge_pen = pg.mkPen(trailing_edge_color, width=3)
+        trailing_spikes_pen = pg.mkPen(trailing_spikes_color, width=5)
+        spikes_pen = pg.mkPen(spikes_color, width=5)
+        consolidation_pen = pg.mkPen(consolidation_color, width=5)
+        self._display_edges(image.consolidated_leading_edges, "Leading edges were not found", edge_pen, tab)
+        self._display_edges(image.consolidated_trailing_edges, "Trailing edges were not found", trailing_edge_pen, tab)
+        #self._display_edges(image.leading_edges_spikes, "Leading edges spikes were not found", spikes_pen, tab)
+        #self._display_edges(image.trailing_edges_spikes, "Trailing edges spikes were not found", trailing_spikes_pen, tab)
+        self._display_edges(image.leading_edges_consolidation, "Leading edges consolidation were not found", consolidation_pen, tab)
+        self._display_edges(image.trailing_edges_consolidation, "Trailing edges consolidation were not found", consolidation_pen, tab)
 
     def _display_edges(self, edges: np.ndarray, error_message: str, pen: str, tab: PlotWidget) -> None:
         """
@@ -90,6 +102,10 @@ class ResultImagesManager(QtWidgets.QWidget):
             elif self.window.LineWidthHHCF.isChecked():
                 self._display_metric(image)
             elif self.window.LineEdgeHHCF.isChecked():
+                self._display_metric(image)
+            elif self.window.LeadingEdgeHHCF.isChecked():
+                self._display_metric(image)
+            elif self.window.TrailingEdgeHHCF.isChecked():
                 self._display_metric(image)
         except Exception as e:
             self.window.show_error_message(f"Plot can not be display. {str(e)}")
@@ -195,6 +211,20 @@ class ResultImagesManager(QtWidgets.QWidget):
             profile_length = np.arange(0, len(image.Lines_edge_HHCF)) * image.pixel_size
             data = pg.PlotDataItem(profile_length, image.Lines_edge_HHCF, pen=PSD_pen)
             fit = pg.PlotDataItem(profile_length, image.Lines_edge_HHCF_fit, pen=PSD_fit_pen)
+            self.widget_metric_tab.setLabel('bottom', "Distance", units='nm')
+            self.widget_metric_tab.setLabel('left', "Correlation", units='nm<sup>2</sup>')
+
+        elif self.window.LeadingEdgeHHCF.isChecked():
+            profile_length = np.arange(0, len(image.Lines_leading_edges_HHCF)) * image.pixel_size
+            data = pg.PlotDataItem(profile_length, image.Lines_leading_edges_HHCF, pen=PSD_pen)
+            fit = pg.PlotDataItem(profile_length, image.Lines_leading_edges_HHCF_fit, pen=PSD_fit_pen)
+            self.widget_metric_tab.setLabel('bottom', "Distance", units='nm')
+            self.widget_metric_tab.setLabel('left', "Correlation", units='nm<sup>2</sup>')
+
+        elif self.window.TrailingEdgeHHCF.isChecked():
+            profile_length = np.arange(0, len(image.Lines_trailing_edges_HHCF)) * image.pixel_size
+            data = pg.PlotDataItem(profile_length, image.Lines_trailing_edges_HHCF, pen=PSD_pen)
+            fit = pg.PlotDataItem(profile_length, image.Lines_trailing_edges_HHCF_fit, pen=PSD_fit_pen)
             self.widget_metric_tab.setLabel('bottom', "Distance", units='nm')
             self.widget_metric_tab.setLabel('left', "Correlation", units='nm<sup>2</sup>')
 
