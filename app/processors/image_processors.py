@@ -161,7 +161,15 @@ class EdgeDetector:
                     r = r[np.imag(r) == 0]
                     if len(r) > 0:
                         edge_position = r[np.argmin(np.abs(r - (segment_start + segment_end) / 2))]
-                        edges_profiles[cnt, row] = np.real(edge_position)
+                        r = np.real(edge_position)
+                        if r > segment_end:
+                            edge_position = segment_end
+                        elif r < segment_start:
+                            edge_position = segment_start
+                        else:
+                            edge_position = r
+                        edges_profiles[cnt, row] = edge_position
+
                 elif self.image.parameters["Edge_fit_function"] == "linear":
                     p = np.polyfit(x, segment, 1)
                     p[-1] = p[-1] - np.double(self.image.parameters["Threshold"])
@@ -176,10 +184,11 @@ class EdgeDetector:
                             edge_position = r
                         edges_profiles[cnt, row] = np.real(edge_position)
                 elif self.image.parameters["Edge_fit_function"] == "threshold":
-                    # This needs to be improved
-                    a = np.argmin(np.abs(segment - np.double(self.image.parameters["Threshold"])))
-                    edge_position = x[a]
-                    edges_profiles[cnt, row] = np.real(edge_position)
+                    # # This needs to be improved
+                    # a = np.argmin(np.abs(segment - np.double(self.image.parameters["Threshold"])))
+                    # edge_position = x[a]
+                    # edges_profiles[cnt, row] = np.real(edge_position)
+                    edges_profiles[cnt, row] = edge
                 elif self.image.parameters["Edge_fit_function"] == "bright_edge":
                     print("Add code for bright edge finding")
         return edges_profiles
@@ -202,8 +211,8 @@ class EdgeDetector:
         """
 
         image_sum, image_sum_filtered = self.filter_and_reduce_noise()
-        image_sum_derivative = np.diff(image_sum)
-        image_sum_filtered_derivative = np.abs(np.diff(image_sum_filtered))
+        image_sum_derivative = np.gradient(image_sum)
+        image_sum_filtered_derivative = np.abs(np.gradient(image_sum_filtered))
         peaks = find_peaks(image_sum_filtered_derivative)
         return image_sum_derivative, peaks
 
@@ -213,7 +222,7 @@ class EdgeDetector:
         """
 
         image_sum_derivative, peaks = self.detect_peaks()
-        edge_locations = peaks[0]
+        edge_locations = peaks[0]+1
         leading_edges = np.array([])
         trailing_edges = np.array([])
         if self.image.parameters["brightEdge"]:
