@@ -1,4 +1,5 @@
 from functools import partial
+from pathlib import Path
 
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import Qt
@@ -25,7 +26,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        uic.loadUi("ui/window.ui", self)
+        uiPath = str(Path(__file__).parent / "ui/window.ui")
+        uic.loadUi(uiPath, self)
 
         self.init_ui()
         self.init_ui_for_roi()
