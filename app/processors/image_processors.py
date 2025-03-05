@@ -284,13 +284,14 @@ class EdgeDetector:
         method = "interpolation"
 
         leading_edges_consolidation = edge_consolidation(self.image.leading_edges, method)
-
-
         self.image.consolidated_leading_edges = leading_edges_consolidation[0]
         self.image.leading_edges_consolidation = leading_edges_consolidation[1]
+
         trailing_edges_consolidation = edge_consolidation(self.image.trailing_edges, method)
         self.image.consolidated_trailing_edges = trailing_edges_consolidation[0]
         self.image.trailing_edges_consolidation = trailing_edges_consolidation[1]
+
+
 
         self.image.zero_mean_leading_edge_profiles = edge_mean_subtraction(
             self.image.consolidated_leading_edges)

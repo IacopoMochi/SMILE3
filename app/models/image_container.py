@@ -125,6 +125,7 @@ class Image:
         """
 
         pre_processor = PreProcessor(self)
+        pre_processor.remove_brightness_gradient()
         pre_processor.normalize_image()
         pre_processor.calculate_histogram_parameters()
 
