@@ -26,7 +26,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        uiPath = str(Path(__file__).parent / "ui/window.ui")
+        uiPath = str(Path(__file__).parent.parent / "ui/window.ui")
         uic.loadUi(uiPath, self)
 
         self.init_ui()
